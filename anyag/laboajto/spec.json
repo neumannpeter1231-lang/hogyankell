@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/laboajto/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/laboajto/align.json",
+ "out": "/home/claude/hogyankell/media/laboajto.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/laboajto/08.png",
+   "text": ""
+  }
+ ]
+}

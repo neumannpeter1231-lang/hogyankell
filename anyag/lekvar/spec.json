@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/lekvar/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/lekvar/align.json",
+ "out": "/home/claude/hogyankell/media/lekvar.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/lekvar/08.png",
+   "text": ""
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/rokia/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/rokia/align.json",
+ "out": "/home/claude/hogyankell/media/rokia.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rokia/08.png",
+   "text": ""
+  }
+ ]
+}

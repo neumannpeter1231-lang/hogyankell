@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/torolkozo/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/torolkozo/align.json",
+ "out": "/home/claude/hogyankell/media/torolkozo.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/torolkozo/08.png",
+   "text": ""
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/citrom/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/citrom/align.json",
+ "out": "/home/claude/hogyankell/media/citrom.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/citrom/08.png",
+   "text": ""
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/kavefolt/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/kavefolt/align.json",
+ "out": "/home/claude/hogyankell/media/kavefolt.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kavefolt/08.png",
+   "text": ""
+  }
+ ]
+}

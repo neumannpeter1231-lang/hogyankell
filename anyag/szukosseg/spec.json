@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/szukosseg/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/szukosseg/align.json",
+ "out": "/home/claude/hogyankell/media/szukosseg.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/szukosseg/08.png",
+   "text": ""
+  }
+ ]
+}

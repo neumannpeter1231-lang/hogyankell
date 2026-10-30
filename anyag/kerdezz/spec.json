@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/kerdezz/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/kerdezz/align.json",
+ "out": "/home/claude/hogyankell/media/kerdezz.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kerdezz/08.png",
+   "text": ""
+  }
+ ]
+}

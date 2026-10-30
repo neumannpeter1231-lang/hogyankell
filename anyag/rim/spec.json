@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/rim/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/rim/align.json",
+ "out": "/home/claude/hogyankell/media/rim.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/rim/08.png",
+   "text": ""
+  }
+ ]
+}

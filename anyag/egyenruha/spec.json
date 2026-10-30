@@ -1,0 +1,39 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/egyenruha/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/egyenruha/align.json",
+ "out": "/home/claude/hogyankell/media/egyenruha.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/06.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/07.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/egyenruha/08.png",
+   "text": ""
+  }
+ ]
+}
