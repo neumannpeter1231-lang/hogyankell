@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0E1116">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hogyankell">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/favicon-48.png" sizes="48x48">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<title>Hogyankell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Figtree:wght@400;500;600;700&display=swap&subset=latin-ext">
+<style>
+/* Layout: telefonszélességű oszlop, teljes képernyős görgetős feed, alul négyfüles menü. Szándékosan egyetlen sötét téma (videós app). */
+:root{
+  color-scheme:dark;
+  --bg:#0E1116; --bg-deep:#07090C; --surface:#161B22; --surface-2:#1E252F; --line:#2A323D;
+  --ink:#F5F3EE; --muted:#A3ADBB; --yel:#F2C230; --yel-ink:#14120A; --good:#3FB97F; --bad:#EF7A68;
+  --f-display:"Familjen Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{height:100%;margin:0;background:var(--bg-deep);color:var(--ink);font:16px/1.45 var(--f-body)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balance}
+
+.app{position:relative;height:100%;max-width:460px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.view{flex:1;min-height:0;position:relative;overflow:hidden}
+.scroll{height:100%;overflow-y:auto;padding:20px 16px 28px}
+
+/* alsó menü */
+.nav{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--bg-deep);border-top:1px solid #1A2028;height:64px}
+.nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#8C96A4;text-decoration:none;font-size:11.5px;font-weight:600}
+.nav a[aria-current="page"]{color:var(--ink)}
+.nav svg{width:24px;height:24px}
+
+/* feed */
+.feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
+.feed::-webkit-scrollbar{display:none}
+.item{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden}
+.feed-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;pointer-events:none;background:linear-gradient(rgba(7,9,12,.7),transparent)}
+.feed-top > *{pointer-events:auto}
+.tabs{display:flex;gap:16px;font-weight:700;font-size:16px}
+.tabs button{background:none;border:0;padding:4px 0;color:rgba(245,243,238,.6)}
+.tabs button[aria-pressed="true"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--ink)}
+.stats{display:flex;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border-radius:999px;padding:5px 10px;font-weight:700;font-size:14px}
+.pill svg{width:16px;height:16px}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--yel);color:var(--yel-ink);border:0;border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px}
+
+.post-bg{position:absolute;inset:0}
+.post-bg video{width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.tv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:96px 74px 150px 22px;background:radial-gradient(120% 70% at 50% 32%,#1F2833 0%,var(--bg) 70%)}
+.tv .icon{width:84px;height:84px;color:var(--yel);opacity:.9;margin-bottom:18px;animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.tv .line{font-family:var(--f-display);font-weight:700;font-size:clamp(23px,6.6vw,30px);line-height:1.18;text-align:center;text-wrap:balance;min-height:4.8em;display:flex;align-items:center;transition:opacity .25s ease,transform .25s ease}
+.tv .line.out{opacity:0;transform:translateY(10px)}
+.tv .line mark{background:none;color:var(--yel)}
+.chips{position:absolute;left:16px;top:56px;z-index:3;display:flex;gap:6px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.chips span{border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.12)}
+.chips span.lvl{background:var(--yel);color:var(--yel-ink)}
+.chips span.rep{background:#2F5A47;color:#C9F2DD}
+
+.rail{position:absolute;right:8px;bottom:128px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:14px}
+.rail button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;min-height:48px;font-size:12px;font-weight:700;padding:0;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.rail svg{width:30px;height:30px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.rail button[aria-pressed="true"] svg{color:var(--yel);fill:currentColor}
+.rail .deeper{background:var(--yel);color:var(--yel-ink);border-radius:14px;padding:8px 6px;text-shadow:none}
+.rail .deeper svg{width:24px;height:24px;filter:none}
+
+.meta{position:absolute;left:12px;right:72px;bottom:12px;z-index:3;display:flex;flex-direction:column;gap:6px}
+.item:not(.check):not(.end)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:17%;background:linear-gradient(transparent,rgba(7,9,12,.88) 55%);z-index:2;pointer-events:none}
+.meta h3{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta .who{font-size:13px;display:flex;gap:8px;flex-wrap:wrap;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.meta .who b{font-weight:700}
+.meta .who span{color:rgba(245,243,238,.7)}
+.meta h3{font-size:17px;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.poll-toggle{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:rgba(20,24,31,.35);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;min-height:28px;color:rgba(245,243,238,.62)}
+.poll-toggle em{font-style:normal;color:rgba(242,194,48,.7)}
+.item.poll-open .tv .line,.item.poll-open .tv .icon{opacity:.12;transition:opacity .2s ease}
+.item.poll-open .post-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(7,9,12,.75))}
+.poll-toggle svg{width:13px;height:13px;transition:transform .2s ease}
+.poll-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.poll{background:rgba(20,24,31,.9);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:11px;display:flex;flex-direction:column;gap:7px;backdrop-filter:blur(6px)}
+.poll .ph{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted)}
+.poll .ph em{font-style:normal;color:var(--yel)}
+.poll .q{font-weight:700;font-size:14.5px}
+.opt{position:relative;text-align:left;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:9px 12px;font-size:14px;min-height:42px;overflow:hidden}
+.opt:disabled{min-height:34px;padding:6px 12px;font-size:13.5px}
+.meta .tags{font-size:13px;color:rgba(245,243,238,.7);text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.opt .bar{position:absolute;inset:0 auto 0 0;background:rgba(255,255,255,.08);width:0;transition:width .5s ease}
+.opt span{position:relative}
+.opt.right{border-color:var(--good);background:rgba(63,185,127,.14)}
+.opt.wrong{border-color:var(--bad);background:rgba(239,122,104,.12)}
+.opt:disabled{cursor:default}
+.poll .why{font-size:13px;color:var(--muted)}
+.progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.15);z-index:4}
+.progress i{display:block;height:100%;width:0;background:var(--ink)}
+
+/* ellenőrző kártya */
+.check{background:var(--yel);color:var(--yel-ink);display:flex;flex-direction:column;padding:70px 20px 24px;gap:16px;overflow-y:auto}
+.check .top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.check .top span:last-child{letter-spacing:0;text-transform:none;font-size:13px;opacity:.75}
+.check .cchips{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.check .cchips span{border-radius:999px;padding:4px 10px;background:rgba(20,18,10,.12)}
+.check .cchips span:first-child{background:var(--yel-ink);color:var(--yel)}
+.check h2{font-size:clamp(24px,7vw,30px)}
+.copt{display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,255,255,.45);border:2px solid rgba(20,18,10,.15);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:600;min-height:54px;color:var(--yel-ink)}
+.copt .k{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:rgba(20,18,10,.1);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:700}
+.copt.right{background:var(--yel-ink);color:var(--ink);border-color:var(--yel-ink)}
+.copt.right .k{background:var(--good);color:#0B1F14}
+.copt.wrong{border-color:#B6452F;background:rgba(239,122,104,.35)}
+.copt:disabled{cursor:default}
+.fb{background:#FFF8DC;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:14.5px}
+.fb .h{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:16px}
+.check .hint{margin-top:auto;text-align:center;font-size:13px;font-weight:600;opacity:.7}
+
+.end{background:radial-gradient(120% 70% at 50% 30%,#1F2833 0%,var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px}
+
+/* lap alján felcsúszó panel */
+.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--surface);border-radius:22px 22px 0 0;padding:10px 18px 22px;max-height:78%;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.sheet > *{flex-shrink:0}
+.sheet .sticky{position:sticky;bottom:-22px;background:var(--surface);padding:8px 0 4px;margin-top:-4px}
+.sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 4px}
+.levels{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.levels span{border-radius:999px;padding:4px 10px;background:var(--surface-2);color:var(--muted)}
+.levels span.on{background:var(--yel);color:var(--yel-ink)}
+.sheet p{margin:0;color:#D5DAE1;font-size:15px}
+.src{font-size:13px;color:var(--muted)}
+.src a{color:var(--yel)}
+
+/* általános elemek */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.btn{border:0;border-radius:12px;min-height:46px;padding:0 16px;font-weight:700;font-size:15px;background:var(--surface-2);color:var(--ink)}
+.btn.primary{background:var(--yel);color:var(--yel-ink)}
+.btn.dark{background:var(--yel-ink);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:40;background:var(--yel);color:var(--yel-ink);font-weight:800;border-radius:999px;padding:8px 16px;font-family:var(--f-display);box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none;white-space:nowrap}
+
+/* aréna */
+.duel{background:var(--yel);color:var(--yel-ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.duel .row{display:flex;justify-content:space-between;align-items:center}
+.tchips{display:flex;flex-wrap:wrap;gap:6px}
+.tchips button{border:0;border-radius:999px;padding:6px 11px;font-size:13px;font-weight:700;background:rgba(20,18,10,.12);color:var(--yel-ink)}
+.tchips button[aria-pressed="true"]{background:var(--yel-ink);color:var(--yel)}
+.duel .btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.duel .btns .btn{background:var(--yel-ink);color:var(--ink)}
+.duel .btns .btn.alt{background:rgba(255,255,255,.5);color:var(--yel-ink)}
+.league-head{display:flex;align-items:center;gap:12px}
+.medal{width:44px;height:44px;border-radius:12px;background:linear-gradient(160deg,#D8DEE6,#8E99A8);display:flex;align-items:center;justify-content:center;color:#1C232D;flex:0 0 auto}
+.lb{background:var(--surface);border-radius:16px;padding:4px 0;border:1px solid var(--line)}
+.lrow{display:flex;align-items:center;gap:12px;padding:9px 14px}
+.lrow .r{width:22px;font-family:var(--f-display);font-weight:700;color:var(--muted)}
+.lrow .av{width:32px;height:32px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 auto}
+.lrow .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow.me{background:rgba(242,194,48,.14);box-shadow:inset 0 1px 0 rgba(242,194,48,.4),inset 0 -1px 0 rgba(242,194,48,.4)}
+.lrow.me .r,.lrow.me .p{color:var(--yel)}
+.lrow.me .av{background:var(--yel);color:var(--yel-ink)}
+.zone{display:flex;align-items:center;gap:8px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--good)}
+.zone::before,.zone::after{content:"";flex:1;height:1px;background:var(--good)}
+
+.duel-play{position:absolute;inset:0;z-index:15;background:var(--bg);display:flex;flex-direction:column;padding:18px 16px;gap:16px;overflow-y:auto}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;text-align:center}
+.vs .sc{font-family:var(--f-display);font-size:40px;font-weight:700}
+.vs .me .sc{color:var(--yel)}
+.tlabel{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:-10px}
+.timer{height:8px;border-radius:9px;background:var(--surface-2);overflow:hidden}
+.timer i{display:block;height:100%;background:var(--yel);width:100%}
+.dopt{text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:13px 14px;font-size:16px;font-weight:600;min-height:54px}
+.dopt.right{border-color:var(--good);background:rgba(63,185,127,.15)}
+.dopt.wrong{border-color:var(--bad);background:rgba(239,122,104,.12)}
+
+/* felfedezés */
+.search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 12px;min-height:48px}
+.search input{flex:1;min-width:0;background:none;border:0;color:var(--ink);font:inherit;outline:none;padding:12px 0}
+.search svg{width:20px;height:20px;color:var(--muted)}
+.topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.topic{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:118px}
+.topic svg{width:28px;height:28px;color:var(--yel)}
+.topic b{font-family:var(--f-display);font-size:17px;line-height:1.15}
+.topic .mini{height:5px;border-radius:9px;background:var(--surface-2);overflow:hidden;margin-top:auto}
+.topic .mini i{display:block;height:100%;background:var(--yel)}
+.res{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+.res svg{width:26px;height:26px;color:var(--yel);flex:0 0 auto}
+.res div{min-width:0}
+.paths{display:flex;flex-direction:column;gap:8px}
+.path{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:12px 14px}
+.soon{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+
+/* profil */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-family:var(--f-display);font-size:30px;line-height:1}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bars .b{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:14px}
+.bars .t{grid-column:1/-1;height:6px;border-radius:9px;background:var(--surface-2);overflow:hidden}
+.bars .t i{display:block;height:100%;background:var(--yel)}
+.linkbtn{background:none;border:0;padding:4px 0;color:var(--muted);text-decoration:underline;font-size:14px}
+.why-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px;color:#D5DAE1}
+.confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* próbáld ki ma, kihívás, témaválasztó */
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.btn.sm{min-height:38px;font-size:14px;padding:0 12px;border-radius:10px}
+.btn.good{background:var(--good);color:#0B1F14}
+a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.onb{position:absolute;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;padding:32px 18px 22px;gap:16px;overflow-y:auto}
+.ichips{display:flex;flex-wrap:wrap;gap:8px}
+.ichips button{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:15px;min-height:44px}
+.ichips button svg{width:20px;height:20px;color:var(--yel)}
+.ichips button[aria-pressed="true"]{background:var(--yel);color:var(--yel-ink);border-color:var(--yel)}
+.ichips button[aria-pressed="true"] svg{color:var(--yel-ink)}
+.ichips .soon2{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;opacity:.65}
+.field{display:flex;gap:8px}
+.field input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:inherit;padding:0 12px;min-height:46px;color-scheme:dark}
+.duel .field input{background:rgba(255,255,255,.55);border-color:rgba(20,18,10,.2);color:var(--yel-ink);text-transform:uppercase;letter-spacing:.12em;font-weight:700}
+.duel .field input::placeholder{text-transform:none;letter-spacing:0;font-weight:600;color:rgba(20,18,10,.55)}
+.duel .field .btn{background:var(--yel-ink);color:var(--ink)}
+.code{font-family:var(--f-display);font-size:36px;font-weight:700;letter-spacing:.14em;background:var(--yel);color:var(--yel-ink);border-radius:14px;padding:4px 18px}
+.sharetxt{width:100%;min-height:92px;resize:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:14px/1.4 var(--f-body);padding:10px 12px}
+.chrow{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;font-size:14px;border-top:1px solid var(--line);padding-top:8px}
+.chrow:first-child{border-top:0;padding-top:0}
+.chrow b{font-family:var(--f-display);letter-spacing:.1em}
+/* szokások */
+.habit-toggle em{font-style:normal;color:rgba(63,185,127,.9)}
+.check.habit{background:#10261F;color:var(--ink);gap:14px}
+.check.habit .top,.check.habit .top span:last-child{color:#9FD9BC;opacity:1}
+.hicon{width:92px;height:92px;border-radius:26px;background:var(--yel);color:var(--yel-ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.hicon svg{width:56px;height:56px}
+.check.habit h2{font-size:clamp(25px,7.2vw,31px)}
+.dots{display:flex;flex-wrap:wrap;gap:5px}
+.dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.14)}
+.dots i.ok{background:var(--good)}
+.dots i.skip{background:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.dots i.today{outline:2px solid var(--yel);outline-offset:1px}
+.hbtn{display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:700;min-height:54px;color:var(--ink)}
+.hbtn.main{background:var(--good);border-color:var(--good);color:#0B1F14}
+.hbtn:disabled{opacity:.5;cursor:default}
+.hbtn.sel{opacity:1;outline:3px solid var(--yel);outline-offset:1px}
+.check.habit .fb{background:rgba(63,185,127,.16);color:var(--ink)}
+.check.habit .hint{color:#9FD9BC}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.seg button{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;min-height:42px;font-weight:700;font-size:14px;padding:0 4px}
+.seg button[aria-pressed="true"]{background:var(--yel);color:var(--yel-ink);border-color:var(--yel)}
+.sheet textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:600 16px/1.35 var(--f-body);padding:10px 12px;resize:none}
+.sheet .l{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:-6px}
+.tin{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:inherit;padding:0 12px;min-height:46px;color-scheme:dark;width:150px}
+.lockrow{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.hlist{display:flex;flex-direction:column;gap:12px}
+.hrow{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:12px}
+.hrow:first-child{border-top:0;padding-top:0}
+.acts2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tlist{display:flex;flex-direction:column;gap:8px}
+.titem{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.titem .st{flex:0 0 auto;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border-radius:999px;padding:3px 8px;background:var(--surface-2);color:var(--muted)}
+.titem .st.ok{background:rgba(63,185,127,.18);color:var(--good)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* zárt webapp: belépőkapu, kezdőképernyős mód */
+body.locked .app{display:none}
+.gate{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+.gate h1{font-size:32px}
+.gate p{margin:0;max-width:32ch;color:#D5DAE1}
+.gate .g-muted{color:var(--muted);font-size:14px}
+.gate .g-err{color:var(--bad);font-size:14px}
+.g-logo{width:84px;height:84px;border-radius:24px;background:var(--yel);color:var(--yel-ink);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.g-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:12px;min-height:50px;padding:0 20px;font-weight:700;font-size:16px;background:#fff;color:#1f1f1f;cursor:pointer}
+.g-btn.alt{background:var(--surface-2);color:var(--ink)}
+.g-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+@supports (padding:env(safe-area-inset-bottom)){
+  .nav{height:calc(64px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+  .feed-top{padding-top:calc(14px + env(safe-area-inset-top))}
+  .scroll{padding-top:calc(20px + env(safe-area-inset-top))}
+}
+</style>
+
+</head>
+<body class="locked">
+<div class="app" id="app">
+  <section class="view" id="v-feed">
+    <div class="feed-top">
+      <div class="tabs" role="group" aria-label="Feed">
+        <button aria-pressed="true" id="tabForYou">Neked</button>
+        <button aria-pressed="false" id="tabPaths">Útvonalak</button>
+      </div>
+      <div class="stats">
+        <span class="pill num" title="Napi sorozat"><svg viewBox="0 0 24 24" fill="none" stroke="#F2C230" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-5 5-5 8 0 4 3 7 7 7z"/></svg><span id="hStreak">0</span></span>
+        <span class="pill num" title="Napi cél: 10 perc tanulás" id="hGoal"><svg viewBox="0 0 24 24" fill="none" stroke="#F2C230" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="hPts">0/10 perc</span></span>
+      </div>
+    </div>
+    <div class="feed" id="feed" tabindex="0" aria-label="Videófolyam"></div>
+  </section>
+
+  <section class="view" id="v-felfedezes" hidden>
+    <div class="scroll stack">
+      <h1 style="font-size:28px">Felfedezés</h1>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Mit tanulnál? pl. alvás, létra, őzés" aria-label="Keresés"></label>
+      <div id="results" class="stack" style="gap:8px" hidden></div>
+      <div class="eyebrow">Témák</div>
+      <div class="topics" id="topics"></div>
+      <div class="eyebrow">Élethelyzet-útvonalak</div>
+      <div class="paths">
+        <div class="path"><span><b>Első saját albérlet</b><br><span class="small muted">Szerződés, kaució, közművek, lakcím</span></span><span class="soon">Hamarosan</span></div>
+        <div class="path"><span><b>Első munkahely</b><br><span class="small muted">Bérpapír, munkaszerződés, adó</span></span><span class="soon">Hamarosan</span></div>
+        <div class="path"><span><b>Első autó</b><br><span class="small muted">Műszaki vizsga, biztosítás, gumicsere</span></span><span class="soon">Hamarosan</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-arena" hidden>
+    <div class="scroll stack">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><h1 style="font-size:28px">Aréna</h1><span class="small muted" id="daysLeft"></span></div>
+      <div class="duel">
+        <div class="row"><h2 style="font-size:22px">Párbaj</h2><span class="small" style="font-weight:700">5 kérdés · 12 mp / kérdés</span></div>
+        <div class="tchips" id="duelTopics" role="group" aria-label="Párbaj témája"></div>
+        <div class="btns">
+          <button class="btn" id="startDuel">Gyakorló párbaj</button>
+          <button class="btn alt" id="friendDuel">Haver kihívása</button>
+        </div>
+        <p class="small" id="friendNote" style="margin:0" hidden></p>
+        <form class="field" id="joinForm" autocomplete="off"><input id="joinCode" maxlength="5" placeholder="Kaptál kódot? Írd be" aria-label="Kihívás kódja"><button class="btn" type="submit">Elfogadom</button></form>
+      </div>
+      <div class="league-head">
+        <div class="medal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg></div>
+        <div><h3 style="font-size:19px">Ezüst liga</h3><div class="small muted">Akikkel megosztod az appot, itt versenyeznek veled</div></div>
+      </div>
+      <div class="lb" id="league"></div>
+      <div class="card stack" id="chBox" style="gap:10px" hidden><div class="eyebrow">Kihívásaid</div><div id="chList" class="stack" style="gap:8px"></div></div>
+      <div class="card stack" style="gap:10px"><div class="eyebrow">Témánkénti teljesítményed</div><div class="bars" id="topicBars"></div></div>
+    </div>
+    <div class="duel-play" id="duelPlay" hidden></div>
+  </section>
+
+  <section class="view" id="v-profil" hidden>
+    <div class="scroll stack">
+      <h1 style="font-size:28px">Profil</h1>
+      <div class="kpis">
+        <div class="kpi"><span class="small muted">Heti pont</span><b class="num" id="kWeek">0</b></div>
+        <div class="kpi"><span class="small muted">Összes pont</span><b class="num" id="kTotal">0</b></div>
+        <div class="kpi"><span class="small muted">Napi sorozat</span><b class="num" id="kStreak">0</b></div>
+        <div class="kpi"><span class="small muted">Pontosság</span><b class="num" id="kAcc">–</b></div>
+        <div class="kpi"><span class="small muted">Megválaszolt kérdés</span><b class="num" id="kAns">0</b></div>
+        <div class="kpi"><span class="small muted">Tanulással töltött idő</span><b class="num" id="kWatch">0 perc</b></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Szokásaim</div>
+        <div class="hlist" id="habitList"></div>
+      </div>
+      <div class="card stack" style="gap:8px">
+        <div class="eyebrow">Hogyan gyűlik a pont?</div>
+        <div class="small">Helyes szavazás: <b>+5</b> · Ellenőrző kártya: <b>+15</b> · Szokás-beszámoló: <b>+5</b> · Megnyert párbaj: <b>+20</b> · Napi 10 perc tanulás teljesítve: <b>+10</b></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Napi emlékeztető</div>
+        <p class="small muted" style="margin:0" id="remNote">Naponta egy emlékeztető egy kérdéssel, ami visszahoz az appba. A kész appban ez telefonos értesítés lesz; addig a Google Naptárad emlékeztet.</p>
+        <div class="field"><input type="time" id="remTime" value="19:00" aria-label="Az emlékeztető időpontja" lang="hu" style="flex:0 0 132px"><a class="btn primary" id="remBtn" href="#" target="_blank" rel="noopener" style="flex:1">Naptárba teszem</a></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Érdeklődési témáid</div>
+        <p class="small muted" style="margin:0">Ezekkel kezdődik a feeded. A többi téma utánuk jön.</p>
+        <div class="ichips" id="profChips"></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Haladás</div>
+        <p class="small muted" style="margin:0" id="syncState">Mentés ebben a böngészőben</p>
+        <div class="confirm" id="resetBox"><button class="linkbtn" id="resetBtn">Haladás törlése</button></div>
+      </div>
+      <p class="small muted">Prototípus. A podcast-részletek a Bazu podcast engedélyével szerepelnek. A szöveges posztok és a hazugságvizsgálós videó AI segítségével készültek, ellenőrzött forrásokból.</p>
+    </div>
+  </section>
+
+  <nav class="nav" aria-label="Fő menü">
+    <a href="#feed" data-v="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Feed</a>
+    <a href="#felfedezes" data-v="felfedezes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Felfedezés</a>
+    <a href="#arena" data-v="arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg>Aréna</a>
+    <a href="#profil" data-v="profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Profil</a>
+  </nav>
+  <div class="onb" id="onb" role="dialog" aria-label="Témák kiválasztása" hidden></div>
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+
+<div id="gate" class="gate"><p class="g-muted">Betöltés…</p></div>
+<script src="/config.js?v=202610300936"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+<script src="/backend.js?v=202610300936"></script>
+</body>
+</html>

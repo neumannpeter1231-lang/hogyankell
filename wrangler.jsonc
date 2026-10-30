@@ -1,0 +1,8 @@
+{
+  "name": "rough-sound-2c04",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "single-page-application"
+  }
+}

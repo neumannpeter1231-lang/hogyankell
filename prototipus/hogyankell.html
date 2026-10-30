@@ -1,0 +1,1405 @@
+<title>Hogyankell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Figtree:wght@400;500;600;700&display=swap&subset=latin-ext">
+<style>
+/* Layout: telefonszélességű oszlop, teljes képernyős görgetős feed, alul négyfüles menü. Szándékosan egyetlen sötét téma (videós app). */
+:root{
+  color-scheme:dark;
+  --bg:#0E1116; --bg-deep:#07090C; --surface:#161B22; --surface-2:#1E252F; --line:#2A323D;
+  --ink:#F5F3EE; --muted:#A3ADBB; --yel:#F2C230; --yel-ink:#14120A; --good:#3FB97F; --bad:#EF7A68;
+  --f-display:"Familjen Grotesk","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+body{height:100%;margin:0;background:var(--bg-deep);color:var(--ink);font:16px/1.45 var(--f-body)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--yel);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balance}
+
+.app{position:relative;height:100%;max-width:460px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.view{flex:1;min-height:0;position:relative;overflow:hidden}
+.scroll{height:100%;overflow-y:auto;padding:20px 16px 28px}
+
+/* alsó menü */
+.nav{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--bg-deep);border-top:1px solid #1A2028;height:64px}
+.nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#8C96A4;text-decoration:none;font-size:11.5px;font-weight:600}
+.nav a[aria-current="page"]{color:var(--ink)}
+.nav svg{width:24px;height:24px}
+
+/* feed */
+.feed{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;scrollbar-width:none}
+.feed::-webkit-scrollbar{display:none}
+.item{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden}
+.feed-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;pointer-events:none;background:linear-gradient(rgba(7,9,12,.7),transparent)}
+.feed-top > *{pointer-events:auto}
+.tabs{display:flex;gap:16px;font-weight:700;font-size:16px}
+.tabs button{background:none;border:0;padding:4px 0;color:rgba(245,243,238,.6)}
+.tabs button[aria-pressed="true"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--ink)}
+.stats{display:flex;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.1);border-radius:999px;padding:5px 10px;font-weight:700;font-size:14px}
+.pill svg{width:16px;height:16px}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--yel);color:var(--yel-ink);border:0;border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px}
+
+.post-bg{position:absolute;inset:0}
+.post-bg video{width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.tv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:96px 74px 150px 22px;background:radial-gradient(120% 70% at 50% 32%,#1F2833 0%,var(--bg) 70%)}
+.tv .icon{width:84px;height:84px;color:var(--yel);opacity:.9;margin-bottom:18px;animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.tv .line{font-family:var(--f-display);font-weight:700;font-size:clamp(23px,6.6vw,30px);line-height:1.18;text-align:center;text-wrap:balance;min-height:4.8em;display:flex;align-items:center;transition:opacity .25s ease,transform .25s ease}
+.tv .line.out{opacity:0;transform:translateY(10px)}
+.tv .line mark{background:none;color:var(--yel)}
+.chips{position:absolute;left:16px;top:56px;z-index:3;display:flex;gap:6px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.chips span{border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.12)}
+.chips span.lvl{background:var(--yel);color:var(--yel-ink)}
+.chips span.rep{background:#2F5A47;color:#C9F2DD}
+
+.rail{position:absolute;right:8px;bottom:128px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:14px}
+.rail button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:52px;min-height:48px;font-size:12px;font-weight:700;padding:0;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.rail svg{width:30px;height:30px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.rail button[aria-pressed="true"] svg{color:var(--yel);fill:currentColor}
+.rail .deeper{background:var(--yel);color:var(--yel-ink);border-radius:14px;padding:8px 6px;text-shadow:none}
+.rail .deeper svg{width:24px;height:24px;filter:none}
+
+.meta{position:absolute;left:12px;right:72px;bottom:12px;z-index:3;display:flex;flex-direction:column;gap:6px}
+.item:not(.check):not(.end)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:17%;background:linear-gradient(transparent,rgba(7,9,12,.88) 55%);z-index:2;pointer-events:none}
+.meta h3{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta .who{font-size:13px;display:flex;gap:8px;flex-wrap:wrap;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.meta .who b{font-weight:700}
+.meta .who span{color:rgba(245,243,238,.7)}
+.meta h3{font-size:17px;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.poll-toggle{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:rgba(20,24,31,.35);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600;min-height:28px;color:rgba(245,243,238,.62)}
+.poll-toggle em{font-style:normal;color:rgba(242,194,48,.7)}
+.item.poll-open .tv .line,.item.poll-open .tv .icon{opacity:.12;transition:opacity .2s ease}
+.item.poll-open .post-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(7,9,12,.75))}
+.poll-toggle svg{width:13px;height:13px;transition:transform .2s ease}
+.poll-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.poll{background:rgba(20,24,31,.9);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:11px;display:flex;flex-direction:column;gap:7px;backdrop-filter:blur(6px)}
+.poll .ph{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted)}
+.poll .ph em{font-style:normal;color:var(--yel)}
+.poll .q{font-weight:700;font-size:14.5px}
+.opt{position:relative;text-align:left;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:9px 12px;font-size:14px;min-height:42px;overflow:hidden}
+.opt:disabled{min-height:34px;padding:6px 12px;font-size:13.5px}
+.meta .tags{font-size:13px;color:rgba(245,243,238,.7);text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.opt .bar{position:absolute;inset:0 auto 0 0;background:rgba(255,255,255,.08);width:0;transition:width .5s ease}
+.opt span{position:relative}
+.opt.right{border-color:var(--good);background:rgba(63,185,127,.14)}
+.opt.wrong{border-color:var(--bad);background:rgba(239,122,104,.12)}
+.opt:disabled{cursor:default}
+.poll .why{font-size:13px;color:var(--muted)}
+.progress{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.15);z-index:4}
+.progress i{display:block;height:100%;width:0;background:var(--ink)}
+
+/* ellenőrző kártya */
+.check{background:var(--yel);color:var(--yel-ink);display:flex;flex-direction:column;padding:70px 20px 24px;gap:16px;overflow-y:auto}
+.check .top{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.check .top span:last-child{letter-spacing:0;text-transform:none;font-size:13px;opacity:.75}
+.check .cchips{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.check .cchips span{border-radius:999px;padding:4px 10px;background:rgba(20,18,10,.12)}
+.check .cchips span:first-child{background:var(--yel-ink);color:var(--yel)}
+.check h2{font-size:clamp(24px,7vw,30px)}
+.copt{display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,255,255,.45);border:2px solid rgba(20,18,10,.15);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:600;min-height:54px;color:var(--yel-ink)}
+.copt .k{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:rgba(20,18,10,.1);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:700}
+.copt.right{background:var(--yel-ink);color:var(--ink);border-color:var(--yel-ink)}
+.copt.right .k{background:var(--good);color:#0B1F14}
+.copt.wrong{border-color:#B6452F;background:rgba(239,122,104,.35)}
+.copt:disabled{cursor:default}
+.fb{background:#FFF8DC;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px;font-size:14.5px}
+.fb .h{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:16px}
+.check .hint{margin-top:auto;text-align:center;font-size:13px;font-weight:600;opacity:.7}
+
+.end{background:radial-gradient(120% 70% at 50% 30%,#1F2833 0%,var(--bg) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px}
+
+/* lap alján felcsúszó panel */
+.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--surface);border-radius:22px 22px 0 0;padding:10px 18px 22px;max-height:78%;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.sheet > *{flex-shrink:0}
+.sheet .sticky{position:sticky;bottom:-22px;background:var(--surface);padding:8px 0 4px;margin-top:-4px}
+.sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 4px}
+.levels{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.levels span{border-radius:999px;padding:4px 10px;background:var(--surface-2);color:var(--muted)}
+.levels span.on{background:var(--yel);color:var(--yel-ink)}
+.sheet p{margin:0;color:#D5DAE1;font-size:15px}
+.src{font-size:13px;color:var(--muted)}
+.src a{color:var(--yel)}
+
+/* általános elemek */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.btn{border:0;border-radius:12px;min-height:46px;padding:0 16px;font-weight:700;font-size:15px;background:var(--surface-2);color:var(--ink)}
+.btn.primary{background:var(--yel);color:var(--yel-ink)}
+.btn.dark{background:var(--yel-ink);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);z-index:40;background:var(--yel);color:var(--yel-ink);font-weight:800;border-radius:999px;padding:8px 16px;font-family:var(--f-display);box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none;white-space:nowrap}
+
+/* aréna */
+.duel{background:var(--yel);color:var(--yel-ink);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.duel .row{display:flex;justify-content:space-between;align-items:center}
+.tchips{display:flex;flex-wrap:wrap;gap:6px}
+.tchips button{border:0;border-radius:999px;padding:6px 11px;font-size:13px;font-weight:700;background:rgba(20,18,10,.12);color:var(--yel-ink)}
+.tchips button[aria-pressed="true"]{background:var(--yel-ink);color:var(--yel)}
+.duel .btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.duel .btns .btn{background:var(--yel-ink);color:var(--ink)}
+.duel .btns .btn.alt{background:rgba(255,255,255,.5);color:var(--yel-ink)}
+.league-head{display:flex;align-items:center;gap:12px}
+.medal{width:44px;height:44px;border-radius:12px;background:linear-gradient(160deg,#D8DEE6,#8E99A8);display:flex;align-items:center;justify-content:center;color:#1C232D;flex:0 0 auto}
+.lb{background:var(--surface);border-radius:16px;padding:4px 0;border:1px solid var(--line)}
+.lrow{display:flex;align-items:center;gap:12px;padding:9px 14px}
+.lrow .r{width:22px;font-family:var(--f-display);font-weight:700;color:var(--muted)}
+.lrow .av{width:32px;height:32px;border-radius:50%;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:0 0 auto}
+.lrow .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow.me{background:rgba(242,194,48,.14);box-shadow:inset 0 1px 0 rgba(242,194,48,.4),inset 0 -1px 0 rgba(242,194,48,.4)}
+.lrow.me .r,.lrow.me .p{color:var(--yel)}
+.lrow.me .av{background:var(--yel);color:var(--yel-ink)}
+.zone{display:flex;align-items:center;gap:8px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--good)}
+.zone::before,.zone::after{content:"";flex:1;height:1px;background:var(--good)}
+
+.duel-play{position:absolute;inset:0;z-index:15;background:var(--bg);display:flex;flex-direction:column;padding:18px 16px;gap:16px;overflow-y:auto}
+.vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;text-align:center}
+.vs .sc{font-family:var(--f-display);font-size:40px;font-weight:700}
+.vs .me .sc{color:var(--yel)}
+.tlabel{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:-10px}
+.timer{height:8px;border-radius:9px;background:var(--surface-2);overflow:hidden}
+.timer i{display:block;height:100%;background:var(--yel);width:100%}
+.dopt{text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:13px 14px;font-size:16px;font-weight:600;min-height:54px}
+.dopt.right{border-color:var(--good);background:rgba(63,185,127,.15)}
+.dopt.wrong{border-color:var(--bad);background:rgba(239,122,104,.12)}
+
+/* felfedezés */
+.search{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 12px;min-height:48px}
+.search input{flex:1;min-width:0;background:none;border:0;color:var(--ink);font:inherit;outline:none;padding:12px 0}
+.search svg{width:20px;height:20px;color:var(--muted)}
+.topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.topic{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:118px}
+.topic svg{width:28px;height:28px;color:var(--yel)}
+.topic b{font-family:var(--f-display);font-size:17px;line-height:1.15}
+.topic .mini{height:5px;border-radius:9px;background:var(--surface-2);overflow:hidden;margin-top:auto}
+.topic .mini i{display:block;height:100%;background:var(--yel)}
+.res{display:flex;align-items:center;gap:12px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+.res svg{width:26px;height:26px;color:var(--yel);flex:0 0 auto}
+.res div{min-width:0}
+.paths{display:flex;flex-direction:column;gap:8px}
+.path{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:12px 14px}
+.soon{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+
+/* profil */
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-family:var(--f-display);font-size:30px;line-height:1}
+.bars{display:flex;flex-direction:column;gap:10px}
+.bars .b{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;font-size:14px}
+.bars .t{grid-column:1/-1;height:6px;border-radius:9px;background:var(--surface-2);overflow:hidden}
+.bars .t i{display:block;height:100%;background:var(--yel)}
+.linkbtn{background:none;border:0;padding:4px 0;color:var(--muted);text-decoration:underline;font-size:14px}
+.why-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px;color:#D5DAE1}
+.confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* próbáld ki ma, kihívás, témaválasztó */
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.btn.sm{min-height:38px;font-size:14px;padding:0 12px;border-radius:10px}
+.btn.good{background:var(--good);color:#0B1F14}
+a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.onb{position:absolute;inset:0;z-index:30;background:var(--bg);display:flex;flex-direction:column;padding:32px 18px 22px;gap:16px;overflow-y:auto}
+.ichips{display:flex;flex-wrap:wrap;gap:8px}
+.ichips button{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:15px;min-height:44px}
+.ichips button svg{width:20px;height:20px;color:var(--yel)}
+.ichips button[aria-pressed="true"]{background:var(--yel);color:var(--yel-ink);border-color:var(--yel)}
+.ichips button[aria-pressed="true"] svg{color:var(--yel-ink)}
+.ichips .soon2{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;opacity:.65}
+.field{display:flex;gap:8px}
+.field input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:inherit;padding:0 12px;min-height:46px;color-scheme:dark}
+.duel .field input{background:rgba(255,255,255,.55);border-color:rgba(20,18,10,.2);color:var(--yel-ink);text-transform:uppercase;letter-spacing:.12em;font-weight:700}
+.duel .field input::placeholder{text-transform:none;letter-spacing:0;font-weight:600;color:rgba(20,18,10,.55)}
+.duel .field .btn{background:var(--yel-ink);color:var(--ink)}
+.code{font-family:var(--f-display);font-size:36px;font-weight:700;letter-spacing:.14em;background:var(--yel);color:var(--yel-ink);border-radius:14px;padding:4px 18px}
+.sharetxt{width:100%;min-height:92px;resize:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:14px/1.4 var(--f-body);padding:10px 12px}
+.chrow{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;font-size:14px;border-top:1px solid var(--line);padding-top:8px}
+.chrow:first-child{border-top:0;padding-top:0}
+.chrow b{font-family:var(--f-display);letter-spacing:.1em}
+/* szokások */
+.habit-toggle em{font-style:normal;color:rgba(63,185,127,.9)}
+.check.habit{background:#10261F;color:var(--ink);gap:14px}
+.check.habit .top,.check.habit .top span:last-child{color:#9FD9BC;opacity:1}
+.hicon{width:92px;height:92px;border-radius:26px;background:var(--yel);color:var(--yel-ink);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.hicon svg{width:56px;height:56px}
+.check.habit h2{font-size:clamp(25px,7.2vw,31px)}
+.dots{display:flex;flex-wrap:wrap;gap:5px}
+.dots i{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.14)}
+.dots i.ok{background:var(--good)}
+.dots i.skip{background:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.dots i.today{outline:2px solid var(--yel);outline-offset:1px}
+.hbtn{display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:700;min-height:54px;color:var(--ink)}
+.hbtn.main{background:var(--good);border-color:var(--good);color:#0B1F14}
+.hbtn:disabled{opacity:.5;cursor:default}
+.hbtn.sel{opacity:1;outline:3px solid var(--yel);outline-offset:1px}
+.check.habit .fb{background:rgba(63,185,127,.16);color:var(--ink)}
+.check.habit .hint{color:#9FD9BC}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.seg button{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:10px;min-height:42px;font-weight:700;font-size:14px;padding:0 4px}
+.seg button[aria-pressed="true"]{background:var(--yel);color:var(--yel-ink);border-color:var(--yel)}
+.sheet textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:600 16px/1.35 var(--f-body);padding:10px 12px;resize:none}
+.sheet .l{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:-6px}
+.tin{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;color:var(--ink);font:inherit;padding:0 12px;min-height:46px;color-scheme:dark;width:150px}
+.lockrow{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:14px;color:var(--muted)}
+.hlist{display:flex;flex-direction:column;gap:12px}
+.hrow{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:12px}
+.hrow:first-child{border-top:0;padding-top:0}
+.acts2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tlist{display:flex;flex-direction:column;gap:8px}
+.titem{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.titem .st{flex:0 0 auto;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border-radius:999px;padding:3px 8px;background:var(--surface-2);color:var(--muted)}
+.titem .st.ok{background:rgba(63,185,127,.18);color:var(--good)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app" id="app">
+  <section class="view" id="v-feed">
+    <div class="feed-top">
+      <div class="tabs" role="group" aria-label="Feed">
+        <button aria-pressed="true" id="tabForYou">Neked</button>
+        <button aria-pressed="false" id="tabPaths">Útvonalak</button>
+      </div>
+      <div class="stats">
+        <span class="pill num" title="Napi sorozat"><svg viewBox="0 0 24 24" fill="none" stroke="#F2C230" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-5 5-5 8 0 4 3 7 7 7z"/></svg><span id="hStreak">0</span></span>
+        <span class="pill num" title="Napi cél: 10 perc tanulás" id="hGoal"><svg viewBox="0 0 24 24" fill="none" stroke="#F2C230" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="hPts">0/10 perc</span></span>
+      </div>
+    </div>
+    <div class="feed" id="feed" tabindex="0" aria-label="Videófolyam"></div>
+  </section>
+
+  <section class="view" id="v-felfedezes" hidden>
+    <div class="scroll stack">
+      <h1 style="font-size:28px">Felfedezés</h1>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Mit tanulnál? pl. alvás, létra, őzés" aria-label="Keresés"></label>
+      <div id="results" class="stack" style="gap:8px" hidden></div>
+      <div class="eyebrow">Témák</div>
+      <div class="topics" id="topics"></div>
+      <div class="eyebrow">Élethelyzet-útvonalak</div>
+      <div class="paths">
+        <div class="path"><span><b>Első saját albérlet</b><br><span class="small muted">Szerződés, kaució, közművek, lakcím</span></span><span class="soon">Hamarosan</span></div>
+        <div class="path"><span><b>Első munkahely</b><br><span class="small muted">Bérpapír, munkaszerződés, adó</span></span><span class="soon">Hamarosan</span></div>
+        <div class="path"><span><b>Első autó</b><br><span class="small muted">Műszaki vizsga, biztosítás, gumicsere</span></span><span class="soon">Hamarosan</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-arena" hidden>
+    <div class="scroll stack">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><h1 style="font-size:28px">Aréna</h1><span class="small muted" id="daysLeft"></span></div>
+      <div class="duel">
+        <div class="row"><h2 style="font-size:22px">Párbaj</h2><span class="small" style="font-weight:700">5 kérdés · 12 mp / kérdés</span></div>
+        <div class="tchips" id="duelTopics" role="group" aria-label="Párbaj témája"></div>
+        <div class="btns">
+          <button class="btn" id="startDuel">Gyakorló párbaj</button>
+          <button class="btn alt" id="friendDuel">Haver kihívása</button>
+        </div>
+        <p class="small" id="friendNote" style="margin:0" hidden></p>
+        <form class="field" id="joinForm" autocomplete="off"><input id="joinCode" maxlength="5" placeholder="Kaptál kódot? Írd be" aria-label="Kihívás kódja"><button class="btn" type="submit">Elfogadom</button></form>
+      </div>
+      <div class="league-head">
+        <div class="medal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z"/></svg></div>
+        <div><h3 style="font-size:19px">Ezüst liga</h3><div class="small muted">Akikkel megosztod az appot, itt versenyeznek veled</div></div>
+      </div>
+      <div class="lb" id="league"></div>
+      <div class="card stack" id="chBox" style="gap:10px" hidden><div class="eyebrow">Kihívásaid</div><div id="chList" class="stack" style="gap:8px"></div></div>
+      <div class="card stack" style="gap:10px"><div class="eyebrow">Témánkénti teljesítményed</div><div class="bars" id="topicBars"></div></div>
+    </div>
+    <div class="duel-play" id="duelPlay" hidden></div>
+  </section>
+
+  <section class="view" id="v-profil" hidden>
+    <div class="scroll stack">
+      <h1 style="font-size:28px">Profil</h1>
+      <div class="kpis">
+        <div class="kpi"><span class="small muted">Heti pont</span><b class="num" id="kWeek">0</b></div>
+        <div class="kpi"><span class="small muted">Összes pont</span><b class="num" id="kTotal">0</b></div>
+        <div class="kpi"><span class="small muted">Napi sorozat</span><b class="num" id="kStreak">0</b></div>
+        <div class="kpi"><span class="small muted">Pontosság</span><b class="num" id="kAcc">–</b></div>
+        <div class="kpi"><span class="small muted">Megválaszolt kérdés</span><b class="num" id="kAns">0</b></div>
+        <div class="kpi"><span class="small muted">Tanulással töltött idő</span><b class="num" id="kWatch">0 perc</b></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Szokásaim</div>
+        <div class="hlist" id="habitList"></div>
+      </div>
+      <div class="card stack" style="gap:8px">
+        <div class="eyebrow">Hogyan gyűlik a pont?</div>
+        <div class="small">Helyes szavazás: <b>+5</b> · Ellenőrző kártya: <b>+15</b> · Szokás-beszámoló: <b>+5</b> · Megnyert párbaj: <b>+20</b> · Napi 10 perc tanulás teljesítve: <b>+10</b></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Napi emlékeztető</div>
+        <p class="small muted" style="margin:0" id="remNote">Naponta egy emlékeztető egy kérdéssel, ami visszahoz az appba. A kész appban ez telefonos értesítés lesz; addig a Google Naptárad emlékeztet.</p>
+        <div class="field"><input type="time" id="remTime" value="19:00" aria-label="Az emlékeztető időpontja" lang="hu" style="flex:0 0 132px"><a class="btn primary" id="remBtn" href="#" target="_blank" rel="noopener" style="flex:1">Naptárba teszem</a></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Érdeklődési témáid</div>
+        <p class="small muted" style="margin:0">Ezekkel kezdődik a feeded. A többi téma utánuk jön.</p>
+        <div class="ichips" id="profChips"></div>
+      </div>
+      <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Haladás</div>
+        <p class="small muted" style="margin:0" id="syncState">Mentés ebben a böngészőben</p>
+        <div class="confirm" id="resetBox"><button class="linkbtn" id="resetBtn">Haladás törlése</button></div>
+      </div>
+      <p class="small muted">Prototípus. A podcast-részletek a Bazu podcast engedélyével szerepelnek. A szöveges posztok és a hazugságvizsgálós videó AI segítségével készültek, ellenőrzött forrásokból.</p>
+    </div>
+  </section>
+
+  <nav class="nav" aria-label="Fő menü">
+    <a href="#feed" data-v="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Feed</a>
+    <a href="#felfedezes" data-v="felfedezes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Felfedezés</a>
+    <a href="#arena" data-v="arena"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg>Aréna</a>
+    <a href="#profil" data-v="profil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Profil</a>
+  </nav>
+  <div class="onb" id="onb" role="dialog" aria-label="Témák kiválasztása" hidden></div>
+  <div class="toast" id="toast" hidden></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const hl = s => esc(s).replace(/\*([^*]+)\*/g, "<mark>$1</mark>");
+const plain = s => String(s).replace(/\*/g, "");
+
+/* ---------------- ikonok ---------------- */
+const I = {
+  anchor:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><path d="M12 7.5V21"/><path d="M5 13a7 7 0 0 0 14 0"/><path d="M8 11h8"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="5" rx="1"/><path d="M5 13v8h14v-8M12 8v13"/><path d="M12 8c-2-4-6-4-6-1.5S9 8 12 8zM12 8c2-4 6-4 6-1.5S15 8 12 8z"/></svg>',
+  boxes:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="8" width="5.5" height="10" rx="1"/><rect x="9.25" y="5" width="5.5" height="13" rx="1"/><rect x="16" y="8" width="5.5" height="10" rx="1"/></svg>',
+  pulse:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg>',
+  heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
+  save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
+  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>',
+  layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l10 5-10 5L2 7z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+  soundOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>',
+  soundOn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10.5 18.5h3"/><path d="M3 7l1.5 1M21 7l-1.5 1M2.5 12h1.5M21.5 12H20"/></svg>',
+  brain:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3h0a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3h0a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></svg>',
+  ladder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2L4 22M17 2l3 20"/><path d="M6.4 7h11.2M5.7 12h12.6M5 17h14"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6M12 2v3"/></svg>',
+  mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/><path d="M17 3v3M15.5 4.5h3"/></svg>',
+  coin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.6 9.4c-.5-.9-1.4-1.4-2.6-1.4-1.5 0-2.6.8-2.6 2s1.1 1.7 2.6 2 2.6.8 2.6 2-1.1 2-2.6 2c-1.2 0-2.1-.5-2.6-1.4M12 6.5V8M12 16v1.5"/></svg>',
+  doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>',
+  family:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="6" r="2.5"/><circle cx="16.5" cy="9" r="2"/><path d="M4 20v-5a4 4 0 0 1 8 0v5M13.5 20v-3.5a3 3 0 0 1 6 0V20"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>'
+};
+const TOPIC_ICON = {"Meggyőzés":"chat","Pszichológia":"brain","Biztonság otthon":"ladder","Idő és fókusz":"clock","Kommunikáció":"mic","Alvás és egészség":"moon","Pénzügyek":"coin","Ügyintézés":"doc","Gyerek és család":"family"};
+const SOON_TOPICS = ["Pénzügyek", "Ügyintézés", "Gyerek és család"];
+const APP_URL = window.HOGYANKELL_URL || "https://claude.ai/artifact/4qefATfjxKR3ozy4WgKdpf";
+const HABIT = {
+  p2:{text:"Ha valaki idegesnek tűnik, előbb kérdezek, csak utána ítélek.", time:"19:00", days:7},
+  k_arany:{text:"A nap legnehezebb feladatát az aranyórámra teszem.", time:"08:30", days:7},
+  m2:{text:"Naponta egyszer sugallat nélkül kérdezek: „Milyen volt?”", time:"19:00", days:7},
+  s_fu:{text:"Megnézem, van-e áramvédő (FI) relé a biztosítéktáblán.", time:"18:00", days:1},
+  p1:{text:"Ébredés után az első 45 percben nem nyúlok a telefonomhoz.", time:"07:00", days:7},
+  a_szunet:{text:"Naponta fél percet beszélek felvételre, és megszámolom az őzéseket.", time:"20:00", days:7},
+  m1:{text:"Mielőtt elfogadok egy árat, megkérdezem magamtól: mennyit érne nélküle?", time:"12:00", days:7},
+  k_pomo:{text:"Naponta egy 25 perces Pomodoro-kört csinálok telefon nélkül.", time:"10:00", days:7},
+  s_izzo:{text:"Megnézem, van-e otthon stabil létra, és tudom-e, hol van.", time:"18:00", days:1},
+  m3:{text:"Ha ingyen ajándékot kapok, kimondom magamban: ez marketingfogás.", time:"18:00", days:7},
+  k_meet:{text:"Munka vagy tanulás közben óránként felállok két percre.", time:"11:00", days:7},
+  a_tolt:{text:"Töltelékszó helyett tudatos szünetet tartok.", time:"18:00", days:7},
+  m4:{text:"Vásárlás előtt megkeresem, melyik ajánlat csak csali.", time:"18:00", days:7},
+  k_alvas:{text:"Minden este nagyjából ugyanakkor fekszem le.", time:"22:00", days:21},
+  p6:{text:"Egy hétig figyelem, mikor vagyok a legfrissebb.", time:"20:00", days:7},
+  m5:{text:"Feszült helyzetben előbb lassítok és halkítok, csak utána érvelek.", time:"19:00", days:7},
+  m6:{text:"Egyetlen testjelből nem vonok le következtetést, megvárom a hármat.", time:"19:00", days:7}
+};
+
+/* ---------------- tartalom ---------------- */
+const POSTS = [
+ {id:"p2", topic:"Pszichológia", type:"video", src:"media/hazugsag.mp4", poster:"media/hazugsag.jpg",
+  title:"A hazugságvizsgáló nem a hazugságot méri", tags:"#pszichológia #tévhitek",
+  poll:{q:"Mit mér valójában a hazugságvizsgáló?", o:["Hogy igazat mondasz-e","A tested stresszreakcióit","Az agyhullámaidat"], a:1, why:"Légzést, izzadást és pulzust mér, vagyis a feszültséget."},
+  check:{q:"A tűs példában miért jelzett a gép?", o:["Mert hazudott","Mert megijedt","Mert meleg volt a teremben"], a:1, why:"A félelemtől izzad a bőr, és a gép ezt méri. A hazugságot magát nem látja."},
+  deeper:["A poligráf a légzést, a bőr elektromos vezetését (izzadás), a vérnyomást és a pulzust méri. Ezek a feszültséggel nőnek, és feszült lehet az is, aki igazat mond.","Ezért a poligráf megbízhatósága a tudományban vitatott, és önmagában nem bizonyíték.","Tévhit az is, hogy a szemmozgásból felismerhető a hazugság: ezt a kutatások nem igazolták."],
+  source:{label:"Kriminálpszichológus interjú, „Honnan tudni, hogy valaki igazat mond?”", url:"https://www.youtube.com/watch?v=pK5s5z-rgTg"}},
+ {id:"p1", topic:"Pszichológia", type:"text", icon:"phone",
+  title:"Reggeli telefonszabály", tags:"#szokások #alvás",
+  lines:["Ébredés után az első mozdulatod a *telefonod* felé megy?","Ébredés után a stresszhormonod, a *kortizol* amúgy is megemelkedik.","Ez természetes, így indul be a tested.","Ha erre rögtön ráöntöd a *híreket* és az üzeneteket,","a napod első percei mások gondjairól szólnak, *nem rólad*.","Szász Máté biológus javaslata: este 10 után és reggel az *első 45 percben* ne nyúlj a telefonodhoz.","És legyen egy teljesen *offline napod* a héten.","Tipp: a töltőt tedd ki a hálószobából. Amit nem érsz el, *azt nem nyomkodod*."],
+  poll:{q:"Mit javasol a videó ébredés utánra?", o:["Rögtön átnézni az értesítéseket","Kb. 45 percig nem nyúlni a telefonhoz","Csak a híreket megnézni"], a:1, why:"Az első percek legyenek a tieid, ne a híreké."},
+  check:{q:"Mi emelkedik meg természetes módon röviddel ébredés után?", o:["A kortizol","A melatonin","Az inzulin"], a:0, why:"Ez az ébredési kortizolválasz: a test így indul be reggel."},
+  deeper:["Ébredés után a kortizolszint természetes módon megugrik, ez segít felébredni. Erre rakódik rá a hírek és üzenetek okozta extra stressz.","A 22 óra és a 45 perc Szász Máté saját szabálya: jó kiindulópont, nem tudományos határérték. A töltős tipp a mi kiegészítésünk."],
+  source:{label:"Szász Máté biológus, „Mit tehetsz holnap reggeltől?”", url:""}},
+ {id:"p3", topic:"Biztonság otthon", type:"text", icon:"ladder",
+  title:"Három otthoni baleset, amit megelőzhetsz", tags:"#biztonság #háztartás",
+  lines:["Egy igazságügyi orvos sok olyan halálesetet vizsgált, amit *egy kis figyelem* megelőzhetett volna.","Itt van három.","Egy: *elektromos fűnyíró*. A kábelt mindig magad mögött, a már levágott részen vezesd.","És használj *áramvédő relét*. Ha a kés elvágja a kábelt, áramütést kaphatsz.","Kettő: *létra*. Ha egyedül mászol fel, legyen a zsebedben a telefonod.","Három: izzócseréhez *ne építs tornyot* a bútorokból.","Egy stabil létra olcsóbb, mint egy kórházi hét.","Ahogy az asztalosok mondják: *kétszer mérj, egyszer vágj*."],
+  poll:{q:"Hol vezesd az elektromos fűnyíró kábelét?", o:["Magad előtt, hogy lásd","Magad mögött, a már levágott részen","Mindegy, ha új a kábel"], a:1, why:"Így a kés nem érheti el a kábelt."},
+  check:{q:"Mit használj az elektromos fűnyíró mellé, hogy ne kapj áramütést?", o:["Áramvédő (FI) relét","Hosszabb kábelt","Gumicsizmát elég"], a:0, why:"Az FI-relé a másodperc töredéke alatt lekapcsol, ha szivárgó áramot érzékel."},
+  deeper:["Az áramvédő (FI) relé a másodperc töredéke alatt lekapcsolja az áramot, ha az áram rossz úton folyik, például rajtad keresztül.","Létrán a baj gyakran abból lesz, hogy valaki egyedül dolgozik, és esés után nem tud segítséget hívni. Ezért legyen nálad a telefon."],
+  source:{label:"Dr. Szeles Géza igazságügyi orvosszakértő, „A fűnyírókábeltől a létráig”", url:""}},
+ {id:"p4", topic:"Idő és fókusz", type:"text", icon:"clock",
+  title:"Találd meg az aranyórádat", tags:"#produktivitás #fókusz",
+  lines:["Mindenkinek van napi egy-két órája, amikor a legjobban *pörög az agya*.","Kende-Hoffer Krisztina ezt *aranyórának* hívja.","Figyeld magad néhány napig: mikor megy minden könnyen, és mikor nincs erőd semmihez?","Az aranyórádra tedd a *legtöbb gondolkodást* igénylő feladatot.","Az e-maileket és a számlákat hagyd a gyengébb időszakra.","Közben dolgozz *Pomodoro*-ritmusban: 25 perc munka, 5 perc szünet.","Négy kör után jöhet egy hosszabb pihenő.","Senki nem tud *nyolc órán át* egyformán koncentrálni."],
+  poll:{q:"Mit érdemes az aranyórádban csinálni?", o:["E-maileket megválaszolni","A legtöbb gondolkodást igénylő feladatot","Pihenni, hogy kitartson az energia"], a:1, why:"A csúcsidőt a nehéz, kreatív munkára érdemes tartogatni."},
+  check:{q:"Hogyan működik a Pomodoro-módszer?", o:["25 perc munka, 5 perc szünet","50 perc munka, 1 perc szünet","10 perc munka, 10 perc szünet"], a:0, why:"Négy ilyen kör után jön egy hosszabb, 15–30 perces pihenő."},
+  deeper:["A napi teljesítőképesség hullámzik, és hogy mikor van a csúcs, emberenként eltér. Ebben a kronotípus is szerepet játszik (lásd a pacsirta–bagoly videót).","A Pomodoro-módszer eredeti formája: 25 perc munka, 5 perc szünet, négy kör után 15–30 perc pihenő."],
+  source:{label:"Kende-Hoffer Krisztina, „Mikor vagy a legproduktívabb a nap folyamán?”", url:""}},
+ {id:"p5", topic:"Kommunikáció", type:"text", icon:"mic",
+  title:"Őzés helyett szünet", tags:"#beszéd #magabiztosság",
+  lines:["Ő… szóval… izé… *Így szoktál beszélni?*","Az őzés nem butaság jele. Akkor csináljuk, amikor *gondolkodunk*.","És félünk a csendtől, mert azt hisszük, közbeszólnak.","A megoldás: a *szünet*.","Egy-két másodperc csend nem öli meg a figyelmet. *Időt ad* a hallgatónak is.","Gyakorlat: beszélj fél percet egy témáról, és *vedd fel*.","Hallgasd vissza, számold meg az őzéseket.","Aztán próbáld újra úgy, hogy őzés helyett *megállsz*."],
+  poll:{q:"Mi a legegyszerűbb eszköz az őzés ellen?", o:["Gyorsabban beszélni","Rövid szünetet tartani","Előre betanulni a szöveget"], a:1, why:"A tudatos szünet kiváltja az ő-ket, és magabiztosabbnak hat."},
+  check:{q:"Mit javasol a gyakorlat az őzés ellen?", o:["Vedd fel és hallgasd vissza magad","Beszélj hangosabban","Kerüld a hosszú mondatokat"], a:0, why:"Felvételről hallod meg igazán, hol őzöl, és így tudsz rajta változtatni."},
+  deeper:["Az őzés és a töltelékszavak gondolkodás közben természetesek, nem kell teljesen kiirtani őket.","A tudatos szünet a beszédtréningek alapeszköze: a hallgató magabiztosságnak érzékeli, és közben feldolgozza, amit mondtál."],
+  source:{label:"A Beszéderő alapítója, „A töltelékszavak ellen”", url:""}},
+ {id:"p6", topic:"Alvás és egészség", type:"text", icon:"moon",
+  title:"Pacsirta vagy bagoly?", tags:"#alvás #agy",
+  lines:["Nem biztos, hogy lusta vagy, ha reggel nem megy. Lehet, hogy egyszerűen *bagoly* vagy.","A belső óránk nem pontosan *24 órára* jár.","Akinél kicsit hosszabb, az este pörög igazán: ő a *bagoly*.","Akinél rövidebb, az korán kel és reggel a legjobb: ő a *pacsirta*.","Dr. Rózsa Balázs agykutató szerint ez jelentős részben a *génjeinkben* van.","Ezért vezettek be sok helyen *törzsidőt*: például 10 és 15 óra között mindenki dolgozik.","A többit mindenki a saját ritmusához igazítja.","Te melyik vagy?"],
+  poll:{q:"Mitől függ leginkább, hogy pacsirta vagy bagoly vagy?", o:["Az akaraterődtől","Jelentős részben a génjeidtől","Az évszaktól"], a:1, why:"A kronotípus nagyrészt öröklött, nem jellem kérdése."},
+  check:{q:"Akinek a belső órája kicsit hosszabb 24 óránál, az inkább…", o:["bagoly","pacsirta","egyik sem"], a:0, why:"Mindig kicsit később szeretne lefeküdni, ezért este pörög."},
+  deeper:["A kronotípus azt mutatja, a nap melyik szakaszában vagy a legfrissebb. Ikerkutatások szerint jelentős részben öröklődik.","Az életkor is számít: kamaszkorban a legtöbben bagolyabbak, idősebb korban pacsirtábbak lesznek."],
+  source:{label:"Dr. Rózsa Balázs agykutató, „Alvás és mozgás”", url:""}}
+ ,{id:"m1", topic:"Meggyőzés", type:"text", icon:"anchor",
+  title:"A horgony: miért az első szám dönt", tags:"#tárgyalás #alku",
+  lines:["Tapasztalt ingatlanügynökök értékeltek egy házat. *Ugyanazt* a házat.","Csak a tájékoztatóban szereplő kínálati árat írták át a kutatók.","Akik alacsony árat láttak, átlagosan *114 ezer* dollárra becsülték.","Akik magasat, *128 ezerre*.","És a többség tagadta, hogy az ár bármit számított volna.","Ez a *horgonyhatás*: az első szám kijelöli, merre gondolkodsz tovább.","Alkunál és bértárgyalásnál ezért számít, *ki mond először* számot.","Ha neked mondanak egyet, kérdezd meg: mit érne a dolog *nélküle*?"],
+  poll:{q:"Mi befolyásolta az ügynökök becslését?", o:["A ház állapota","A tájékoztatóban látott kínálati ár","A környék árai"], a:1, why:"Csak a kínálati ár változott, és 14 ezer dollárral tolta el a becslést."},
+  check:{q:"Mi a horgonyhatás?", o:["Az első hallott szám elhúzza a becslésünket","Mindig a legutolsó ajánlat dönt","A kerek számokat jobban szeretjük"], a:0, why:"Az első szám kijelöli a kiindulópontot, és onnan túl korán állunk meg az igazítással."},
+  deeper:["Northcraft és Neale 1987-es kísérletében a kínálati ár 119 900 és 149 900 dollár között változott, minden más azonos volt.","Tversky és Kahneman 1974-ben megmutatta, hogy egy teljesen véletlen szám is hat: a szerencsekeréken 10-et látók átlagosan 25%-ot, a 65-öt látók 45%-ot tippeltek ugyanarra a kérdésre.","Két magyarázat van, valószínűleg mindkettő igaz: a horgonytól túl korán állunk meg az igazítással, és a horgony a hozzá illő gondolatokat hívja elő."],
+  source:{label:"Meggyőzéstechnika (saját könyv), 12. fejezet, Dr. Újszászi Bogár László előadásai alapján", url:""}},
+ {id:"m2", topic:"Meggyőzés", type:"text", icon:"eye",
+  title:"Egy szó átírja az emlékeidet", tags:"#emlékezet #kérdezés",
+  lines:["Egyetlen szó *átírhatja*, amire emlékszel.","Egy kísérletben autóbaleseteket mutattak egyetemistáknak.","Utána megkérdezték: milyen gyorsan mentek az autók, amikor *összeroncsolódtak*?","A többieknek ugyanez volt a kérdés, csak egy *finomabb* szóval.","Az „összeroncsolódtak” csoport átlag *41*, az „érintkeztek” csoport *32* mérföld/órát mondott.","Egy héttel később sokan *törött üveget* is láttak. A filmen nem volt.","Ha igazat akarsz hallani, kérdezz *semlegesen*.","„Mi történt?” – és nem az, hogy „Mennyire volt durva?”"],
+  poll:{q:"Mi különbözött a csoportok között?", o:["A film, amit láttak","A kérdés egyetlen szava","A kérdező személye"], a:1, why:"Ugyanazt a filmet látták, csak a kérdés egy szava volt más."},
+  check:{q:"Egy hét múlva mire „emlékeztek” többen az „összeroncsolódtak” szót hallók közül?", o:["Törött üvegre","Mentőautóra","Piros lámpára"], a:0, why:"32%-uk mondott igent a törött üvegre, a kontrollcsoportból csak 12%. A filmen nem volt üveg."},
+  deeper:["Elizabeth Loftus és John Palmer 1974-es kísérlete az emlékezetkutatás egyik alapja.","Nem az a tanulság, hogy az emlékeink hamisak, hanem hogy felidézéskor újraépülnek, és a kérdés szavai beépülhetnek.","Ezért kérdeznek a jó interjúkészítők, orvosok és nyomozók nyitott, sugallat nélküli kérdésekkel."],
+  source:{label:"Meggyőzéstechnika (saját könyv), 10. fejezet; Dr. Újszászi Bogár László interjú", url:""}},
+ {id:"m3", topic:"Meggyőzés", type:"text", icon:"gift",
+  title:"Miért érzed, hogy viszonoznod kell?", tags:"#viszonzás #marketing",
+  lines:["Miért érzed, hogy viszonoznod kell egy *ajándékot*, amit nem is kértél?","A viszonzás szabálya minden ismert társadalomban jelen van.","Egy kísérletben a kérdőívhez *előre* csatolt kis ajándék több választ hozott…","…mint a kitöltés utánra ígért, *tízszer nagyobb* összeg.","Használd tisztességesen: *adj először*, és olyat, ami tényleg érték a másiknak.","Védekezz: ha valaki ajándékkal nyit, nyugodtan fogadd el.","De nevezd meg magadban, ami: *marketingfogás*.","Így megszűnik a kötelezettség érzése."],
+  poll:{q:"Mi hozott több kitöltött kérdőívet?", o:["A kitöltés utánra ígért nagyobb összeg","Az előre csatolt kis ajándék","Ugyanannyit hozott a kettő"], a:1, why:"Az előre kapott ajándék kötelezettséget kelt, a később ígért pénz nem."},
+  check:{q:"Hogyan véded ki a viszonzás nyomását egy „ingyenes” ajándéknál?", o:["Mindig visszautasítod","Elfogadod, de magadban megnevezed, hogy marketingfogás","Azonnal viszonzod, hogy letudd"], a:1, why:"Ha megnevezed a technikát, elveszíti az erejét, és nem érzed adósnak magad."},
+  deeper:["Alvin Gouldner szociológus 1960-ban írta le, hogy a viszonzás szabálya minden ismert társadalomban megvan.","James és Bolstein 1992-es kísérletében az előre adott kis ajándék több választ hozott, mint a később ígért, tízszer nagyobb összeg.","A viszonzás engedményekre is működik: egy nagy kérés elutasítása után a kisebb kérést sokkal többen fogadják el."],
+  source:{label:"Meggyőzéstechnika (saját könyv), 13. fejezet: Hét elv", url:""}},
+ {id:"m4", topic:"Meggyőzés", type:"text", icon:"boxes",
+  title:"A csalimadár-ajánlat", tags:"#vásárlás #döntés",
+  lines:["Három előfizetés: csak online *59* dollár, csak nyomtatott *125*, a kettő együtt szintén *125*.","Ki fizetne ugyanannyit kevesebbért? Senki.","A diákok *84%-a* a kombinált csomagot választotta.","Aztán a kutató *kivette* a senki által nem választott ajánlatot.","Most már csak *32%* vette a kombináltat, a többség az olcsót.","A középső ajánlat nem hiba volt, hanem *csalimadár*.","Az volt a dolga, hogy a drágább csomag *kiváló üzletnek* tűnjön.","Ha két ajánlat gyanúsan hasonló, kérdezd meg: *melyik csak díszlet?*"],
+  poll:{q:"Mi volt a „csak nyomtatott” ajánlat szerepe?", o:["Hogy sokan megvegyék","Hogy a kombinált csomag jó üzletnek tűnjön","Véletlen hiba volt"], a:1, why:"Senki nem választotta, mégis a kombinált csomag felé terelte a döntést."},
+  check:{q:"Mi történt, amikor a csaliajánlatot kivették?", o:["Többen választották a kombinált csomagot","Többen választották az olcsó online változatot","Semmi nem változott"], a:1, why:"84%-ról 32%-ra esett a kombinált csomag, a többség az olcsót választotta."},
+  deeper:["Dan Ariely az Economist előfizetési ajánlatán vette észre a mintát, és a diákjain próbálta ki.","A csali azért hat, mert az agy nem abszolút értéket mér, hanem összehasonlít: a csali mellett a célajánlat egyértelműen jobbnak látszik.","Ugyanez a minta sok mozis üdítőméretnél és előfizetéses csomagnál is visszaköszön."],
+  source:{label:"Meggyőzéstechnika (saját könyv), 14. fejezet: A finom eszközök", url:""}},
+ {id:"m5", topic:"Meggyőzés", type:"text", icon:"pulse",
+  title:"Előbb az állapot, aztán az érv", tags:"#kommunikáció #vita",
+  lines:["Fáradt, éhes vagy feszült embernek *hiába* sorolod az érveket.","Feszültségben a figyelem beszűkül, és a sok érv *nem jut el*.","Ezért előbb az *állapotot* rendezd, csak utána jöjjön az érv.","Lassíts, halkíts, adj időt.","Ha mérlegelést vársz, ne sürgess: „Gondold át, holnap visszatérek rá.”","Egy feszült pillanat után számolj kb. *fél órával*, mire a másik visszaáll.","És legfeljebb *három* fő pontot mondj.","Ha a másik kimerült, javasolj szünetet. *Tíz perc* néha többet ér egy óra érvelésnél."],
+  poll:{q:"Mit tegyél, ha a másik feszült, amikor meg akarod győzni?", o:["Mondj még több érvet","Előbb csökkentsd a feszültséget","Beszélj gyorsabban, hogy végezz"], a:1, why:"Feszült állapotban az érvek nem jutnak el, ezért előbb a terhelést kell csökkenteni."},
+  check:{q:"Hány fő pontot érdemes egy meggyőző beszélgetésben mondani?", o:["Legfeljebb hármat","Legalább hetet","Annyit, amennyi eszedbe jut"], a:0, why:"Kevés, címkézett pontot könnyebb megjegyezni: „három szempont van”."},
+  deeper:["Stresszben a figyelem a veszélyre szűkül, és a részletes érveket kevésbé dolgozzuk fel. Ezért feszült beszélgetésben először a terhelést kell csökkenteni.","A saját nyugalmad is jel a másiknak: nehéz beszélgetés előtt először a saját állapotodat rendezd.","A három pont szabálya a munkamemória korlátjára épül: kevés, címkével ellátott pontot könnyebb megtartani."],
+  source:{label:"Meggyőzéstechnika (saját könyv), 1–2. fejezet", url:""}},
+ {id:"m6", topic:"Meggyőzés", type:"text", icon:"search",
+  title:"Egy jelből soha ne következtess", tags:"#testbeszéd #tévhitek",
+  lines:["Összefont kar = elutasítás? *Nem feltétlenül.*","Lehet, hogy egyszerűen *fázik*, vagy így kényelmes neki.","Egyetlen testjelből nem lehet biztosat mondani.","Előbb figyeld meg a másik *alapállapotát*: milyen, amikor nyugodt?","Aztán csak a *változást* figyeld.","És várj legalább *három jelet*, több csatornából: szavak, hang, test.","Ha eltérést látsz, *kérdezz*, ne vádolj.","„Úgy látom, ez most nem egészen stimmel neked. Mi a legnehezebb benne?”"],
+  poll:{q:"Mit jelent biztosan, ha valaki összefonja a karját?", o:["Elutasítást","Hogy hazudik","Önmagában semmit sem biztosan"], a:2, why:"Ugyanaz a mozdulat jelenthet hideget, kényelmet vagy elutasítást is."},
+  check:{q:"Mihez mérd a másik testbeszédét?", o:["A saját nyugodt alapállapotához","Egy testbeszéd-táblázathoz","A saját szokásaidhoz"], a:0, why:"Nem az abszolút jel számít, hanem az eltérés attól, ahogy nyugodtan viselkedik."},
+  deeper:["A testbeszéd jelei többértelműek: ugyanaz a mozdulat fáradtságot, hidegérzetet vagy elutasítást is jelenthet.","Ezért érdemes a másik saját alapállapotához mérni a változást, és több csatorna (szavak, hang, test) egyezését keresni.","A szavakra érdemes a legjobban figyelni: kérj részleteket („Pontosan hogy történt?”), és döntést csak tényre alapozz."],
+  source:{label:"Meggyőzéstechnika (saját könyv), 3. és 5. fejezet", url:""}}
+ ,{id:"k_arany", topic:"Idő és fókusz", type:"video", src:"media/clips/k_arany.mp4", poster:"media/clips/k_arany.jpg",
+  title:"Találd meg az aranyórádat", tags:"#produktivitás #fókusz",
+  poll:{q:"Mit érdemes az aranyórádban csinálni?", o:["E-maileket megválaszolni","A legtöbb gondolkodást igénylő feladatot","Pihenni, hogy kitartson az energia"], a:1, why:"A csúcsidőt a nehéz, kreatív munkára érdemes tartogatni."},
+  check:{q:"Hogyan találod meg az aranyórádat okoseszköz nélkül?", o:["Pár napig figyeled, mikor megy minden könnyen","Megnézed, hány e-mailt kapsz","Reggel 6-kor kezdesz mindent"], a:0, why:"Néhány nap önmegfigyelés is megmutatja, mikor vagy a csúcson."},
+  deeper:["A napi teljesítőképesség hullámzik, és hogy mikor van a csúcs, emberenként eltér. Ebben a kronotípus is szerepet játszik (lásd a pacsirta–bagoly posztot).","Az aktív időszakra a kreatív, elmélyült munka, a gyengébb időszakra a rutinfeladatok (e-mail, számlázás) valók."],
+  source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
+ {id:"k_pomo", topic:"Idő és fókusz", type:"video", src:"media/clips/k_pomo.mp4", poster:"media/clips/k_pomo.jpg",
+  title:"Pomodoro: dolgozz 25 perces etapokban", tags:"#pomodoro #időbeosztás",
+  poll:{q:"Hány perc munka után jön a szünet a Pomodoro-módszerben?", o:["15 perc","25 perc","50 perc"], a:1, why:"25 perc munka, 5 perc szünet, négy kör után hosszabb pihenő."},
+  check:{q:"Hogyan működik a Pomodoro-módszer?", o:["25 perc munka, 5 perc szünet","50 perc munka, 1 perc szünet","10 perc munka, 10 perc szünet"], a:0, why:"Négy ilyen kör után jön egy hosszabb, 15–30 perces pihenő."},
+  deeper:["A beszélgetésben „három vagy öt kör” hangzik el; a módszer eredeti formája: 25 perc munka, 5 perc szünet, négy kör után 15–30 perc pihenő.","A neve a paradicsom alakú konyhai időzítőből jön (pomodoro = paradicsom olaszul)."],
+  source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
+ {id:"k_meet", topic:"Idő és fókusz", type:"video", src:"media/clips/k_meet.mp4", poster:"media/clips/k_meet.jpg",
+  title:"Meetingről meetingre: így tűnik el a munkaidőd", tags:"#munka #koncentráció",
+  poll:{q:"Miért fárad el sok irodai dolgozó úgy, hogy keveset haladt?", o:["Túl sok meeting és kevés szünet","Túl kevés kávé","Túl rövid munkaidő"], a:0, why:"A meetingek elviszik a saját feladatokra szánt időt, a mozgás hiánya pedig fáraszt."},
+  check:{q:"Mit érdemes időnként csinálni egész napos ülőmunka közben?", o:["Felállni, mozogni, levegőzni","Új meetinget szervezni","Gyorsabban dolgozni"], a:0, why:"Senki nem tud nyolc órán át egyformán koncentrálni, a rövid mozgás segít újraindulni."},
+  deeper:["A több munkaóra nem jelent automatikusan több eredményt: a figyelem hullámzik, és szünet nélkül gyorsan fogy.","A rövid felállás és mozgás a beszélgetésben elhangzó tapasztalat; ugyanerre épül a Pomodoro-módszer is."],
+  source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
+ {id:"k_alvas", topic:"Alvás és egészség", type:"video", src:"media/clips/k_alvas.mp4", poster:"media/clips/k_alvas.jpg",
+  title:"Alvás és teljesítmény", tags:"#alvás #rutin",
+  poll:{q:"Mit tanult meg Krisztina az alvásról?", o:["Hogy időpocsékolás","Hogy a rendszeres alvás javítja a teljesítményt","Hogy elég 3-4 óra"], a:1, why:"Amióta tudatosan alszik, más a stressz-szintje és a produktivitása."},
+  check:{q:"Kinek fontos a rendszeres lefekvési idő?", o:["Csak a babáknak","Felnőtteknek is","Csak sportolóknak"], a:1, why:"A szervezetnek felnőttként is ugyanúgy kell a rendszer, mint egy babának."},
+  deeper:["Alvás közben regenerálódunk, és az agy a különböző alvási fázisokban fontos feldolgozó munkát végez, ezért ezt nem lehet tartósan kihagyni.","A rendszeres lefekvési és ébredési idő segít a belső órának, ami a nappali teljesítményre is hat."],
+  source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
+ {id:"s_fu", topic:"Biztonság otthon", type:"video", src:"media/clips/s_fu.mp4", poster:"media/clips/s_fu.jpg",
+  title:"Fűnyíró és elvágott kábel", tags:"#biztonság #kert",
+  poll:{q:"Hol vezesd az elektromos fűnyíró kábelét?", o:["Magad előtt, hogy lásd","Magad mögött, a már levágott részen","Mindegy, ha új a kábel"], a:1, why:"Így a kés nem érheti el a kábelt."},
+  check:{q:"Mi történhet, ha a fűnyíró kése elvágja a kábelt?", o:["Áramütést kaphatsz","Csak leáll a gép","Semmi, mert szigetelt"], a:0, why:"Ezért kell a kábelt a már levágott részen vezetni, és áramvédő relét használni."},
+  deeper:["Az áramvédő (FI) relé a másodperc töredéke alatt lekapcsolja az áramot, ha az áram rossz úton folyik, például rajtad keresztül.","A kábel vezetése és az FI-relé használata az elektromos kerti gépek általános biztonsági ajánlása."],
+  source:{label:"Bazu podcast – Dr. Szeles Géza", url:"https://www.youtube.com/watch?v=IY5zMkwOzUc"}},
+ {id:"s_izzo", topic:"Biztonság otthon", type:"video", src:"media/clips/s_izzo.mp4", poster:"media/clips/s_izzo.jpg",
+  title:"Izzócsere bútortoronyról? Gondold át kétszer!", tags:"#biztonság #háztartás",
+  poll:{q:"Mivel érdemes izzót cserélni magasban?", o:["Asztalra tett székre állva","Stabil létrával","Sámlira állva"], a:1, why:"Az egymásra rakott bútorok könnyen felborulnak."},
+  check:{q:"Melyik mondás illik a videóhoz?", o:["Kétszer mérj, egyszer vágj","Aki korán kel, aranyat lel","Lassan járj, tovább érsz"], a:0, why:"Mielőtt nekiállsz, gondold végig még egyszer, mi történhet."},
+  deeper:["A balesetek jelentős része figyelmetlenségből, „végig nem gondolásból” lesz.","Ha egyedül dolgozol magasban, legyen nálad a telefon, hogy baj esetén segítséget hívhass."],
+  source:{label:"Bazu podcast – Dr. Szeles Géza", url:"https://www.youtube.com/watch?v=IY5zMkwOzUc"}},
+ {id:"a_szunet", topic:"Kommunikáció", type:"video", src:"media/clips/a_szunet.mp4", poster:"media/clips/a_szunet.jpg",
+  title:"Őzés ellen: a kétmásodperces szünet", tags:"#beszéd #magabiztosság",
+  poll:{q:"Mi a legegyszerűbb eszköz az őzés ellen?", o:["Gyorsabban beszélni","Rövid szünetet tartani","Előre betanulni a szöveget"], a:1, why:"A tudatos szünet kiváltja az ő-ket, és magabiztosabbnak hat."},
+  check:{q:"Mit javasol a gyakorlat az őzés ellen?", o:["Vedd fel és hallgasd vissza magad","Beszélj hangosabban","Kerüld a hosszú mondatokat"], a:0, why:"Felvételről hallod meg igazán, hol őzöl, és így tudsz rajta változtatni."},
+  deeper:["Az őzés gondolkodás közben természetes, nem kell teljesen kiirtani.","A tudatos szünet a beszédtréningek alapeszköze: a hallgató magabiztosságnak érzékeli, és közben feldolgozza, amit mondtál."],
+  source:{label:"Bazu podcast – Róf Kis Ágnes, Beszéderő", url:"https://www.youtube.com/watch?v=wo3fXNYE6lw"}},
+ {id:"a_tolt", topic:"Kommunikáció", type:"video", src:"media/clips/a_tolt.mp4", poster:"media/clips/a_tolt.jpg",
+  title:"Őzés és töltelékszavak", tags:"#beszéd #kommunikáció",
+  poll:{q:"Miért őzünk beszéd közben?", o:["Mert gondolkodunk, és félünk a csendtől","Mert fáradtak vagyunk","Mert túl lassan beszélünk"], a:0, why:"A csendet kínosnak érezzük, ezért kitöltjük."},
+  check:{q:"Mit ad a szünet a hallgatónak?", o:["Időt, hogy feldolgozza, amit mondtál","Unalmat","Alkalmat, hogy közbeszóljon"], a:0, why:"A szünet nem kínos: a másikban is „lecsorog”, miről volt szó."},
+  deeper:["A töltelékszavak és az őzés a gondolatformálás velejárói; a cél nem a teljes eltüntetés, hanem a csökkentés.","Gyakorlás: fél perc beszéd egy témáról felvéve, visszahallgatva, majd újra szünetekkel."],
+  source:{label:"Bazu podcast – Róf Kis Ágnes, Beszéderő", url:"https://www.youtube.com/watch?v=wo3fXNYE6lw"}}
+
+];
+const ORDER = ["p2","k_arany","m2","s_fu","p1","a_szunet","m1","k_pomo","s_izzo","m3","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
+for (let i = POSTS.length - 1; i >= 0; i--) if (!ORDER.includes(POSTS[i].id)) POSTS.splice(i, 1);
+POSTS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
+POSTS.forEach(p => { p.habit = HABIT[p.id] || null; });
+const POST = Object.fromEntries(POSTS.map(p => [p.id, p]));
+const TOPICS = [...new Set(POSTS.map(p => p.topic))];
+
+/* ---------------- állapot és mentés ---------------- */
+const isoWeek = d => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = new Date(Date.UTC(t.getUTCFullYear(),0,1)); return t.getUTCFullYear() + "-W" + Math.ceil(((t - y) / 864e5 + 1) / 7); };
+const dayKey = off => { const d = new Date(); d.setDate(d.getDate() + (off || 0)); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); };
+const today = () => dayKey(0);
+function fresh(){ return {v:1, total:0, week:{id:isoWeek(new Date()), pts:0}, tick:0, seen:{}, seenTick:{}, sched:{}, polls:{}, liked:{}, saved:{}, days:[], answered:0, correct:0, watchSec:0, watchAwarded:0, topic:{}, seenAt:{}, goal:{d:"", sec:0, done:false}, interests:null, todos:{}, habits:{}, remind:"19:00", remindOn:false, at:0}; }
+let S = fresh();
+const LS = "hogyankell-v1";
+function lsGet(){ try { const r = localStorage.getItem(LS); return r ? JSON.parse(r) : null; } catch(e){ return null; } }
+function lsSet(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){} }
+let docRef = null, dbTimer = null;
+function save(soon){
+  S.at = Date.now(); lsSet();
+  if (!docRef) return;
+  clearTimeout(dbTimer);
+  dbTimer = setTimeout(async () => { try { await docRef.set({s: JSON.stringify(S), at: S.at}); setSync("Mentve a fiókodba"); } catch(e){ setSync("Mentés ebben a böngészőben"); } }, soon ? 600 : 8000);
+}
+function setSync(t){ const el = $("syncState"); if (el) el.textContent = t; }
+function normalize(o){ const f = fresh(); for (const k in f) if (o[k] === undefined) o[k] = f[k]; if (o.week.id !== isoWeek(new Date())) o.week = {id:isoWeek(new Date()), pts:0}; return o; }
+
+/* ---------------- pontok, sorozat ---------------- */
+let toastT = null;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 1500); }
+function markActive(){ const d = today(); if (!S.days.includes(d)) { S.days.push(d); S.days = S.days.slice(-60); } }
+function addPoints(n, label){
+  if (S.week.id !== isoWeek(new Date())) S.week = {id:isoWeek(new Date()), pts:0};
+  S.total += n; S.week.pts += n; markActive(); save(true); updateHeader(); syncLeague();
+  if (label !== false) toast("+" + n + " pont");
+}
+function streak(){
+  const set = new Set(S.days); let n = 0; const d = new Date();
+  const key = x => x.getFullYear() + "-" + String(x.getMonth()+1).padStart(2,"0") + "-" + String(x.getDate()).padStart(2,"0");
+  if (!set.has(key(d))) d.setDate(d.getDate() - 1);
+  while (set.has(key(d))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function updateHeader(){ $("hStreak").textContent = streak(); const g = S.goal && S.goal.d === today() ? S.goal : {sec:0, done:false}; $("hPts").textContent = g.done ? "Napi cél kész" : Math.min(10, Math.floor(g.sec / 60)) + "/10 perc"; }
+function record(topic, ok){ S.answered++; if (ok) S.correct++; const t = S.topic[topic] || (S.topic[topic] = {n:0, c:0}); t.n++; if (ok) t.c++; }
+
+/* ---------------- feed összeállítása ---------------- */
+let filter = null, items = [], cursor = 0, sinceCheck = 0, cycle = 0;
+function pool(){
+  let l = POSTS.filter(p => !filter || p.topic === filter);
+  const pref = S.interests || [];
+  if (!filter && pref.length) { const a = l.filter(p => pref.includes(p.topic)); if (a.length) l = a.concat(l.filter(p => !pref.includes(p.topic))); }
+  return l;
+}
+const dnum = k => Math.round(Date.UTC(+k.slice(0,4), +k.slice(5,7) - 1, +k.slice(8,10)) / 864e5);
+const dkey = n => new Date(n * 864e5).toISOString().slice(0, 10);
+const nowHM = () => { const d = new Date(); return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0"); };
+const hEnd = h => dkey(dnum(h.start) + h.days - 1);
+const hDayNo = h => dnum(today()) - dnum(h.start) + 1;
+const hOk = h => Object.values(h.log || {}).filter(v => v === "ok").length;
+const activeHabits = () => Object.values(S.habits || {}).filter(h => h.st === "active").sort((a, b) => (a.created || 0) - (b.created || 0));
+function hStreak(h){ let n = 0, d = dnum(today()); if (h.log[dkey(d)] !== "ok") d--; while (d >= dnum(h.start) && h.log[dkey(d)] === "ok") { n++; d--; } return n; }
+function hDue(h){ const t = today(); return h.st === "active" && t >= h.start && t <= hEnd(h) && !h.log[t] && nowHM() >= h.time; }
+function hEnded(h){ return h.st === "active" && h.days > 1 && (today() > hEnd(h) || (today() === hEnd(h) && !!h.log[today()])); }
+const habitShown = new Set();
+function nextHabitItem(){
+  for (const h of activeHabits()) {
+    if (habitShown.has(h.id)) continue;
+    if (hEnded(h)) { habitShown.add(h.id); return {kind:"hend", id:h.id}; }
+    if (hDue(h)) { habitShown.add(h.id); return {kind:"habit", id:h.id}; }
+  }
+  return null;
+}
+function dueCheck(){
+  const ai = active ? Number(active.dataset.idx) : 0;
+  const when = S.tick + Math.max(1, items.length - ai);   // a most generált elem várható megjelenése
+  const now = Date.now();
+  const isDue = s => s.at ? now >= s.at : s.due <= when;
+  const ids = Object.keys(S.sched).filter(id => POST[id] && (!filter || POST[id].topic === filter) && isDue(S.sched[id]));
+  ids.sort((a,b) => (S.sched[a].at || 0) - (S.sched[b].at || 0) || S.sched[a].due - S.sched[b].due);
+  return ids[0] || null;
+}
+function nextItem(){
+  if (!filter && (items.length === 0 || sinceCheck >= 2)) { const hi = nextHabitItem(); if (hi) { sinceCheck = 0; return hi; } }
+  if (sinceCheck >= 3) { const c = dueCheck(); if (c && !items.some((it, i) => i >= items.length - 4 && it.kind === "check" && it.id === c)) { sinceCheck = 0; const sc = S.sched[c]; if (sc.at) sc.at = Date.now() + 6 * 3600e3; else sc.due = S.tick + Math.max(1, items.length - (active ? Number(active.dataset.idx) : 0)) + 6; return {kind:"check", id:c}; } }
+  const list = pool();
+  if (cursor >= list.length) { cursor = 0; cycle++; if (cycle === 1) return {kind:"end"}; }
+  const p = list[cursor++]; sinceCheck++;
+  return {kind:"post", id:p.id, repeat: cycle > 0 || !!S.seen[p.id]};
+}
+
+const feed = $("feed");
+let observer = null, active = null, soundOn = false;
+function buildFeed(){
+  stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear();
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio >= 0.6) activate(e.target); }); }, {root: feed, threshold: [0.6]});
+  appendItems(4); feed.scrollTop = 0;
+}
+function appendItems(n){ for (let i = 0; i < n; i++) { const it = nextItem(); items.push(it); const el = renderItem(it, items.length - 1); feed.appendChild(el); observer.observe(el); } }
+
+function topBar(){
+  const fb = $("tabForYou").parentElement;
+  let chip = document.getElementById("filterChip");
+  if (filter) {
+    if (!chip) { chip = document.createElement("button"); chip.id = "filterChip"; chip.className = "filter-chip"; fb.appendChild(chip); chip.onclick = () => { filter = null; topBar(); buildFeed(); }; }
+    chip.innerHTML = esc(filter) + ' <span aria-hidden="true">✕</span>'; chip.setAttribute("aria-label", "Szűrő törlése: " + filter);
+  } else if (chip) chip.remove();
+}
+
+function renderItem(it, idx){
+  const el = document.createElement("article"); el.className = "item"; el.dataset.idx = idx;
+  if (it.kind === "end") {
+    el.classList.add("end");
+    el.innerHTML = `<div style="width:84px;height:84px;color:var(--yel)">${I.layers}</div><h2 style="font-size:26px">Minden új videót láttál</h2><p class="muted" style="margin:0;max-width:30ch">Görgess tovább, és jönnek az ismétlések az ellenőrző kártyákkal. Így marad meg igazán.</p>`;
+    return el;
+  }
+  if (it.kind === "check") return renderCheck(el, POST[it.id]);
+  if (it.kind === "habit" && S.habits[it.id]) return renderHabitCard(el, S.habits[it.id]);
+  if (it.kind === "hend" && S.habits[it.id]) return renderHabitEnd(el, S.habits[it.id]);
+  if (it.kind === "habit" || it.kind === "hend") { el.classList.add("end"); return el; }
+  const p = POST[it.id];
+  const voted = S.polls[p.id];
+  el.innerHTML = `
+    <div class="post-bg">${p.type === "video"
+      ? `<video src="${p.src}" poster="${p.poster}" playsinline muted loop preload="metadata"></video>`
+      : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
+    <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
+    <div class="rail">
+      ${p.type === "video" ? `<button data-a="sound" class="snd" aria-label="Hang be vagy ki">${soundOn ? I.soundOn : I.soundOff}<span>${soundOn ? "Hang ki" : "Hang be"}</span></button>` : ""}
+      <button data-a="like" aria-pressed="${!!S.liked[p.id]}" aria-label="Tetszik">${I.heart}<span>${S.liked[p.id] ? "Tetszik" : "Like"}</span></button>
+      <button data-a="save" aria-pressed="${!!S.saved[p.id]}" aria-label="Mentés">${I.save}<span>${S.saved[p.id] ? "Mentve" : "Mentés"}</span></button>
+      <button data-a="share" aria-label="Link másolása">${I.share}<span>Küldés</span></button>
+      <button data-a="deeper" class="deeper" aria-label="Mélyebben: miért így van">${I.layers}<span>Mélyebb</span></button>
+    </div>
+    <div class="meta">
+      <div class="who"><b>@hogyankell</b><span>${/^(k_|s_|a_)/.test(p.id) ? "eredeti podcast-részlet" : "AI-jal készült"} · ${esc(p.tags)}</span></div>
+      <h3>${esc(p.title)}</h3>
+      <div class="poll" data-pid="${p.id}" hidden>${pollHTML(p, voted)}</div>
+      <div class="acts"><button class="poll-toggle" data-a="poll" aria-expanded="false">${toggleHTML(p, voted)}</button>${p.habit ? `<button class="poll-toggle habit-toggle" data-a="habit" data-pid="${p.id}">${habitToggleHTML(p)}</button>` : ""}</div>
+    </div>
+    <div class="progress"><i></i></div>`;
+  el.addEventListener("click", e => onPostClick(e, p, el));
+  return el;
+}
+const CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>';
+function toggleHTML(p, voted, open){
+  const chev = CHEV;
+  if (open) return `Szavazás${chev}`;
+  if (voted === undefined) return `Szavazás <em>+5 pont</em>${chev}`;
+  return (voted === p.poll.a ? '<span style="color:var(--good)">✓</span> Megválaszolva' : "Megválaszolva") + chev;
+}
+function habitToggleHTML(p){
+  const h = activeHabits().find(x => x.pid === p.id);
+  return h ? '<span style="color:var(--good)">✓</span> Szokásod' : 'Szokás lesz belőle <em>+</em>';
+}
+function refreshHabitToggles(){ feed.querySelectorAll('[data-a="habit"]').forEach(b => { const p = POST[b.dataset.pid]; if (p) b.innerHTML = habitToggleHTML(p); }); }
+function pollHTML(p, voted){
+  const done = voted !== undefined;
+  const head = `<div class="ph"><span>Szavazás</span><em>${done ? (voted === p.poll.a ? "+5 pont megvan" : "Most nem jött össze") : "+5 pont"}</em></div><div class="q">${esc(p.poll.q)}</div>`;
+  const opts = p.poll.o.map((o, i) => {
+    const cls = done ? (i === p.poll.a ? "right" : i === voted ? "wrong" : "") : "";
+    return `<button class="opt ${cls}" data-a="vote" data-i="${i}" ${done ? "disabled" : ""}><span>${esc(o)}</span></button>`;
+  }).join("");
+  return head + opts + (done ? `<div class="why">${esc(p.poll.why)}</div>` : "");
+}
+function onPostClick(e, p, el){
+  const b = e.target.closest("[data-a]"); if (!b) return;
+  const a = b.dataset.a;
+  if (a === "poll") {
+    const pb = el.querySelector(".poll"), open = pb.hidden;
+    pb.hidden = !open; b.setAttribute("aria-expanded", open); b.innerHTML = toggleHTML(p, S.polls[p.id], open); el.classList.toggle("poll-open", open);
+    return;
+  }
+  if (a === "habit") { const h = activeHabits().find(x => x.pid === p.id); openHabitSheet(p, h || null); return; }
+  if (a === "vote") {
+    if (S.polls[p.id] !== undefined) return;
+    const i = Number(b.dataset.i); S.polls[p.id] = i; const ok = i === p.poll.a; record(p.topic, ok);
+    el.querySelector(".poll").innerHTML = pollHTML(p, i);
+    el.querySelector('[data-a="poll"]').innerHTML = toggleHTML(p, i, true);
+    if (ok) addPoints(5); else { markActive(); save(true); }
+  } else if (a === "like" || a === "save") {
+    const m = a === "like" ? S.liked : S.saved; m[p.id] = !m[p.id];
+    b.setAttribute("aria-pressed", m[p.id]); b.querySelector("span").textContent = a === "like" ? (m[p.id] ? "Tetszik" : "Like") : (m[p.id] ? "Mentve" : "Mentés");
+    save();
+  } else if (a === "share") {
+    const txt = p.title + " – Hogyankell";
+    try { navigator.clipboard.writeText(txt).then(() => toast("Cím vágólapra másolva"), () => toast("A másolás itt nem érhető el")); } catch(err) { toast("A másolás itt nem érhető el"); }
+  } else if (a === "deeper") openDeeper(p);
+  else if (a === "sound") {
+    soundOn = !soundOn;
+    feed.querySelectorAll("video").forEach(v => v.muted = !soundOn || v !== activeVideo());
+    feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`);
+    const v = activeVideo(); if (v) { v.muted = !soundOn; v.play().catch(() => {}); }
+  }
+}
+function activeVideo(){ return active ? active.querySelector("video") : null; }
+
+function renderCheck(el, p){
+  el.classList.add("check");
+  const ms = Date.now() - (S.seenAt[p.id] || Date.now()), mins = Math.round(ms / 60000);
+  const ago = mins < 5 ? "Nemrég láttad" : mins < 60 ? mins + " perce láttad" : mins < 1440 ? Math.round(mins / 60) + " órája láttad" : Math.round(mins / 1440) + " napja láttad";
+  el.innerHTML = `
+    <div class="top"><span>Gyors ellenőrzés</span><span>${ago}</span></div>
+    <div class="cchips"><span>${esc(p.topic)}</span><span>${esc(p.title)}</span></div>
+    <h2>${esc(p.check.q)}</h2>
+    <div class="stack" style="gap:10px">${p.check.o.map((o, i) => `<button class="copt" data-i="${i}"><span class="k">${"ABC"[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>
+    <div class="fb" hidden></div>
+    <div class="hint">Görgess tovább, ha most kihagynád</div>`;
+  el.addEventListener("click", e => {
+    const b = e.target.closest(".copt"); if (!b || el.dataset.done) return;
+    el.dataset.done = "1";
+    const i = Number(b.dataset.i), ok = i === p.check.a;
+    el.querySelectorAll(".copt").forEach((x, j) => { x.disabled = true; if (j === p.check.a) { x.classList.add("right"); x.querySelector(".k").innerHTML = "✓"; } else if (j === i) x.classList.add("wrong"); });
+    const s = S.sched[p.id] || {n:0};
+    let next;
+    if (ok) { s.n = (s.n || 0) + 1; const days = [1, 3, 7, 14, 30][Math.min(s.n - 1, 4)]; s.at = Date.now() + days * 864e5; next = days === 1 ? "Holnap újra rákérdezünk, hogy tényleg megmaradt-e." : days + " nap múlva kérdezünk rá újra."; }
+    else { s.n = 0; s.at = null; s.due = S.tick + 5; next = "Pár videó múlva újra előjön."; }
+    S.sched[p.id] = s;
+    record(p.topic, ok);
+    const fb = el.querySelector(".fb"); fb.hidden = false;
+    fb.innerHTML = `<div class="h"><span>${ok ? "Pontosan." : "Majdnem."}</span><span>${ok ? "+15 pont" : ""}</span></div><div>${esc(p.check.why)} ${next}</div>`;
+    el.querySelector(".hint").textContent = "Görgess tovább a következő videóhoz";
+    if (ok) addPoints(15, false); else { markActive(); save(true); }
+  });
+  return el;
+}
+
+function dotsHTML(h){
+  const end = dnum(hEnd(h)), s0 = Math.max(dnum(h.start), end - 29), out = [];
+  for (let n = s0; n <= end; n++) { const k = dkey(n), v = h.log[k]; out.push(`<i class="${v === "ok" ? "ok" : v === "skip" ? "skip" : ""}${k === today() ? " today" : ""}"></i>`); }
+  return `<div class="dots" aria-hidden="true">${out.join("")}</div>`;
+}
+function hIcon(h){ const p = POST[h.pid]; return I[(p && TOPIC_ICON[p.topic]) || "layers"]; }
+function logHabit(h, r){
+  h.log[today()] = r;
+  if (h.days === 1) h.st = "done";
+  addPoints(5, false); syncPush();
+  const st = hStreak(h);
+  if (h.days === 1) return r === "ok" ? `<div class="h"><span>Kész!</span><span>+5 pont</span></div><div>Megcsináltad, ez már a tiéd.</div>` : `<div class="h"><span>Semmi gond.</span><span>+5 pont</span></div><div>Ha mégis sorra kerül, vállald újra a videó alatt.</div>`;
+  if (r === "ok") return `<div class="h"><span>${st > 1 ? st + " napja tartod!" : "Szép kezdés!"}</span><span>+5 pont</span></div><div>${today() >= hEnd(h) ? "Ez volt az utolsó nap. Mindjárt megkérdezzük, megtartod-e." : "Holnap is itt leszünk."}</div>`;
+  return `<div class="h"><span>Rendben, holnap újra.</span><span>+5 pont</span></div><div>A beszámolóért is jár pont: az számít, hogy figyelsz rá.</div>`;
+}
+function renderHabitCard(el, h){
+  el.classList.add("check", "habit");
+  const p = POST[h.pid];
+  el.innerHTML = `
+    <div class="top"><span>A vállalásod</span><span>${h.days === 1 ? "Egyszeri" : hDayNo(h) + ". nap a " + h.days + "-ből"}</span></div>
+    <div class="hicon">${hIcon(h)}</div>
+    <h2>${esc(h.text)}</h2>
+    ${h.days > 1 ? dotsHTML(h) : ""}
+    ${p ? `<div class="small" style="color:#9FD9BC">A videóból: ${esc(p.title)}</div>` : ""}
+    <div class="stack" style="gap:10px">
+      <button class="hbtn main" data-r="ok"><span aria-hidden="true">✓</span><span>${h.days === 1 ? "Megcsináltam" : "Ma megvolt"}</span></button>
+      <button class="hbtn" data-r="skip"><span aria-hidden="true">↷</span><span>${h.days === 1 ? "Most elengedem" : "Ma kihagyom"}</span></button>
+    </div>
+    <div class="fb" hidden></div>
+    <div class="hint">Görgess tovább, ha most kihagynád</div>`;
+  el.addEventListener("click", e => {
+    const b = e.target.closest(".hbtn"); if (!b || el.dataset.done) return;
+    el.dataset.done = "1";
+    el.querySelectorAll(".hbtn").forEach(x => { x.disabled = true; if (x === b) x.classList.add("sel"); });
+    const fb = el.querySelector(".fb"); fb.hidden = false; fb.innerHTML = logHabit(h, b.dataset.r);
+    const d = el.querySelector(".dots"); if (d) d.outerHTML = dotsHTML(h);
+    el.querySelector(".hint").textContent = "Görgess tovább a következő videóhoz";
+    refreshHabitToggles();
+  });
+  return el;
+}
+function renderHabitEnd(el, h){
+  el.classList.add("check", "habit");
+  const per = h.period || 7;
+  el.innerHTML = `
+    <div class="top"><span>Lejárt a vállalásod</span><span>${h.days} nap</span></div>
+    <div class="hicon">${hIcon(h)}</div>
+    <h2>${esc(h.text)}</h2>
+    ${dotsHTML(h)}
+    <p class="task">${hOk(h)}/${h.days} nap sikerült. Megtartod?</p>
+    <div class="stack" style="gap:10px">
+      <button class="hbtn main" data-r="more">Folytatom még ${per} napig</button>
+      <button class="hbtn" data-r="edit">Átírom</button>
+      <button class="hbtn" data-r="stop">Leállítom</button>
+    </div>
+    <div class="fb" hidden></div>
+    <div class="hint">Görgess tovább, ha most kihagynád</div>`;
+  el.addEventListener("click", e => {
+    const b = e.target.closest(".hbtn"); if (!b || el.dataset.done) return;
+    const r = b.dataset.r;
+    if (r === "edit") { openHabitSheet(POST[h.pid] || POSTS[0], h); return; }
+    el.dataset.done = "1";
+    el.querySelectorAll(".hbtn").forEach(x => { x.disabled = true; if (x === b) x.classList.add("sel"); });
+    const fb = el.querySelector(".fb"); fb.hidden = false;
+    if (r === "more") { h.days += per; fb.innerHTML = `<div class="h"><span>Mehet tovább!</span><span></span></div><div>Még ${per} nap. A sorozatod megmarad.</div>`; }
+    else { h.st = "done"; fb.innerHTML = `<div class="h"><span>Lezártuk.</span><span></span></div><div>A Profilban a korábbi szokásaid között megtalálod.</div>`; }
+    el.querySelector(".hint").textContent = "Görgess tovább a következő videóhoz";
+    save(true); syncPush(); refreshHabitToggles();
+  });
+  return el;
+}
+
+/* szokás vállalása: lap alján felcsúszó panel */
+function calURL(title, details, time, startKey, count){
+  const [hh, mm] = (time || "19:00").split(":").map(Number);
+  let d;
+  if (startKey) d = new Date(+startKey.slice(0,4), +startKey.slice(5,7) - 1, +startKey.slice(8,10), hh || 0, mm || 0, 0);
+  else { d = new Date(); d.setHours(hh || 0, mm || 0, 0, 0); if (d < new Date()) d.setDate(d.getDate() + 1); }
+  const e = new Date(d.getTime() + 10 * 60000);
+  const f = x => x.getFullYear() + String(x.getMonth()+1).padStart(2,"0") + String(x.getDate()).padStart(2,"0") + "T" + String(x.getHours()).padStart(2,"0") + String(x.getMinutes()).padStart(2,"0") + "00";
+  let tz = "Europe/Budapest"; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch(err) {}
+  const rr = "RRULE:FREQ=DAILY" + (count ? ";COUNT=" + count : "");
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(title) + "&dates=" + f(d) + "/" + f(e) + "&ctz=" + encodeURIComponent(tz) + (count === 1 ? "" : "&recur=" + encodeURIComponent(rr)) + "&details=" + encodeURIComponent(details);
+}
+const habitCalURL = h => calURL("Hogyankell: " + h.text, "A vállalásod: " + h.text + "\n\nJelöld az appban, hogy sikerült-e: " + APP_URL, h.time, h.start, h.days);
+function sheetHost(){ const v = ["feed", "felfedezes", "arena", "profil"].map(x => $("v-" + x)).find(x => !x.hidden); return v || $("v-feed"); }
+function openHabitSheet(p, h){
+  closeSheet();
+  const sug = p.habit || {text:"", time:"19:00", days:7};
+  const others = activeHabits().filter(x => !h || x.id !== h.id);
+  const st = {text: h ? h.text : sug.text, time: h ? h.time : sug.time, days: h ? (h.period || h.days) : sug.days};
+  const back = document.createElement("div"); back.className = "sheet-back"; back.id = "sheetBack";
+  const sh = document.createElement("div"); sh.className = "sheet"; sh.id = "sheet"; sh.setAttribute("role", "dialog"); sh.setAttribute("aria-label", "Ebből szokás lesz");
+  back.onclick = closeSheet;
+  sheetHost().append(back, sh);
+  if (others.length >= 3) {
+    sh.innerHTML = `<div class="grab"></div><div class="levels"><span class="on">Ebből szokás lesz</span></div><h2 style="font-size:22px">Már 3 szokásod fut</h2><p>Egyszerre legfeljebb hármat érdemes építeni, különben egyik sem marad meg. A Profilban leállíthatsz egyet, és utána jöhet ez.</p><button class="btn primary" id="sheetClose">Rendben</button>`;
+    $("sheetClose").onclick = closeSheet; $("sheetClose").focus(); return;
+  }
+  const form = () => {
+    sh.innerHTML = `<div class="grab"></div>
+      <div class="levels"><span class="on">Ebből szokás lesz</span></div>
+      <h2 style="font-size:21px">${esc(p.title)}</h2>
+      <label class="l" for="hText">A vállalásod, a saját szavaiddal</label>
+      <textarea id="hText" rows="2" maxlength="120">${esc(st.text)}</textarea>
+      <label class="l" for="hTime">Mikor emlékeztessünk?</label>
+      <input type="time" id="hTime" class="tin" lang="hu" value="${esc(st.time)}">
+      <span class="l">Meddig?</span>
+      <div class="seg" role="group" aria-label="Időtartam">${[[1, "Egyszer"], [7, "7 nap"], [21, "21 nap"], [30, "30 nap"]].map(([d, l]) => `<button type="button" data-d="${d}" aria-pressed="${st.days === d}">${l}</button>`).join("")}</div>
+      <div class="lockrow"><span>Telefonzár ébredés után</span><span class="soon">A kész appban</span></div>
+      <p class="small muted" style="margin:0">Megnyitáskor ez fogad${st.days > 1 ? ", a végén megkérdezzük, megtartod-e" : ""}.</p>
+      <div class="sticky" style="display:flex;gap:8px"><button class="btn primary" id="hSave" style="flex:1">${h ? "Mentés" : "Vállalom"}</button><button class="btn" id="hCancel">Mégse</button></div>`;
+    sh.querySelector(".seg").onclick = e => { const b = e.target.closest("[data-d]"); if (!b) return; st.text = $("hText").value; st.time = $("hTime").value || st.time; st.days = Number(b.dataset.d); form(); sh.querySelector(`[data-d="${st.days}"]`).focus(); };
+    $("hCancel").onclick = closeSheet;
+    $("hSave").onclick = () => {
+      const text = $("hText").value.trim().replace(/\s+/g, " ");
+      if (!text) { $("hText").focus(); toast("Írd le, mit vállalsz"); return; }
+      const time = $("hTime").value || st.time;
+      const fresh = !h || hEnded(h);
+      const start = fresh ? (nowHM() < time ? today() : dayKey(1)) : h.start;
+      const days = fresh ? st.days : Math.max(st.days, hDayNo(h));
+      const id = h ? h.id : "h" + Date.now().toString(36);
+      S.habits[id] = {id, pid: p.id, text, time, days, period: st.days, start, log: fresh ? {} : h.log, st: "active", created: h ? h.created : Date.now()};
+      markActive(); save(true); syncPush(); refreshHabitToggles();
+      if (!$("v-profil").hidden) renderHabits();
+      done(S.habits[id]);
+    };
+    $("hText").focus();
+  };
+  const done = x => {
+    sh.innerHTML = `<div class="grab"></div>
+      <div class="levels"><span class="on">Megvan!</span></div>
+      <h2 style="font-size:23px">${esc(x.text)}</h2>
+      <p>${x.start > today() ? "Kezdés: holnap " + esc(x.time) + "-kor" : x.start === today() && !Object.keys(x.log).length ? "Kezdés: ma " + esc(x.time) + "-kor" : "Mentve, " + esc(x.time) + "-kor emlékeztetünk"}${x.days > 1 ? `, ${x.days} napig` : ""}. Amikor ilyenkor megnyitod az appot, ez lesz az első, amit látsz.</p>
+      ${pushRef ? '<button class="btn" id="hPush">Értesítést is kérek</button>' : `<a class="btn" href="${habitCalURL(x)}" target="_blank" rel="noopener">Emlékeztető a naptáramba</a>`}
+      <button class="btn primary" id="sheetClose">Kész</button>`;
+    $("sheetClose").onclick = closeSheet; $("sheetClose").focus();
+    if ($("hPush")) $("hPush").onclick = async () => { const r = await enablePush(); $("hPush").textContent = r ? "Értesítés bekapcsolva" : "Az értesítést most nem sikerült bekapcsolni"; $("hPush").disabled = true; };
+  };
+  form();
+}
+
+/* aktiválás, lejátszás */
+let raf = null, tvState = null;
+function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; feed.querySelectorAll("video").forEach(v => { v.pause(); v.muted = true; }); }
+function activate(el){
+  if (active === el || !$("onb").hidden) return;
+  stopAll(); active = el;
+  const idx = Number(el.dataset.idx), it = items[idx];
+  if (idx >= items.length - 2) appendItems(3);
+  if (!it || it.kind !== "post") return;
+  const p = POST[it.id];
+  S.tick++;
+  if (!S.seen[p.id]) { S.seen[p.id] = true; S.sched[p.id] = {n:0, due:S.tick + 5, at:null}; }
+  S.seenAt[p.id] = Date.now();
+  S.seenTick[p.id] = S.tick; markActive(); save(); updateHeader();
+  const bar = el.querySelector(".progress i");
+  if (p.type === "video") {
+    const v = el.querySelector("video"); v.currentTime = 0; v.muted = !soundOn; v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
+    const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
+    loop();
+  } else {
+    const lineEl = el.querySelector(".line");
+    const durs = p.lines.map(l => Math.max(2.4, plain(l).length / 14));
+    const total = durs.reduce((a, b) => a + b, 0) + 1.2;
+    const t0 = performance.now(); let shown = -1;
+    const loop = now => {
+      if (active !== el) return;
+      const t = ((now - t0) / 1000) % total;
+      let acc = 0, k = durs.length - 1;
+      for (let i = 0; i < durs.length; i++) { if (t < acc + durs[i]) { k = i; break; } acc += durs[i]; }
+      if (k !== shown) { shown = k; lineEl.classList.add("out"); setTimeout(() => { if (active !== el) return; lineEl.innerHTML = `<span>${hl(p.lines[k])}</span>`; lineEl.classList.remove("out"); }, shown === 0 && !lineEl.innerHTML ? 0 : 180); }
+      bar.style.width = (t / total * 100) + "%";
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+  }
+}
+
+/* napi cél: 10 perc tanulás */
+setInterval(() => {
+  if (document.hidden || $("v-feed").hidden || !active || !$("onb").hidden) return;
+  S.watchSec++;
+  if (!S.goal || S.goal.d !== today()) S.goal = {d: today(), sec: 0, done: false};
+  S.goal.sec++;
+  if (!S.goal.done && S.goal.sec >= 600) { S.goal.done = true; addPoints(10, false); toast("Napi cél kész: +10 pont"); }
+  if (S.goal.sec % 60 === 0) updateHeader();
+  if (S.watchSec % 15 === 0) save();
+}, 1000);
+document.addEventListener("visibilitychange", () => { if (document.hidden) { save(true); stopAll(); } else if (active && !$("v-feed").hidden) { const a = active; active = null; activate(a); } });
+
+/* Mélyebb panel */
+function openDeeper(p){
+  closeSheet();
+  const back = document.createElement("div"); back.className = "sheet-back"; back.id = "sheetBack";
+  const sh = document.createElement("div"); sh.className = "sheet"; sh.id = "sheet"; sh.setAttribute("role", "dialog"); sh.setAttribute("aria-label", "Mélyebben: " + p.title);
+  sh.innerHTML = `<div class="grab"></div>
+    <div class="levels"><span class="on">Miért így van</span></div>
+    <h2 style="font-size:22px">${esc(p.title)}</h2>
+    ${p.deeper.map(t => `<p>${esc(t)}</p>`).join("")}
+    <div class="src">Forrás: ${esc(p.source.label)}${p.source.url ? ` · <a href="${p.source.url}" target="_blank" rel="noopener">Teljes beszélgetés</a>` : ""}</div>
+    <button class="btn primary" id="sheetClose">Vissza a videóhoz</button>`;
+  back.onclick = closeSheet;
+  $("v-feed").append(back, sh);
+  $("sheetClose").onclick = closeSheet; $("sheetClose").focus();
+}
+function closeSheet(){ const a = $("sheetBack"), b = $("sheet"); if (a) a.remove(); if (b) b.remove(); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+$("tabPaths").onclick = () => toast("Az útvonalak hamarosan jönnek");
+
+/* ---------------- Felfedezés ---------------- */
+function renderExplore(){
+  $("topics").innerHTML = TOPICS.map(t => {
+    const ps = POSTS.filter(p => p.topic === t), seen = ps.filter(p => S.seen[p.id]).length;
+    return `<button class="topic" data-t="${esc(t)}">${I[TOPIC_ICON[t]]}<b>${esc(t)}</b><span class="small muted num">${seen}/${ps.length} videó</span><span class="mini"><i style="width:${seen / ps.length * 100}%"></i></span></button>`;
+  }).join("");
+}
+$("topics").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; filter = b.dataset.t; topBar(); location.hash = "feed"; buildFeed(); });
+$("q").addEventListener("input", () => {
+  const q = $("q").value.trim().toLowerCase(); const box = $("results");
+  if (!q) { box.hidden = true; box.innerHTML = ""; return; }
+  const score = p => (p.title + " " + p.topic).toLowerCase().includes(q) ? 2 : p.tags.toLowerCase().includes(q) ? 1 : (p.lines || []).join(" ").toLowerCase().includes(q) ? 0.5 : 0;
+  const hits = POSTS.filter(p => score(p) > 0).sort((a, b) => score(b) - score(a));
+  box.hidden = false;
+  box.innerHTML = hits.length ? hits.map(p => `<button class="res" data-p="${p.id}">${I.play}<div><b>${esc(p.title)}</b><div class="small muted">${esc(p.topic)}</div></div></button>`).join("") : `<p class="muted small" style="margin:0">Erre még nincs videónk. Ötleteket a következő témákhoz szívesen veszünk.</p>`;
+});
+$("results").addEventListener("click", e => {
+  const b = e.target.closest("[data-p]"); if (!b) return;
+  const p = POST[b.dataset.p]; filter = p.topic; topBar(); location.hash = "feed"; buildFeed();
+  const i = pool().indexOf(p); if (i > 0) setTimeout(() => { const el = feed.children[i]; if (el) el.scrollIntoView(); }, 60);
+});
+
+/* ---------------- Aréna ---------------- */
+let duelTopic = "Vegyes", dbRef = null, userRef = null, myId = null, dlRef = null, leagueTimer = null;
+function syncLeague(){
+  if (!dbRef || !myId) return;
+  clearTimeout(leagueTimer);
+  leagueTimer = setTimeout(() => { dbRef.doc("league/" + myId).set({week: S.week.id, pts: S.week.pts, at: Date.now()}).catch(() => {}); }, 1500);
+}
+async function renderLeague(){
+  const box = $("league");
+  const meRow = pts => `<div class="lrow me"><span class="r num">–</span><span class="av">T</span><span class="n">Te</span><span class="p num">${pts} pont</span></div>`;
+  if (!dbRef || !myId) {
+    box.innerHTML = meRow(S.week.pts) + '<p class="small muted" style="margin:8px 14px">A liga a megosztott appban él: aki a linkeden megnyitja az appot, automatikusan bekerül ide, és együtt versenyeztek a heti pontokért.</p>';
+    return;
+  }
+  let rows = [];
+  try {
+    const snap = await dbRef.collection("league").where("week", "==", S.week.id).get();
+    rows = snap.docs.map(d => ({id: d.id, pts: Number((d.data() || {}).pts) || 0}));
+  } catch(e) { rows = []; }
+  const mine = rows.find(r => r.id === myId);
+  if (mine) mine.pts = S.week.pts; else rows.push({id: myId, pts: S.week.pts});
+  rows.sort((a, b) => b.pts - a.pts);
+  let names = {};
+  try { names = await userRef.profiles(rows.map(r => r.id)) || {}; } catch(e) {}
+  box.innerHTML = rows.map((r, i) => {
+    const me = r.id === myId, nm = me ? "Te" : ((names[r.id] && names[r.id].name) || "Játékos");
+    return `${i === 5 && rows.length > 6 ? '<div class="zone">Feljutási zóna</div>' : ""}<div class="lrow ${me ? "me" : ""}"><span class="r num">${i + 1}</span><span class="av">${esc(nm[0])}</span><span class="n">${esc(nm)}</span><span class="p num">${r.pts} pont</span></div>`;
+  }).join("") + (rows.length < 2 ? '<p class="small muted" style="margin:8px 14px">Még egyedül vagy a ligában. Hívj ki valakit egy párbajra: ha elfogadja, ő is bekerül ide.</p>' : "");
+}
+function renderArena(){
+  const m = (new Date().getDay() + 6) % 7, left = 6 - m;
+  $("daysLeft").textContent = left === 0 ? "Ma zárul a hét" : "Még " + left + " nap";
+  $("duelTopics").innerHTML = ["Vegyes", ...TOPICS].map(t => `<button aria-pressed="${t === duelTopic}" data-t="${esc(t)}">${esc(t)}</button>`).join("");
+  renderLeague(); renderChallenges();
+  $("topicBars").innerHTML = TOPICS.map(t => { const s = S.topic[t] || {n:0, c:0}; const pct = s.n ? Math.round(s.c / s.n * 100) : 0;
+    return `<div class="b"><span>${esc(t)}</span><span class="muted num">${s.n ? pct + "% · " + s.c + "/" + s.n : "még nincs válasz"}</span><span class="t"><i style="width:${pct}%"></i></span></div>`; }).join("");
+}
+$("duelTopics").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; duelTopic = b.dataset.t; renderArena(); });
+
+let duel = null;
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function qFromRef(r){
+  const p = POST[r.p]; if (!p) return null; const b = p[r.k]; if (!b) return null;
+  const ord = Array.isArray(r.ord) && r.ord.length === b.o.length ? r.ord : b.o.map((_, i) => i);
+  return {...b, topic:p.topic, title:p.title, o: ord.map(i => b.o[i]), a: ord.indexOf(b.a), ref:{p:r.p, k:r.k, ord}};
+}
+function questionPool(topic){
+  const refs = [];
+  POSTS.forEach(p => { if (S.seen[p.id] && (topic === "Vegyes" || p.topic === topic)) { refs.push({p:p.id, k:"poll"}); refs.push({p:p.id, k:"check"}); } });
+  return shuffle(refs).slice(0, 5).map(r => qFromRef({...r, ord: shuffle(POST[r.p][r.k].o.map((_, i) => i))}));
+}
+function tooFew(){
+  $("duelPlay").innerHTML = `<div class="stack" style="margin:auto 0;text-align:center;align-items:center"><span class="eyebrow">Párbaj</span><h2 style="font-size:26px">Ehhez még kevés videót láttál</h2><p class="muted" style="margin:0;max-width:32ch">A párbaj és a kihívás csak olyasmiből kérdez, amit már láttál. Nézz meg ${duelTopic === "Vegyes" ? "még pár videót" : "pár videót ebből a témából"} a feedben, és gyere vissza.</p><div style="display:flex;gap:8px"><button class="btn primary" id="toFeed">Irány a feed</button><button class="btn" id="back">Vissza</button></div></div>`;
+  $("toFeed").onclick = () => { $("duelPlay").hidden = true; if (duelTopic !== "Vegyes") { filter = duelTopic; topBar(); buildFeed(); } location.hash = "feed"; };
+  $("back").onclick = () => { $("duelPlay").hidden = true; };
+}
+function startDuel(mode, qs, opp){
+  $("duelPlay").hidden = false;
+  if (!qs || qs.length < 3) return tooFew();
+  duel = {mode, qs, opp: opp || null, i:0, me:0, bot:0, timer:null}; duelQ();
+}
+$("startDuel").onclick = () => startDuel("bot", questionPool(duelTopic));
+$("friendDuel").onclick = () => {
+  if (!dbRef || !myId) { const n = $("friendNote"); n.hidden = false; n.textContent = "A kihíváshoz a megosztott linken kell megnyitni az appot. Ebben a nézetben csak a gyakorló párbaj működik."; return; }
+  startDuel("make", questionPool(duelTopic));
+};
+function duelQ(){
+  const d = duel, box = $("duelPlay");
+  if (d.i >= d.qs.length) return duelEnd();
+  const q = d.qs[d.i], LIMIT = 12;
+  d.answered = false; d.botDone = d.mode !== "bot";
+  const label = d.mode === "bot" ? "Gyakorló párbaj" : d.mode === "make" ? "Kihívás készítése" : "Kihívás";
+  const right = d.mode === "bot" ? `<div><div class="sc num" id="sBot">${d.bot}</div><div class="small">Gépi ellenfél</div></div>`
+    : d.mode === "play" ? `<div><div class="sc num">${d.opp.score}</div><div class="small">${esc(d.opp.name)} eredménye</div></div>`
+    : `<div><div class="sc num muted">?</div><div class="small">A haverod</div></div>`;
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">${label} · ${d.i + 1}/${d.qs.length}</span><button class="btn" id="duelQuit" style="min-height:38px">Kilépés</button></div>
+    <div class="vs"><div class="me"><div class="sc num" id="sMe">${d.me}</div><div class="small">Te</div></div><div class="muted" style="font-weight:700">VS</div>${right}</div>
+    <div class="tlabel"><span>Hátralévő idő</span><span id="tSec" class="num">${LIMIT} mp</span></div>
+    <div class="timer"><i id="tBar"></i></div>
+    <span class="small muted">${esc(q.topic)} · ${esc(q.title)}</span>
+    <h2 style="font-size:24px">${esc(q.q)}</h2>
+    <div class="stack" style="gap:10px" id="dOpts">${q.o.map((o, i) => `<button class="dopt" data-i="${i}">${esc(o)}</button>`).join("")}</div>
+    <p class="small muted" id="botMsg" style="margin:0">${d.mode === "bot" ? "Az ellenfél gondolkodik…" : d.mode === "make" ? "A haverod pontosan ezeket a kérdéseket kapja." : ""}</p>
+    <div id="dWhy" hidden></div>`;
+  $("duelQuit").onclick = () => { clearInterval(d.timer); duel = null; $("duelPlay").hidden = true; };
+  const t0 = performance.now(), botAt = 2 + Math.random() * 6, botOk = Math.random() < 0.65;
+  d.timer = setInterval(() => {
+    const el = (performance.now() - t0) / 1000;
+    const bar = $("tBar"); if (bar) bar.style.width = Math.max(0, 100 - el / LIMIT * 100) + "%";
+    const ts = $("tSec"); if (ts) ts.textContent = Math.max(0, Math.ceil(LIMIT - el)) + " mp";
+    if (!d.botDone && el >= botAt) { d.botDone = true; if (botOk) d.bot++; $("sBot").textContent = d.bot; $("botMsg").textContent = "Az ellenfél válaszolt."; }
+    if (el >= LIMIT && !d.answered) finishQ(-1);
+  }, 100);
+  $("dOpts").onclick = e => { const b = e.target.closest(".dopt"); if (b && !d.answered) finishQ(Number(b.dataset.i)); };
+  function finishQ(i){
+    d.answered = true; clearInterval(d.timer);
+    if (!d.botDone) { d.botDone = true; if (botOk) d.bot++; $("sBot").textContent = d.bot; }
+    const ok = i === q.a; if (ok) d.me++; $("sMe").textContent = d.me;
+    $("dOpts").querySelectorAll(".dopt").forEach((x, j) => { x.disabled = true; if (j === q.a) x.classList.add("right"); else if (j === i) x.classList.add("wrong"); });
+    $("botMsg").textContent = i === -1 ? "Lejárt az idő." : ok ? "Helyes!" : "Nem ez volt.";
+    const w = $("dWhy"); w.hidden = false;
+    w.innerHTML = `<div class="why-box">${esc(q.why || "")}</div><button class="btn primary" id="dNext" style="width:100%;margin-top:10px">${d.i + 1 < d.qs.length ? "Következő kérdés" : "Eredmény"}</button>`;
+    $("dNext").onclick = () => { if (duel === d) { d.i++; duelQ(); } };
+    $("dNext").focus();
+  }
+}
+const CODE_CH = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const newCode = () => Array.from({length:5}, () => CODE_CH[Math.floor(Math.random() * CODE_CH.length)]).join("");
+const shareText = (code, me, n) => window.HOGYANKELL_URL
+  ? `Kihívlak a Hogyankellben! ${me}/${n} pontot értem el, verj meg: ${APP_URL}?kod=${code}`
+  : `Kihívlak a Hogyankellben! ${me}/${n} pontot értem el, verj meg. Nyisd meg: ${APP_URL} → Aréna → írd be a kódot: ${code}`;
+async function createChallenge(qs, score){
+  if (!dbRef || !myId) return null;
+  for (let k = 0; k < 4; k++) {
+    const code = newCode(), ref = dbRef.doc("challenges/" + code);
+    try {
+      const snap = await ref.get(); if (snap.exists) continue;
+      await ref.set({by: myId, refs: JSON.stringify(qs.map(q => q.ref)), score, n: qs.length, topic: duelTopic, at: Date.now()});
+      return code;
+    } catch(e) { return null; }
+  }
+  return null;
+}
+function duelEnd(){
+  const d = duel, n = d.qs.length;
+  const box = $("duelPlay");
+  const cardBtn = dlRef ? '<button class="btn" id="cardBtn">Eredménykártya</button>' : "";
+  if (d.mode === "make") {
+    box.innerHTML = `<div class="stack" style="margin:auto 0;text-align:center;align-items:center"><span class="eyebrow">Kihívás kész</span><h2 style="font-size:30px">${d.me}/${n} pont</h2><p class="muted" style="margin:0">A kihívás mentése…</p></div>`;
+    markActive(); save(true);
+    createChallenge(d.qs, d.me).then(code => showChallenge(code, d.me, n));
+    return;
+  }
+  let pts, title, vsHTML;
+  if (d.mode === "play") {
+    const win = d.me > d.opp.score, draw = d.me === d.opp.score;
+    pts = win ? 20 : draw ? 5 : 0;
+    title = win ? `Megverted ${esc(d.opp.name)}!` : draw ? "Döntetlen" : `Most ${esc(d.opp.name)} nyert`;
+    vsHTML = `<div class="vs" style="width:100%"><div class="me"><div class="sc num">${d.me}</div><div class="small">Te</div></div><div class="muted" style="font-weight:700">VS</div><div><div class="sc num">${d.opp.score}</div><div class="small">${esc(d.opp.name)}</div></div></div>`;
+    if (dbRef && myId) dbRef.doc("challenges/" + d.opp.code).update({["r_" + myId]: {s: d.me, at: Date.now()}}).catch(() => {});
+  } else {
+    const win = d.me > d.bot, draw = d.me === d.bot;
+    pts = win ? 20 : draw ? 5 : 0;
+    title = win ? "Nyertél!" : draw ? "Döntetlen" : "Most az ellenfél nyert";
+    vsHTML = `<div class="vs" style="width:100%"><div class="me"><div class="sc num">${d.me}</div><div class="small">Te</div></div><div class="muted" style="font-weight:700">VS</div><div><div class="sc num">${d.bot}</div><div class="small">Gépi ellenfél</div></div></div>`;
+  }
+  const canChallenge = d.mode === "bot" && dbRef && myId;
+  box.innerHTML = `
+    <div class="stack" style="margin:auto 0;text-align:center;align-items:center">
+      <span class="eyebrow">${d.mode === "play" ? "Kihívás vége" : "Párbaj vége"}</span>
+      <h2 style="font-size:32px">${title}</h2>
+      ${vsHTML}
+      <p class="muted" style="margin:0">${pts ? "+" + pts + " pont a heti ligádba." : "Pont most nem jár, de a kérdések visszajönnek a feedben."}</p>
+      ${canChallenge ? '<button class="btn primary" id="reChallenge" style="width:100%">Ezekkel a kérdésekkel kihívok valakit</button>' : ""}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">${d.mode === "bot" ? '<button class="btn primary" id="again">Új párbaj</button>' : ""}${cardBtn}<button class="btn" id="back">Vissza</button></div>
+    </div>`;
+  if (pts) addPoints(pts); else { markActive(); save(true); }
+  if ($("again")) $("again").onclick = () => $("startDuel").click();
+  if ($("reChallenge")) $("reChallenge").onclick = () => { box.innerHTML = '<p class="muted" style="margin:auto">A kihívás mentése…</p>'; createChallenge(d.qs, d.me).then(code => showChallenge(code, d.me, n)); };
+  if ($("cardBtn")) $("cardBtn").onclick = () => saveCard({me: d.me, n, topic: d.qs.length ? (duelTopic) : "", opp: d.mode === "play" ? {name: d.opp.name, s: d.opp.score} : d.mode === "bot" ? {name: "Gépi ellenfél", s: d.bot} : null});
+  $("back").onclick = () => { duel = null; box.hidden = true; renderArena(); };
+}
+function showChallenge(code, me, n){
+  const box = $("duelPlay");
+  if (!code) {
+    box.innerHTML = `<div class="stack" style="margin:auto 0;text-align:center;align-items:center"><h2 style="font-size:24px">A kihívást most nem sikerült elmenteni</h2><p class="muted" style="margin:0">Próbáld újra kicsit később.</p><button class="btn" id="back">Vissza</button></div>`;
+    $("back").onclick = () => { duel = null; box.hidden = true; renderArena(); };
+    return;
+  }
+  const txt = shareText(code, me, n);
+  box.innerHTML = `
+    <div class="stack" style="margin:auto 0;text-align:center;align-items:center">
+      <span class="eyebrow">Kihívás kész · ${me}/${n} pont</span>
+      <h2 style="font-size:26px">Küldd el a haverodnak</h2>
+      <div class="code num" aria-label="Kihívás kódja">${code}</div>
+      <p class="muted small" style="margin:0;max-width:34ch">Ugyanezt az ${n} kérdést kapja. Ha megnyitja az appot, az Arénában beírja a kódot, és máris bekerül a heti ligádba.</p>
+      <textarea class="sharetxt" id="shareTxt" readonly aria-label="Elküldhető szöveg">${esc(txt)}</textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn primary" id="copyCh">Szöveg másolása</button>${dlRef ? '<button class="btn" id="cardBtn">Eredménykártya</button>' : ""}<button class="btn" id="back">Kész</button></div>
+    </div>`;
+  $("copyCh").onclick = () => { const ta = $("shareTxt"); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch(e){} if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast("Kimásolva"), () => toast(ok ? "Kimásolva" : "Jelöld ki és másold ki kézzel")); else toast(ok ? "Kimásolva" : "Jelöld ki és másold ki kézzel"); };
+  if ($("cardBtn")) $("cardBtn").onclick = () => saveCard({me, n, topic: duelTopic, code});
+  $("back").onclick = () => { duel = null; box.hidden = true; renderArena(); };
+}
+$("joinForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const code = $("joinCode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const note = $("friendNote"); note.hidden = false;
+  if (code.length !== 5) { note.textContent = "A kód 5 karakterből áll."; return; }
+  if (!dbRef || !myId) { note.textContent = "A kihívást a megosztott linken megnyitva tudod elfogadni."; return; }
+  note.textContent = "Kihívás betöltése…";
+  let data = null;
+  try { const snap = await dbRef.doc("challenges/" + code).get(); data = snap.exists ? snap.data() : null; } catch(err) {}
+  if (!data) { note.textContent = "Nincs ilyen kódú kihívás. Nézd meg, jól írtad-e be."; return; }
+  if (data.by === myId) { note.textContent = "Ez a saját kihívásod. Küldd el valakinek!"; return; }
+  if (data["r_" + myId]) { note.textContent = `Ezt már lejátszottad: ${data["r_" + myId].s}/${data.n || 5} pont.`; return; }
+  let refs = []; try { refs = JSON.parse(data.refs || "[]"); } catch(err) {}
+  const qs = refs.map(qFromRef).filter(Boolean);
+  let name = "A haverod"; try { const ps = await userRef.profiles([data.by]); name = (ps && ps[data.by] && ps[data.by].name) || name; } catch(err) {}
+  note.hidden = true; $("joinCode").value = "";
+  startDuel("play", qs, {code, score: Number(data.score) || 0, name});
+});
+async function renderChallenges(){
+  const box = $("chBox");
+  if (!dbRef || !myId) { box.hidden = true; return; }
+  let list = [];
+  try { const snap = await dbRef.collection("challenges").where("by", "==", myId).get(); list = snap.docs.map(d => ({code: d.id, ...(d.data() || {})})); } catch(e) {}
+  if (!list.length) { box.hidden = true; return; }
+  list.sort((a, b) => (b.at || 0) - (a.at || 0)); list = list.slice(0, 6);
+  const ids = [...new Set(list.flatMap(c => Object.keys(c).filter(k => k.startsWith("r_")).map(k => k.slice(2))))];
+  let names = {}; try { if (ids.length) names = await userRef.profiles(ids) || {}; } catch(e) {}
+  box.hidden = false;
+  $("chList").innerHTML = list.map(c => {
+    const rs = Object.keys(c).filter(k => k.startsWith("r_")).map(k => { const id = k.slice(2), r = c[k] || {}; const nm = (names[id] && names[id].name) || "Játékos"; const sym = r.s > c.score ? "nyert" : r.s === c.score ? "döntetlen" : "kikapott"; return `${esc(nm)}: ${r.s} (${sym})`; });
+    return `<div class="chrow"><span><b>${esc(c.code)}</b><br><span class="small muted">Te: ${c.score}/${c.n || 5} · ${esc(c.topic || "Vegyes")}</span></span><span class="small" style="text-align:right">${rs.length ? rs.join("<br>") : '<span class="muted">Még senki nem játszotta</span>'}</span></div>`;
+  }).join("");
+}
+async function saveCard(o){
+  if (!dlRef) return;
+  const c = document.createElement("canvas"); c.width = 1080; c.height = 1920; const g = c.getContext("2d");
+  try { await document.fonts.load('700 100px "Familjen Grotesk"'); await document.fonts.load('600 40px "Figtree"'); } catch(e) {}
+  const F = (w, px, fam) => `${w} ${px}px ${fam === "b" ? '"Figtree"' : '"Familjen Grotesk"'}, system-ui, sans-serif`;
+  g.fillStyle = "#0E1116"; g.fillRect(0, 0, 1080, 1920);
+  const grd = g.createRadialGradient(540, 700, 50, 540, 700, 900); grd.addColorStop(0, "#1F2833"); grd.addColorStop(1, "rgba(14,17,22,0)"); g.fillStyle = grd; g.fillRect(0, 0, 1080, 1920);
+  g.textAlign = "center"; g.textBaseline = "alphabetic";
+  g.fillStyle = "#F2C230"; g.font = F(700, 54); g.fillText("HOGYANKELL", 540, 230);
+  g.fillStyle = "#A3ADBB"; g.font = F(600, 40, "b"); g.fillText(o.code ? "Kihívás" : "Párbaj", 540, 300);
+  g.fillStyle = "#F2C230"; g.beginPath(); if (g.roundRect) g.roundRect(90, 380, 900, 880, 60); else g.rect(90, 380, 900, 880); g.fill();
+  g.fillStyle = "#14120A"; g.font = F(700, 56); g.fillText(o.topic && o.topic !== "Vegyes" ? o.topic : "Vegyes témák", 540, 500);
+  g.font = F(700, 330); g.fillText(`${o.me}/${o.n}`, 540, 860);
+  g.font = F(600, 50, "b"); g.fillText("helyes válasz", 540, 950);
+  if (o.opp) { g.font = F(700, 52); g.fillText(`${o.opp.name}: ${o.opp.s}/${o.n}`, 540, 1110); g.font = F(600, 44, "b"); g.fillText(o.me > o.opp.s ? "Nyertem!" : o.me === o.opp.s ? "Döntetlen" : "Visszavágó kell", 540, 1180); }
+  else { g.font = F(600, 46, "b"); g.fillText("Ennyit tudok. És te?", 540, 1140); }
+  g.fillStyle = "#F5F3EE"; g.font = F(700, 96); g.fillText("Verj meg!", 540, 1450);
+  if (o.code) { g.fillStyle = "#A3ADBB"; g.font = F(600, 44, "b"); g.fillText("Kihívás kódja", 540, 1550); g.fillStyle = "#F2C230"; g.font = F(700, 120); g.fillText(o.code.split("").join(" "), 540, 1690); }
+  else { g.fillStyle = "#A3ADBB"; g.font = F(600, 44, "b"); g.fillText("Gyakorlati tudás, rövid videókban", 540, 1560); }
+  const blob = await new Promise(r => c.toBlob(r, "image/png"));
+  try { await dlRef.save({filename: "hogyankell-eredmeny.png", data: blob}); toast("Eredménykártya mentve"); }
+  catch(e) { if (!e || e.code !== "declined") toast("A mentés most nem sikerült"); }
+}
+
+/* ---------------- Profil ---------------- */
+function renderProfile(){
+  $("kWeek").textContent = S.week.pts; $("kTotal").textContent = S.total; $("kStreak").textContent = streak();
+  $("kAcc").textContent = S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "–";
+  $("kAns").textContent = S.answered; $("kWatch").textContent = Math.floor(S.watchSec / 60) + " perc";
+  renderHabits(); renderReminder(); renderProfChips();
+  $("resetBox").innerHTML = '<button class="linkbtn" id="resetBtn">Haladás törlése</button>';
+  $("resetBtn").onclick = () => {
+    $("resetBox").innerHTML = '<span class="small">Biztosan törlöd az összes pontot és haladást?</span><button class="btn primary" id="resetYes">Igen, törlöm</button><button class="btn" id="resetNo">Mégse</button>';
+    $("resetNo").onclick = renderProfile;
+    $("resetYes").onclick = () => { S = fresh(); save(true); updateHeader(); buildFeed(); renderProfile(); toast("Haladás törölve"); };
+  };
+}
+
+/* érdeklődési témák */
+function interestChips(sel){
+  return [...TOPICS, ...SOON_TOPICS].map(t => `<button type="button" aria-pressed="${sel.has(t)}" data-t="${esc(t)}">${I[TOPIC_ICON[t]] || ""}<span>${esc(t)}</span>${SOON_TOPICS.includes(t) ? '<span class="soon2">hamarosan</span>' : ""}</button>`).join("");
+}
+function showOnb(){
+  const o = $("onb"), sel = new Set(S.interests || []);
+  const draw = () => {
+    o.innerHTML = `<span class="eyebrow">Üdv a Hogyankellben</span>
+      <h1 style="font-size:32px">Mi érdekel?</h1>
+      <p class="muted" style="margin:0">Válassz pár témát, ezekkel kezdjük a feedet. Később a Profilban bármikor átállíthatod.</p>
+      <div class="ichips" id="onbChips">${interestChips(sel)}</div>
+      <p class="small muted" style="margin:0">A „hamarosan” témákhoz még készülnek a videók. Ha bejelölöd, abból látjuk, mire van a legnagyobb igény.</p>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+        <button class="btn primary" id="onbGo" ${sel.size ? "" : "disabled"}>${sel.size ? "Mehet" : "Válassz legalább egy témát"}</button>
+        <button class="linkbtn" id="onbAll" style="align-self:center">Mindegy, mutass mindent</button>
+      </div>`;
+    $("onbChips").onclick = e => { const b = e.target.closest("[data-t]"); if (!b) return; const t = b.dataset.t; if (sel.has(t)) sel.delete(t); else sel.add(t); draw(); const nb = o.querySelector(`[data-t="${CSS.escape(t)}"]`); if (nb) nb.focus(); };
+    $("onbGo").onclick = () => finish([...sel]);
+    $("onbAll").onclick = () => finish([]);
+  };
+  const finish = list => { S.interests = list; save(true); o.hidden = true; buildFeed(); route(); };
+  stopAll(); draw(); o.hidden = false;
+}
+function renderProfChips(){
+  const sel = new Set(S.interests || []);
+  $("profChips").innerHTML = interestChips(sel);
+}
+$("profChips").addEventListener("click", e => {
+  const b = e.target.closest("[data-t]"); if (!b) return;
+  const t = b.dataset.t, sel = new Set(S.interests || []);
+  if (sel.has(t)) sel.delete(t); else sel.add(t);
+  S.interests = [...sel]; save(true); renderProfChips(); buildFeed();
+  const nb = $("profChips").querySelector(`[data-t="${CSS.escape(t)}"]`); if (nb) nb.focus();
+});
+
+/* Próbáld ki ma lista + napi emlékeztető */
+function renderHabits(){
+  const box = $("habitList"), act = activeHabits(), t = today();
+  const old = Object.values(S.habits || {}).filter(h => h.st !== "active").sort((a, b) => (b.created || 0) - (a.created || 0)).slice(0, 5);
+  if (!act.length && !old.length) { box.innerHTML = '<p class="small muted" style="margin:0">Még nincs szokásod. A videók alatt a „Szokás lesz belőle” gombbal vállalhatsz egyet: te döntöd el, mit, mikor és meddig. Egyszerre legfeljebb három futhat.</p>'; return; }
+  box.innerHTML = act.map(h => {
+    const started = t >= h.start, inRange = started && t <= hEnd(h), canLog = inRange && !h.log[t];
+    const meta = !started ? `Indul: holnap ${h.time}-kor` : h.days === 1 ? `Egyszeri · ${h.time}` : t > hEnd(h) ? `Lejárt · ${hOk(h)}/${h.days} nap sikerült` : `${hDayNo(h)}. nap a ${h.days}-ből · ${hStreak(h)} napos sorozat · ${h.time}`;
+    const logPart = canLog ? `<button class="btn good sm" data-hr="ok">${h.days === 1 ? "Megcsináltam" : "Ma megvolt"}</button><button class="btn sm" data-hr="skip">${h.days === 1 ? "Elengedem" : "Ma kihagyom"}</button>` : inRange && h.log[t] ? '<span class="small" style="color:var(--good)">Mára beírva</span>' : "";
+    return `<div class="hrow" data-h="${h.id}"><b>${esc(h.text)}</b><span class="small muted">${meta}</span>${h.days > 1 ? dotsHTML(h) : ""}<div class="acts2">${logPart}<button class="linkbtn" data-hr="edit">Átírom</button><button class="linkbtn" data-hr="stop">Leállítom</button></div></div>`;
+  }).join("") + (old.length ? `<div class="eyebrow" style="margin-top:4px">Korábbiak</div>` + old.map(h => `<div class="small muted">${esc(h.text)} · ${h.days === 1 ? (h.log && Object.values(h.log)[0] === "ok" ? "megcsinálva" : "elengedve") : hOk(h) + "/" + h.days + " nap"}</div>`).join("") : "");
+}
+$("habitList").addEventListener("click", e => {
+  const b = e.target.closest("[data-hr]"); if (!b) return;
+  const row = b.closest("[data-h]"), h = row && S.habits[row.dataset.h]; if (!h) return;
+  const r = b.dataset.hr;
+  if (r === "ok" || r === "skip") { logHabit(h, r); toast(r === "ok" ? "Szép! +5 pont" : "Rendben. +5 pont a beszámolóért"); renderHabits(); }
+  else if (r === "edit") openHabitSheet(POST[h.pid] || POSTS[0], h);
+  else if (r === "stop") {
+    if (!b.dataset.c) { b.dataset.c = "1"; b.textContent = "Biztosan leállítod?"; return; }
+    h.st = "done"; save(true); syncPush(); renderHabits(); toast("Leállítva");
+  }
+});
+function reminderQuestion(){
+  const due = Object.keys(S.sched).filter(id => POST[id]).sort((a, b) => (S.sched[a].at || 0) - (S.sched[b].at || 0));
+  const p = POST[due[0]] || POSTS[0];
+  return (due.length ? p.check.q : p.poll.q);
+}
+function remURL(){
+  return calURL("Hogyankell: 1 kérdés vár rád", "Egy kérdés, ami vár rád: " + reminderQuestion() + "\n\nA választ és a mai ismétlést itt találod: " + APP_URL, S.remind || "19:00", null, 0);
+}
+let pushRef = null;
+function pushPayload(){
+  let tz = "Europe/Budapest"; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch(err) {}
+  return {tz, daily: S.remindOn ? (S.remind || "19:00") : null, dailyQ: reminderQuestion(), habits: activeHabits().map(h => ({id: h.id, text: h.text, time: h.time, start: h.start, end: hEnd(h), logged: h.log[today()] ? today() : null}))};
+}
+function syncPush(){ if (pushRef) { try { Promise.resolve(pushRef.sync(pushPayload())).catch(() => {}); } catch(err) {} } }
+async function enablePush(){
+  if (!pushRef) return false;
+  try { const r = await pushRef.enable(); const ok = r === true || !!(r && r.ok); if (ok) syncPush(); else if (r && r.msg) toast(r.msg); return ok; } catch(err) { return false; }
+}
+function renderReminder(){
+  $("remTime").value = S.remind || "19:00";
+  const btn = $("remBtn");
+  if (pushRef) {
+    $("remNote").textContent = "Naponta egy értesítés egy kérdéssel, ami visszahoz az appba. A szokásaidra is ugyanígy emlékeztetünk.";
+    btn.removeAttribute("href"); btn.removeAttribute("target");
+    btn.textContent = S.remindOn ? "Értesítés kikapcsolása" : "Értesítés bekapcsolása";
+    btn.classList.toggle("primary", !S.remindOn);
+  } else btn.href = remURL();
+}
+$("remTime").addEventListener("change", () => { S.remind = $("remTime").value || "19:00"; save(); if (pushRef) syncPush(); else $("remBtn").href = remURL(); });
+$("remBtn").addEventListener("click", async e => {
+  if (!pushRef) { $("remBtn").href = remURL(); toast("A naptárban mentsd el az eseményt"); return; }
+  e.preventDefault();
+  if (S.remindOn) { S.remindOn = false; save(true); syncPush(); renderReminder(); toast("Napi értesítés kikapcsolva"); return; }
+  const ok = await enablePush();
+  if (ok) { S.remindOn = true; save(true); syncPush(); renderReminder(); toast("Napi értesítés bekapcsolva"); }
+
+});
+
+/* ---------------- útvonal ---------------- */
+const VIEWS = ["feed", "felfedezes", "arena", "profil"];
+function route(){
+  let v = (location.hash || "#feed").slice(1); if (!VIEWS.includes(v)) v = "feed";
+  VIEWS.forEach(x => $("v-" + x).hidden = x !== v);
+  document.querySelectorAll(".nav a").forEach(a => { if (a.dataset.v === v) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  closeSheet();
+  if (v === "feed" && $("onb").hidden) { if (active) { const a = active; active = null; activate(a); } }
+  else stopAll();
+  if (v === "felfedezes") renderExplore();
+  if (v === "arena") renderArena();
+  if (v === "profil") renderProfile();
+}
+window.addEventListener("hashchange", route);
+
+/* ---------------- indulás ---------------- */
+async function boot(){
+  const local = lsGet(); if (local) S = normalize(local);
+  updateHeader(); buildFeed(); route();
+  if (S.interests === null) showOnb();
+  let db = null, user = null;
+  try { [db, user, dlRef, pushRef] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("downloads"), claude.use("push")]); } catch(e){}
+  if (pushRef && !$("v-profil").hidden) renderReminder();
+  if (!db || !user) return;
+  try {
+    const id = await user.id(); if (!id) return;
+    dbRef = db; userRef = user; myId = id;
+    docRef = db.doc("data/users/" + id + "/hogyankell");
+    const snap = await docRef.get();
+    if (snap.exists) {
+      const d = snap.data();
+      if (d && d.s && (!local || (d.at || 0) > (local.at || 0))) { S = normalize(JSON.parse(d.s)); lsSet(); updateHeader(); if (S.interests !== null && !$("onb").hidden) { $("onb").hidden = true; buildFeed(); route(); } else if (feed.scrollTop < 10) { buildFeed(); route(); } }
+    } else save(true);
+    setSync("Mentve a fiókodba"); syncLeague();
+    try { const kod = new URLSearchParams(location.search).get("kod"); if (kod && /^[A-Za-z0-9]{5}$/.test(kod)) { $("joinCode").value = kod.toUpperCase(); history.replaceState(null, "", location.pathname + "#arena"); route(); const n = $("friendNote"); n.hidden = false; n.textContent = "Kihívást kaptál! Nyomd meg az „Elfogadom” gombot."; } } catch(err) {}
+    if (!$("v-arena").hidden) { renderLeague(); renderChallenges(); }
+  } catch(e){ setSync("Mentés ebben a böngészőben"); }
+}
+boot();
+})();
+</script>
