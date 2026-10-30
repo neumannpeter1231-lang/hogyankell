@@ -7,10 +7,12 @@ import { createClient } from "npm:@supabase/supabase-js@2.117.3";
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SERVICE_KEY") ?? "";
 const supa = createClient(Deno.env.get("SUPABASE_URL") ?? "", SERVICE_KEY, { auth: { persistSession: false } });
 
+// A titkokat levágjuk (szóköz, sortörés), mert bemásoláskor könnyen a végükre kerül egy.
+const env = (n: string) => (Deno.env.get(n) ?? "").trim();
 webpush.setVapidDetails(
-  Deno.env.get("VAPID_SUBJECT") ?? "mailto:hogyankell@example.com",
-  Deno.env.get("VAPID_PUBLIC_KEY") ?? "",
-  Deno.env.get("VAPID_PRIVATE_KEY") ?? "",
+  env("VAPID_SUBJECT") || "mailto:hogyankell@example.com",
+  env("VAPID_PUBLIC_KEY"),
+  env("VAPID_PRIVATE_KEY"),
 );
 
 // Ha az időzítő egy ideig nem futott, ennyi percen belül még kiküldjük, utána már nem (ne éjjel jöjjön).
@@ -56,7 +58,7 @@ export function messagesFor(cfg: Cfg, sentIn: Record<string, string>, now: { dat
 }
 
 Deno.serve(async (req) => {
-  if (req.headers.get("x-cron-secret") !== Deno.env.get("CRON_SECRET")) {
+  if ((req.headers.get("x-cron-secret") ?? "").trim() !== env("CRON_SECRET")) {
     return new Response("forbidden", { status: 403 });
   }
   const { data: rows, error } = await supa.from("reminders").select("user_id, tz, cfg, sent");
