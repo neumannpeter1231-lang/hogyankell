@@ -134,7 +134,13 @@ Style: Cap,{FONT},62,&H00FFFFFF,&H00FFFFFF,&H00000000,&H64000000,0,0,0,0,100,100
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
     lines = []
+    fx = r"{\fscx86\fscy86\t(0,90,\fscx100\fscy100)}"
     for s in sents:
+        if s.get("caps"):
+            for (a, b, p) in s["caps"]:
+                txt = re.sub(r"[.,;:]+$", "", p).replace("{", "(").replace("}", ")")
+                lines.append(f"Dialogue: 0,{ts(a)},{ts(b)},Cap,,0,0,0,,{fx}{txt}")
+            continue
         parts = chunks(s["text"])
         ws = [weight(p) for p in parts]
         t = s["start"]
@@ -147,6 +153,29 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             lines.append(f"Dialogue: 0,{ts(t)},{ts(t + d)},Cap,,0,0,0,,{fx}{txt}")
             t += d
     open(path, "w", encoding="utf-8").write(head + "\n".join(lines) + "\n")
+
+
+def aligned_plan(align, total):
+    """Pontos időzítés az ElevenLabs betűszintű időbélyegeiből (align.json)."""
+    a = align["alignment"]
+    st, en = a["character_start_times_seconds"], a["character_end_times_seconds"]
+    text = align["text"]
+    sents = []
+    for i, sc in enumerate(align["scenes"]):
+        seg = text[sc["start"]:sc["end"]]
+        caps, pos = [], sc["start"]
+        for p in chunks(seg):
+            k = text.index(p, pos)
+            caps.append([st[k], en[k + len(p) - 1], p])
+            pos = k + len(p)
+        # a feliratblokk a következő blokk kezdetéig maradjon kint (ne villogjon)
+        for j in range(len(caps) - 1):
+            caps[j][1] = max(caps[j][1], caps[j + 1][0])
+        sents.append({"scene": i, "text": seg, "start": st[sc["start"]], "end": caps[-1][1], "caps": caps})
+    for j in range(len(sents) - 1):
+        sents[j]["caps"][-1][1] = min(sents[j + 1]["start"], sents[j]["caps"][-1][1] + 0.6)
+    sents[-1]["caps"][-1][1] = min(total, sents[-1]["caps"][-1][1] + 0.8)
+    return sents
 
 
 def scene_clip(img, dur, idx, out):
@@ -171,8 +200,12 @@ def main():
     audio, out = P(spec["audio"]), P(spec["out"])
     scenes = spec["scenes"]
     total = duration(audio)
-    sil = silences(audio)
-    sents = plan(scenes, total, sil)
+    if spec.get("align"):
+        sil = []
+        sents = aligned_plan(json.load(open(P(spec["align"]), encoding="utf-8")), total)
+    else:
+        sil = silences(audio)
+        sents = plan(scenes, total, sil)
 
     # jelenetek időtartama: első mondatuk kezdetétől a következő jelenet első mondatáig
     starts = []
