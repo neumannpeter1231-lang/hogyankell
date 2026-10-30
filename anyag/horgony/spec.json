@@ -1,0 +1,54 @@
+{
+ "audio": "hang.mp3",
+ "out": "../../media/horgony.mp4",
+ "scenes": [
+  {
+   "img": "01.png",
+   "text": "Tapasztalt ingatlanügynököket kértek meg, hogy becsüljenek fel egy házat."
+  },
+  {
+   "img": "02.png",
+   "text": "Mindannyian ugyanazt a házat látták. A kutatók csak egyetlen dolgot írtak át: a tájékoztatóban szereplő kínálati árat."
+  },
+  {
+   "img": "04.png",
+   "text": "Akik alacsony árat láttak, átlagosan száztizennégyezer dollárra becsülték a házat."
+  },
+  {
+   "img": "05.png",
+   "text": "Akik magasat, százhuszonnyolcezerre."
+  },
+  {
+   "img": "03.png",
+   "text": "Tizennégyezer dollár különbség, egyetlen szám miatt!"
+  },
+  {
+   "img": "06.png",
+   "text": "És a legtöbbjük esküdözött, hogy az ár semmit nem számított."
+  },
+  {
+   "img": "07.png",
+   "text": "Ez a horgonyhatás."
+  },
+  {
+   "img": "08.png",
+   "text": "Az első szám, amit hallasz, lehorgonyozza a gondolkodásodat, és onnan már csak egy kicsit tudsz elmozdulni."
+  },
+  {
+   "img": "09.png",
+   "text": "Ezért számít alkunál"
+  },
+  {
+   "img": "10.png",
+   "text": "és bértárgyalásnál, hogy ki mondja ki először a számot."
+  },
+  {
+   "img": "11.png",
+   "text": "A tipp: ha valaki horgonyt dob eléd, kérdezd meg magadtól:"
+  },
+  {
+   "img": "12.png",
+   "text": "mennyit érne ez nekem, ha ezt a számot soha nem hallottam volna?"
+  }
+ ]
+}

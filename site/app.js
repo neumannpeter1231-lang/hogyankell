@@ -35,6 +35,7 @@ const TOPIC_ICON = {"Meggyőzés":"chat","Pszichológia":"brain","Biztonság ott
 const SOON_TOPICS = ["Pénzügyek", "Ügyintézés", "Gyerek és család"];
 const APP_URL = window.HOGYANKELL_URL || "https://claude.ai/artifact/4qefATfjxKR3ozy4WgKdpf";
 const HABIT = {
+  m7:{text:"Alku előtt leírom, mennyit ér nekem, mielőtt bármilyen számot hallok.", time:"18:00", days:7},
   p2:{text:"Ha valaki idegesnek tűnik, előbb kérdezek, csak utána ítélek.", time:"19:00", days:7},
   k_arany:{text:"A nap legnehezebb feladatát az aranyórámra teszem.", time:"08:30", days:7},
   m2:{text:"Naponta egyszer sugallat nélkül kérdezek: „Milyen volt?”", time:"19:00", days:7},
@@ -56,6 +57,12 @@ const HABIT = {
 
 /* ---------------- tartalom ---------------- */
 const POSTS = [
+ {id:"m7", topic:"Meggyőzés", type:"video", src:"media/horgony.mp4", poster:"media/horgony.jpg",
+  title:"A horgonyhatás: az első szám nyer", tags:"#alku #bértárgyalás",
+  poll:{q:"Mi változott a kísérletben a két csoport között?", o:["A ház állapota","Csak a kínálati ár a tájékoztatóban","Az ügynökök tapasztalata"], a:1, why:"Ugyanazt a házat látták, csak a kiírt ár volt más."},
+  check:{q:"Mit kérdezz magadtól, ha valaki horgonyt dob eléd?", o:["Mennyivel tudom lejjebb alkudni?","Mennyit érne ez nekem, ha a számot nem hallottam volna?","Mennyit kérnek érte máshol?"], a:1, why:"Így a saját értékítéletedből indulsz, nem a feldobott számból."},
+  deeper:["Northcraft és Neale 1987-es kísérletében ingatlanügynökök ugyanazt a házat becsülték fel; csak a tájékoztatóban szereplő kínálati ár különbözött. Az alacsony árat látók kb. 114 ezer, a magasat látók kb. 129 ezer dollárra becsültek.","A horgonyhatást Tversky és Kahneman írta le 1974-ben: még egy nyilvánvalóan véletlen szám is elhúzza a becsléseket.","Alkuban ezért gyakran előny, ha te mondod ki az első, jól megalapozott számot."],
+  source:{label:"Northcraft & Neale (1987), Organizational Behavior and Human Decision Processes", url:""}},
  {id:"p2", topic:"Pszichológia", type:"video", src:"media/hazugsag.mp4", poster:"media/hazugsag.jpg",
   title:"A hazugságvizsgáló nem a hazugságot méri", tags:"#pszichológia #tévhitek",
   poll:{q:"Mit mér valójában a hazugságvizsgáló?", o:["Hogy igazat mondasz-e","A tested stresszreakcióit","Az agyhullámaidat"], a:1, why:"Légzést, izzadást és pulzust mér, vagyis a feszültséget."},

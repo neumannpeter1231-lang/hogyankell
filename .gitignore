@@ -4,3 +4,5 @@ TITKOS*
 __pycache__/
 .wrangler/
 node_modules/
+anyag/**/*.png
+anyag/**/*.mp3

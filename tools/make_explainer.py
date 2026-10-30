@@ -194,7 +194,7 @@ def main():
         os.makedirs(os.path.dirname(out), exist_ok=True)
         run(["ffmpeg", "-y", "-hide_banner", "-f", "concat", "-safe", "0", "-i", os.path.join(tmp, "list.txt"),
              "-i", audio, "-vf", f"ass={ass}", "-map", "0:v", "-map", "1:a",
-             "-c:v", "libx264", "-preset", "veryfast", "-crf", "27", "-profile:v", "main",
+             "-c:v", "libx264", "-preset", "veryfast", "-crf", "31", "-profile:v", "main",
              "-pix_fmt", "yuv420p", "-movflags", "+faststart",
              "-c:a", "aac", "-b:a", "96k", "-shortest", out])
     poster = os.path.splitext(out)[0] + ".jpg"
