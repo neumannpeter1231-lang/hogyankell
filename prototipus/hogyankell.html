@@ -642,11 +642,35 @@ function nextItem(){
 }
 
 const feed = $("feed");
-let observer = null, active = null, soundOn = false;
+let observer = null, active = null, soundOn = true, soundUnlocked = false;
 /* Egyetlen közös videólejátszó: iPhone-on csak az a lejátszó szólhat hanggal, amelyiket a felhasználó egyszer elindította,
    ezért nem videónként új lejátszót használunk, hanem ugyanezt tesszük át az éppen látható videóra. */
 const player = document.createElement("video");
 player.setAttribute("playsinline", ""); player.playsInline = true; player.loop = true; player.preload = "auto"; player.muted = true;
+/* Hang alapból bekapcsolva. A böngésző az első érintés előtt nem enged hangot, ezért az első érintésnél
+   (bármi: görgetés vége, gomb, koppintás) „feloldjuk” a lejátszót, onnantól minden videó hanggal megy. */
+function unlockSound(){
+  if (soundUnlocked) return;
+  soundUnlocked = true;
+  if (!soundOn) return;
+  player.muted = false;
+  if (activeVideo()) player.play().catch(() => { player.muted = true; soundUnlocked = false; });
+  else { const pr = player.play(); if (pr) pr.then(() => { if (!activeVideo()) player.pause(); }).catch(() => {}); }
+}
+["touchend", "click", "keydown"].forEach(ev => document.addEventListener(ev, unlockSound, {capture: true, passive: true}));
+/* A következő videót előre letöltjük, hogy lapozáskor azonnal induljon. */
+const prefetched = new Set();
+function prefetchNext(fromIdx){
+  for (let i = fromIdx + 1; i < Math.min(items.length, fromIdx + 4); i++) {
+    const it = items[i]; const p = it && it.kind === "post" && POST[it.id];
+    if (p && p.type === "video" && !prefetched.has(p.src)) {
+      prefetched.add(p.src);
+      const l = document.createElement("link"); l.rel = "prefetch"; l.href = p.src; l.as = "video"; document.head.appendChild(l);
+      const im = new Image(); im.src = p.poster;
+      break;
+    }
+  }
+}
 function setSoundButtons(){ feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`); }
 function buildFeed(){
   stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear();
@@ -745,7 +769,7 @@ function onPostClick(e, p, el){
     try { navigator.clipboard.writeText(txt).then(() => toast("Cím vágólapra másolva"), () => toast("A másolás itt nem érhető el")); } catch(err) { toast("A másolás itt nem érhető el"); }
   } else if (a === "deeper") openDeeper(p);
   else if (a === "sound") {
-    soundOn = !soundOn;
+    soundOn = !soundOn; soundUnlocked = true; S.sound = soundOn; save();
     player.muted = !soundOn;
     setSoundButtons();
     if (activeVideo()) player.play().catch(() => {});
@@ -935,6 +959,7 @@ function activate(el){
   if (idx >= items.length - 2) appendItems(3);
   if (!it || it.kind !== "post") return;
   const p = POST[it.id];
+  prefetchNext(idx);
   S.tick++;
   if (!S.seen[p.id]) { S.seen[p.id] = true; S.sched[p.id] = {n:0, due:S.tick + 5, at:null}; }
   S.seenAt[p.id] = Date.now();
@@ -945,8 +970,8 @@ function activate(el){
     if (v.parentNode !== host) host.appendChild(v);
     v.poster = p.poster;
     if (v.dataset.src !== p.src) { v.dataset.src = p.src; v.src = p.src; } else v.currentTime = 0;
-    v.muted = !soundOn;
-    v.play().catch(() => { if (soundOn) { soundOn = false; setSoundButtons(); } v.muted = true; v.play().catch(() => {}); });
+    v.muted = !(soundOn && soundUnlocked);
+    v.play().catch(() => { v.muted = true; soundUnlocked = false; v.play().catch(() => {}); });
     const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
     loop();
   } else {
@@ -1390,6 +1415,7 @@ window.addEventListener("hashchange", route);
 /* ---------------- indulás ---------------- */
 async function boot(){
   const local = lsGet(); if (local) S = normalize(local);
+  if (S.sound === false) soundOn = false;
   updateHeader(); buildFeed(); route();
   if (S.interests === null) showOnb();
   let db = null, user = null;
