@@ -47,6 +47,8 @@ h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balanc
 .tap-sound{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:4;display:flex;align-items:center;gap:8px;background:rgba(7,9,12,.62);color:var(--ink);border-radius:999px;padding:10px 16px;font-weight:700;font-size:15px;pointer-events:none;backdrop-filter:blur(4px)}
 .tap-sound svg{width:22px;height:22px}
 .post-bg video,.post-bg img.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.post-bg video{background:transparent;opacity:0;transition:opacity .12s ease}
+.post-bg video.on{opacity:1}
 .tv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:96px 74px 150px 22px;background:radial-gradient(120% 70% at 50% 32%,#1F2833 0%,var(--bg) 70%)}
 .tv .icon{width:84px;height:84px;color:var(--yel);opacity:.9;margin-bottom:18px;animation:float 5s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(-8px)}}
@@ -645,40 +647,58 @@ function nextItem(){
 
 const feed = $("feed");
 let observer = null, active = null, soundOn = true, soundUnlocked = false;
-/* Egyetlen közös videólejátszó: iPhone-on csak az a lejátszó szólhat hanggal, amelyiket a felhasználó egyszer elindította,
-   ezért nem videónként új lejátszót használunk, hanem ugyanezt tesszük át az éppen látható videóra. */
-const player = document.createElement("video");
-player.setAttribute("playsinline", ""); player.playsInline = true; player.loop = true; player.preload = "auto"; player.muted = true;
-/* Hang alapból bekapcsolva. A böngésző az első érintés előtt nem enged hangot, ezért az első érintésnél
-   (bármi: görgetés vége, gomb, koppintás) „feloldjuk” a lejátszót, onnantól minden videó hanggal megy. */
+/* Két közös videólejátszó váltja egymást: az egyik játssza a látható videót, a másik közben már a következőt tölti,
+   így lapozáskor azonnal indul. iPhone-on csak az a lejátszó szólhat hanggal, amelyet egy érintés „feloldott”,
+   ezért nem videónként újat használunk, hanem ezt a kettőt tesszük át mindig a megfelelő helyre. */
+function mkPlayer(){
+  const v = document.createElement("video");
+  v.setAttribute("playsinline", ""); v.playsInline = true; v.loop = true; v.preload = "auto"; v.muted = true;
+  v.addEventListener("playing", () => v.classList.add("on"));
+  v.addEventListener("loadeddata", () => { if (v.dataset.warm) v.classList.add("on"); });
+  return v;
+}
+const players = [mkPlayer(), mkPlayer()];
+let cur = players[0];
+function loadInto(v, p){
+  if (v.dataset.src === p.src) return;
+  v.classList.remove("on"); v.dataset.src = p.src; v.poster = p.poster; v.src = p.src;
+}
+/* Hang alapból bekapcsolva. A böngésző az első érintés előtt nem enged hangot, ezért az első koppintásnál
+   mindkét lejátszót „feloldjuk”, onnantól minden videó hanggal megy. */
 function unlockSound(){
   if (soundUnlocked) return;
   soundUnlocked = true;
   document.querySelectorAll(".tap-sound").forEach(x => x.remove());
   if (!soundOn) return;
-  player.muted = false;
-  if (activeVideo()) player.play().catch(() => { player.muted = true; soundUnlocked = false; });
-  else { const pr = player.play(); if (pr) pr.then(() => { if (!activeVideo()) player.pause(); }).catch(() => {}); }
+  players.forEach(v => {
+    const isCur = v === cur && activeVideo();
+    v.muted = false;
+    const pr = v.play();
+    if (pr) pr.then(() => { if (!isCur) { v.pause(); v.muted = false; } }).catch(() => { if (isCur) { v.muted = true; soundUnlocked = false; } });
+  });
 }
 ["touchend", "click", "keydown"].forEach(ev => document.addEventListener(ev, unlockSound, {capture: true, passive: true}));
-/* A következő videót előre letöltjük, hogy lapozáskor azonnal induljon. */
-const prefetched = new Set();
+/* A következő videót a szabad lejátszóba töltjük, a következő elem helyére, láthatatlanul. */
 function prefetchNext(fromIdx){
   for (let i = fromIdx + 1; i < Math.min(items.length, fromIdx + 4); i++) {
     const it = items[i]; const p = it && it.kind === "post" && POST[it.id];
-    if (p && p.type === "video" && !prefetched.has(p.src)) {
-      prefetched.add(p.src);
-      const l = document.createElement("link"); l.rel = "prefetch"; l.href = p.src; l.as = "video"; document.head.appendChild(l);
-      const im = new Image(); im.src = p.poster;
-      break;
-    }
+    if (!p || p.type !== "video") continue;
+    const el = feed.children[i]; const host = el && el.querySelector(".post-bg");
+    const spare = players.find(v => v !== cur);
+    if (!host || !spare) return;
+    loadInto(spare, p);
+    if (spare.parentNode !== host) host.appendChild(spare);
+    spare.dataset.warm = "1";
+    spare.muted = true;
+    const pr = spare.play(); if (pr) pr.then(() => { if (spare !== cur) { spare.pause(); spare.currentTime = 0; } }).catch(() => {});
+    return;
   }
 }
 function setSoundButtons(){ feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`); }
 function buildFeed(){
   stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear();
   if (observer) observer.disconnect();
-  observer = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio >= 0.6) activate(e.target); }); }, {root: feed, threshold: [0.6]});
+  observer = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio >= 0.55) activate(e.target); }); }, {root: feed, threshold: [0.55]});
   appendItems(4); feed.scrollTop = 0;
 }
 function appendItems(n){ for (let i = 0; i < n; i++) { const it = nextItem(); items.push(it); const el = renderItem(it, items.length - 1); feed.appendChild(el); observer.observe(el); } }
@@ -773,12 +793,12 @@ function onPostClick(e, p, el){
   } else if (a === "deeper") openDeeper(p);
   else if (a === "sound") {
     soundOn = !soundOn; soundUnlocked = true; S.sound = soundOn; save();
-    player.muted = !soundOn;
+    players.forEach(v => { v.muted = !soundOn || v !== cur; });
     setSoundButtons();
-    if (activeVideo()) player.play().catch(() => {});
+    if (activeVideo()) cur.play().catch(() => {});
   }
 }
-function activeVideo(){ return active && active.contains(player) ? player : null; }
+function activeVideo(){ return active && active.contains(cur) ? cur : null; }
 
 function renderCheck(el, p){
   el.classList.add("check");
@@ -954,7 +974,7 @@ function openHabitSheet(p, h){
 
 /* aktiválás, lejátszás */
 let raf = null, tvState = null;
-function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; player.pause(); }
+function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; players.forEach(v => v.pause()); }
 function activate(el){
   if (active === el || !$("onb").hidden) return;
   stopAll(); active = el;
@@ -962,17 +982,19 @@ function activate(el){
   if (idx >= items.length - 2) appendItems(3);
   if (!it || it.kind !== "post") return;
   const p = POST[it.id];
-  prefetchNext(idx);
+  setTimeout(() => { if (active === el) prefetchNext(idx); }, 0);
   S.tick++;
   if (!S.seen[p.id]) { S.seen[p.id] = true; S.sched[p.id] = {n:0, due:S.tick + 5, at:null}; }
   S.seenAt[p.id] = Date.now();
   S.seenTick[p.id] = S.tick; markActive(); save(); updateHeader();
   const bar = el.querySelector(".progress i");
   if (p.type === "video") {
-    const v = player, host = el.querySelector(".post-bg");
+    const host = el.querySelector(".post-bg");
+    const v = players.find(x => x.dataset.src === p.src && x.parentNode === host) || players.find(x => x.dataset.src === p.src) || players.find(x => x !== cur) || players[0];
+    cur = v; delete v.dataset.warm;
+    players.forEach(x => { if (x !== v) x.muted = true; });
     if (v.parentNode !== host) host.appendChild(v);
-    v.poster = p.poster;
-    if (v.dataset.src !== p.src) { v.dataset.src = p.src; v.src = p.src; } else v.currentTime = 0;
+    if (v.dataset.src !== p.src) loadInto(v, p); else { try { v.currentTime = 0; } catch(e) {} }
     v.muted = !(soundOn && soundUnlocked);
     const hint = () => { if (soundOn && !soundUnlocked && !host.querySelector(".tap-sound")) { const t = document.createElement("div"); t.className = "tap-sound"; t.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(t); } };
     hint();
