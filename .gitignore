@@ -6,3 +6,4 @@ __pycache__/
 node_modules/
 anyag/**/*.png
 anyag/**/*.mp3
+.secrets.env
