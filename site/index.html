@@ -58,7 +58,7 @@ h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balanc
 .filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--yel);color:var(--yel-ink);border:0;border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px}
 
 .post-bg{position:absolute;inset:0}
-.post-bg video{width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.post-bg video,.post-bg img.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}
 .tv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:96px 74px 150px 22px;background:radial-gradient(120% 70% at 50% 32%,#1F2833 0%,var(--bg) 70%)}
 .tv .icon{width:84px;height:84px;color:var(--yel);opacity:.9;margin-bottom:18px;animation:float 5s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(-8px)}}
@@ -402,8 +402,8 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 
 
 <div id="gate" class="gate"><p class="g-muted">Betöltés…</p></div>
-<script src="/config.js?v=202610301012"></script>
+<script src="/config.js?v=202610301014"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
-<script src="/backend.js?v=202610301012"></script>
+<script src="/backend.js?v=202610301014"></script>
 </body>
 </html>

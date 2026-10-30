@@ -281,6 +281,11 @@ function nextItem(){
 
 const feed = $("feed");
 let observer = null, active = null, soundOn = false;
+/* Egyetlen közös videólejátszó: iPhone-on csak az a lejátszó szólhat hanggal, amelyiket a felhasználó egyszer elindította,
+   ezért nem videónként új lejátszót használunk, hanem ugyanezt tesszük át az éppen látható videóra. */
+const player = document.createElement("video");
+player.setAttribute("playsinline", ""); player.playsInline = true; player.loop = true; player.preload = "auto"; player.muted = true;
+function setSoundButtons(){ feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`); }
 function buildFeed(){
   stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear();
   if (observer) observer.disconnect();
@@ -313,7 +318,7 @@ function renderItem(it, idx){
   const voted = S.polls[p.id];
   el.innerHTML = `
     <div class="post-bg">${p.type === "video"
-      ? `<video src="${p.src}" poster="${p.poster}" playsinline muted loop preload="metadata"></video>`
+      ? `<img class="poster" src="${p.poster}" alt="">`
       : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
     <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
     <div class="rail">
@@ -379,12 +384,12 @@ function onPostClick(e, p, el){
   } else if (a === "deeper") openDeeper(p);
   else if (a === "sound") {
     soundOn = !soundOn;
-    feed.querySelectorAll("video").forEach(v => v.muted = !soundOn || v !== activeVideo());
-    feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`);
-    const v = activeVideo(); if (v) { v.muted = !soundOn; v.play().catch(() => {}); }
+    player.muted = !soundOn;
+    setSoundButtons();
+    if (activeVideo()) player.play().catch(() => {});
   }
 }
-function activeVideo(){ return active ? active.querySelector("video") : null; }
+function activeVideo(){ return active && active.contains(player) ? player : null; }
 
 function renderCheck(el, p){
   el.classList.add("check");
@@ -560,7 +565,7 @@ function openHabitSheet(p, h){
 
 /* aktiválás, lejátszás */
 let raf = null, tvState = null;
-function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; feed.querySelectorAll("video").forEach(v => { v.pause(); v.muted = true; }); }
+function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; player.pause(); }
 function activate(el){
   if (active === el || !$("onb").hidden) return;
   stopAll(); active = el;
@@ -574,7 +579,12 @@ function activate(el){
   S.seenTick[p.id] = S.tick; markActive(); save(); updateHeader();
   const bar = el.querySelector(".progress i");
   if (p.type === "video") {
-    const v = el.querySelector("video"); v.currentTime = 0; v.muted = !soundOn; v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
+    const v = player, host = el.querySelector(".post-bg");
+    if (v.parentNode !== host) host.appendChild(v);
+    v.poster = p.poster;
+    if (v.dataset.src !== p.src) { v.dataset.src = p.src; v.src = p.src; } else v.currentTime = 0;
+    v.muted = !soundOn;
+    v.play().catch(() => { if (soundOn) { soundOn = false; setSoundButtons(); } v.muted = true; v.play().catch(() => {}); });
     const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
     loop();
   } else {

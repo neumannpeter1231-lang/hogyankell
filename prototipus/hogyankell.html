@@ -44,7 +44,7 @@ h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balanc
 .filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--yel);color:var(--yel-ink);border:0;border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px}
 
 .post-bg{position:absolute;inset:0}
-.post-bg video{width:100%;height:100%;object-fit:cover;background:#000;display:block}
+.post-bg video,.post-bg img.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}
 .tv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:96px 74px 150px 22px;background:radial-gradient(120% 70% at 50% 32%,#1F2833 0%,var(--bg) 70%)}
 .tv .icon{width:84px;height:84px;color:var(--yel);opacity:.9;margin-bottom:18px;animation:float 5s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(-8px)}}
@@ -643,6 +643,11 @@ function nextItem(){
 
 const feed = $("feed");
 let observer = null, active = null, soundOn = false;
+/* Egyetlen közös videólejátszó: iPhone-on csak az a lejátszó szólhat hanggal, amelyiket a felhasználó egyszer elindította,
+   ezért nem videónként új lejátszót használunk, hanem ugyanezt tesszük át az éppen látható videóra. */
+const player = document.createElement("video");
+player.setAttribute("playsinline", ""); player.playsInline = true; player.loop = true; player.preload = "auto"; player.muted = true;
+function setSoundButtons(){ feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`); }
 function buildFeed(){
   stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear();
   if (observer) observer.disconnect();
@@ -675,7 +680,7 @@ function renderItem(it, idx){
   const voted = S.polls[p.id];
   el.innerHTML = `
     <div class="post-bg">${p.type === "video"
-      ? `<video src="${p.src}" poster="${p.poster}" playsinline muted loop preload="metadata"></video>`
+      ? `<img class="poster" src="${p.poster}" alt="">`
       : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
     <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
     <div class="rail">
@@ -741,12 +746,12 @@ function onPostClick(e, p, el){
   } else if (a === "deeper") openDeeper(p);
   else if (a === "sound") {
     soundOn = !soundOn;
-    feed.querySelectorAll("video").forEach(v => v.muted = !soundOn || v !== activeVideo());
-    feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`);
-    const v = activeVideo(); if (v) { v.muted = !soundOn; v.play().catch(() => {}); }
+    player.muted = !soundOn;
+    setSoundButtons();
+    if (activeVideo()) player.play().catch(() => {});
   }
 }
-function activeVideo(){ return active ? active.querySelector("video") : null; }
+function activeVideo(){ return active && active.contains(player) ? player : null; }
 
 function renderCheck(el, p){
   el.classList.add("check");
@@ -922,7 +927,7 @@ function openHabitSheet(p, h){
 
 /* aktiválás, lejátszás */
 let raf = null, tvState = null;
-function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; feed.querySelectorAll("video").forEach(v => { v.pause(); v.muted = true; }); }
+function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; player.pause(); }
 function activate(el){
   if (active === el || !$("onb").hidden) return;
   stopAll(); active = el;
@@ -936,7 +941,12 @@ function activate(el){
   S.seenTick[p.id] = S.tick; markActive(); save(); updateHeader();
   const bar = el.querySelector(".progress i");
   if (p.type === "video") {
-    const v = el.querySelector("video"); v.currentTime = 0; v.muted = !soundOn; v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
+    const v = player, host = el.querySelector(".post-bg");
+    if (v.parentNode !== host) host.appendChild(v);
+    v.poster = p.poster;
+    if (v.dataset.src !== p.src) { v.dataset.src = p.src; v.src = p.src; } else v.currentTime = 0;
+    v.muted = !soundOn;
+    v.play().catch(() => { if (soundOn) { soundOn = false; setSoundButtons(); } v.muted = true; v.play().catch(() => {}); });
     const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
     loop();
   } else {
