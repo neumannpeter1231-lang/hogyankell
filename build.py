@@ -26,10 +26,18 @@ body.locked .app{display:none}
 .g-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:12px;min-height:50px;padding:0 20px;font-weight:700;font-size:16px;background:#fff;color:#1f1f1f;cursor:pointer}
 .g-btn.alt{background:var(--surface-2);color:var(--ink)}
 .g-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+/* telefonon a teljes képernyőt kitöltse (iPhone kezdőképernyős módban is) */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+.app{position:fixed;top:0;bottom:0;left:0;right:0;height:auto;margin:0 auto}
 @supports (padding:env(safe-area-inset-bottom)){
   .nav{height:calc(64px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
   .feed-top{padding-top:calc(14px + env(safe-area-inset-top))}
+  .chips{top:calc(58px + env(safe-area-inset-top))}
   .scroll{padding-top:calc(20px + env(safe-area-inset-top))}
+  .check{padding-top:calc(70px + env(safe-area-inset-top))}
+  .toast{top:calc(64px + env(safe-area-inset-top))}
+  .duel-play,.onb{padding-top:calc(18px + env(safe-area-inset-top))}
+  .gate{padding-top:calc(24px + env(safe-area-inset-top));padding-bottom:calc(24px + env(safe-area-inset-bottom))}
 }
 """
 
