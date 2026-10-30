@@ -290,6 +290,7 @@ player.setAttribute("playsinline", ""); player.playsInline = true; player.loop =
 function unlockSound(){
   if (soundUnlocked) return;
   soundUnlocked = true;
+  document.querySelectorAll(".tap-sound").forEach(x => x.remove());
   if (!soundOn) return;
   player.muted = false;
   if (activeVideo()) player.play().catch(() => { player.muted = true; soundUnlocked = false; });
@@ -609,7 +610,9 @@ function activate(el){
     v.poster = p.poster;
     if (v.dataset.src !== p.src) { v.dataset.src = p.src; v.src = p.src; } else v.currentTime = 0;
     v.muted = !(soundOn && soundUnlocked);
-    v.play().catch(() => { v.muted = true; soundUnlocked = false; v.play().catch(() => {}); });
+    const hint = () => { if (soundOn && !soundUnlocked && !host.querySelector(".tap-sound")) { const t = document.createElement("div"); t.className = "tap-sound"; t.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(t); } };
+    hint();
+    v.play().catch(() => { v.muted = true; soundUnlocked = false; hint(); v.play().catch(() => {}); });
     const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
     loop();
   } else {

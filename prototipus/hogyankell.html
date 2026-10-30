@@ -44,6 +44,8 @@ h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balanc
 .filter-chip{display:inline-flex;align-items:center;gap:6px;background:var(--yel);color:var(--yel-ink);border:0;border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px}
 
 .post-bg{position:absolute;inset:0}
+.tap-sound{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:4;display:flex;align-items:center;gap:8px;background:rgba(7,9,12,.62);color:var(--ink);border-radius:999px;padding:10px 16px;font-weight:700;font-size:15px;pointer-events:none;backdrop-filter:blur(4px)}
+.tap-sound svg{width:22px;height:22px}
 .post-bg video,.post-bg img.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}
 .tv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:96px 74px 150px 22px;background:radial-gradient(120% 70% at 50% 32%,#1F2833 0%,var(--bg) 70%)}
 .tv .icon{width:84px;height:84px;color:var(--yel);opacity:.9;margin-bottom:18px;animation:float 5s ease-in-out infinite}
@@ -652,6 +654,7 @@ player.setAttribute("playsinline", ""); player.playsInline = true; player.loop =
 function unlockSound(){
   if (soundUnlocked) return;
   soundUnlocked = true;
+  document.querySelectorAll(".tap-sound").forEach(x => x.remove());
   if (!soundOn) return;
   player.muted = false;
   if (activeVideo()) player.play().catch(() => { player.muted = true; soundUnlocked = false; });
@@ -971,7 +974,9 @@ function activate(el){
     v.poster = p.poster;
     if (v.dataset.src !== p.src) { v.dataset.src = p.src; v.src = p.src; } else v.currentTime = 0;
     v.muted = !(soundOn && soundUnlocked);
-    v.play().catch(() => { v.muted = true; soundUnlocked = false; v.play().catch(() => {}); });
+    const hint = () => { if (soundOn && !soundUnlocked && !host.querySelector(".tap-sound")) { const t = document.createElement("div"); t.className = "tap-sound"; t.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(t); } };
+    hint();
+    v.play().catch(() => { v.muted = true; soundUnlocked = false; hint(); v.play().catch(() => {}); });
     const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
     loop();
   } else {
