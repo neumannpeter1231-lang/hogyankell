@@ -7,11 +7,23 @@ A kulcsok a .secrets.env fájlban vannak (ELEVENLABS_API_KEY, GABOR_VOICE_ID).
 """
 import base64, json, os, random, sys, urllib.request
 
-# Péter kérése: a hangnem legyen véletlenszerűen hol nyugodt tanító, hol élénkebb.
-CALM = {"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}
-LIVELY = {"stability": 0.4, "similarity_boost": 0.75, "style": 0.35}
+# Péter kérése: a narráció ne legyen egyhangú. Arányok: 1/2 Gábor, 1/6-1/6-1/6 Vera (tanító / közepes / élénk).
+# Egy videó a forgatókönyvben "hang" mezővel kötelezően megkaphat egy profilt (kontextusfüggő választás),
+# pl. komoly, biztonsági témánál "vera_tanito", meglepő kísérletnél "vera_elenk".
+GABOR, VERA = "7B7mSWflzRSaO1yGeJH6", "xjlfQQ3ynqiEyRpArrT8"
+PROFILES = {
+    "gabor":        {"voice": GABOR, "tags": True,  "vs": None},
+    "vera_tanito":  {"voice": VERA,  "tags": False, "vs": {"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}},
+    "vera_kozepes": {"voice": VERA,  "tags": True,  "vs": {"stability": 0.45, "similarity_boost": 0.75, "style": 0.3}},
+    "vera_elenk":   {"voice": VERA,  "tags": True,  "vs": None},
+}
+WEIGHTS = {"gabor": 3, "vera_tanito": 1, "vera_kozepes": 1, "vera_elenk": 1}
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+def pick(video):
+    if video.get("hang") in PROFILES:
+        return video["hang"]
+    return random.choices(list(WEIGHTS), weights=list(WEIGHTS.values()))[0]
 
 
 def secrets():
@@ -23,10 +35,13 @@ def secrets():
     return env
 
 
-def tts(text, env, vs):
-    url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env.get('NARRATOR_VOICE_ID', env['GABOR_VOICE_ID'])}"
+def tts(text, env, prof):
+    url = (f"https://api.elevenlabs.io/v1/text-to-speech/{prof['voice']}"
            "/with-timestamps?output_format=mp3_44100_128")
-    body = json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": vs}).encode()
+    body = {"text": text, "model_id": "eleven_v4"}
+    if prof["vs"]:
+        body["voice_settings"] = prof["vs"]
+    body = json.dumps(body).encode()
     req = urllib.request.Request(url, data=body, method="POST", headers={
         "xi-api-key": env["ELEVENLABS_API_KEY"], "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=180) as r:
@@ -57,14 +72,15 @@ def main():
         os.makedirs(out, exist_ok=True)
         if os.path.exists(os.path.join(out, "hang.mp3")):
             print(v["id"], "már kész"); continue
-        lively = random.random() < 0.5
-        text, offsets = build(v, lively)
-        d = tts(text, env, LIVELY if lively else CALM)
+        name = pick(v)
+        prof = PROFILES[name]
+        text, offsets = build(v, prof["tags"])
+        d = tts(text, env, prof)
         open(os.path.join(out, "hang.mp3"), "wb").write(base64.b64decode(d["audio_base64"]))
         a = d["alignment"]
-        json.dump({"text": text, "scenes": offsets, "alignment": a}, open(os.path.join(out, "align.json"), "w"),
+        json.dump({"text": text, "scenes": offsets, "alignment": a, "hang": name}, open(os.path.join(out, "align.json"), "w"),
                   ensure_ascii=False)
-        print(v["id"], "élénk" if lively else "nyugodt", "kész", round(a["character_end_times_seconds"][-1], 1), "mp")
+        print(v["id"], name, "kész", round(a["character_end_times_seconds"][-1], 1), "mp")
 
 
 if __name__ == "__main__":

@@ -5,6 +5,8 @@ Használat: python3 tools/szoveghang.py [post_id ...]
 Kimenet: media/hang/<id>.mp3 és media/hang/hang.json ({id: [sorok kezdőidői mp-ben]})
 """
 import base64, json, os, random, re, subprocess, sys, urllib.request
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from hang import PROFILES, pick
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "prototipus", "hogyankell.html")
@@ -41,9 +43,10 @@ def main():
                 text += " "
             starts.append(len(text))
             text += l
-        url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env.get('NARRATOR_VOICE_ID', env['GABOR_VOICE_ID'])}"
+        prof = PROFILES[pick({})]
+        url = (f"https://api.elevenlabs.io/v1/text-to-speech/{prof['voice']}"
                "/with-timestamps?output_format=mp3_44100_96")
-        req = urllib.request.Request(url, data=json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": random.choice([{"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}, {"stability": 0.4, "similarity_boost": 0.75, "style": 0.35}])}).encode(),
+        req = urllib.request.Request(url, data=json.dumps(dict({"text": text, "model_id": "eleven_v4"}, **({"voice_settings": prof["vs"]} if prof["vs"] else {}))).encode(),
                                      method="POST", headers={"xi-api-key": env["ELEVENLABS_API_KEY"],
                                                              "Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=180) as r:
