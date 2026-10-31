@@ -5,7 +5,11 @@ Használat: python3 tools/hang.py anyag/sorozat1.json [video_id ...]
 Kimenet videónként: anyag/<id>/hang.mp3 és anyag/<id>/align.json
 A kulcsok a .secrets.env fájlban vannak (ELEVENLABS_API_KEY, GABOR_VOICE_ID).
 """
-import base64, json, os, sys, urllib.request
+import base64, json, os, random, sys, urllib.request
+
+# Péter kérése: a hangnem legyen véletlenszerűen hol nyugodt tanító, hol élénkebb.
+CALM = {"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}
+LIVELY = {"stability": 0.4, "similarity_boost": 0.75, "style": 0.35}
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,22 +23,21 @@ def secrets():
     return env
 
 
-def tts(text, env):
+def tts(text, env, vs):
     url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env.get('NARRATOR_VOICE_ID', env['GABOR_VOICE_ID'])}"
            "/with-timestamps?output_format=mp3_44100_128")
-    body = json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": {"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}}).encode()
+    body = json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": vs}).encode()
     req = urllib.request.Request(url, data=body, method="POST", headers={
         "xi-api-key": env["ELEVENLABS_API_KEY"], "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=180) as r:
         return json.load(r)
 
 
-def build(video):
+def build(video, tags):
     """Teljes szöveg címkékkel + az egyes jelenetek kezdő karakterpozíciója."""
     parts, offsets, pos = [], [], 0
     for sc in video["scenes"]:
-        # tanító hangnem: érzelmi címkék nélkül (Péter kérése: ne gesztikuláljon túl)
-        chunk = ""
+        chunk = (sc.get("tag", "") + " " if tags and sc.get("tag") else "")
         start = pos + len(chunk)
         chunk += sc["text"]
         offsets.append({"start": start, "end": start + len(sc["text"])})
@@ -54,13 +57,14 @@ def main():
         os.makedirs(out, exist_ok=True)
         if os.path.exists(os.path.join(out, "hang.mp3")):
             print(v["id"], "már kész"); continue
-        text, offsets = build(v)
-        d = tts(text, env)
+        lively = random.random() < 0.5
+        text, offsets = build(v, lively)
+        d = tts(text, env, LIVELY if lively else CALM)
         open(os.path.join(out, "hang.mp3"), "wb").write(base64.b64decode(d["audio_base64"]))
         a = d["alignment"]
         json.dump({"text": text, "scenes": offsets, "alignment": a}, open(os.path.join(out, "align.json"), "w"),
                   ensure_ascii=False)
-        print(v["id"], "kész", round(a["character_end_times_seconds"][-1], 1), "mp")
+        print(v["id"], "élénk" if lively else "nyugodt", "kész", round(a["character_end_times_seconds"][-1], 1), "mp")
 
 
 if __name__ == "__main__":

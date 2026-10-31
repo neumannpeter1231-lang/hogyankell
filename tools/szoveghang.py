@@ -4,7 +4,7 @@
 Használat: python3 tools/szoveghang.py [post_id ...]
 Kimenet: media/hang/<id>.mp3 és media/hang/hang.json ({id: [sorok kezdőidői mp-ben]})
 """
-import base64, json, os, re, subprocess, sys, urllib.request
+import base64, json, os, random, re, subprocess, sys, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "prototipus", "hogyankell.html")
@@ -43,7 +43,7 @@ def main():
             text += l
         url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env.get('NARRATOR_VOICE_ID', env['GABOR_VOICE_ID'])}"
                "/with-timestamps?output_format=mp3_44100_96")
-        req = urllib.request.Request(url, data=json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": {"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}}).encode(),
+        req = urllib.request.Request(url, data=json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": random.choice([{"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}, {"stability": 0.4, "similarity_boost": 0.75, "style": 0.35}])}).encode(),
                                      method="POST", headers={"xi-api-key": env["ELEVENLABS_API_KEY"],
                                                              "Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=180) as r:
