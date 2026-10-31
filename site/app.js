@@ -266,11 +266,15 @@ const POSTS = [
   source:{label:"Bazu podcast – Róf Kis Ágnes, Beszéderő", url:"https://www.youtube.com/watch?v=wo3fXNYE6lw"}}
 
 ];
-const ORDER = ["m7","p2","v_szukosseg","k_arany","v_kerdezz","m2","v_lekvar","s_fu","v_kavefolt","p1","v_egyenruha","a_szunet","v_rokia","m1","v_torolkozo","k_pomo","v_rim","s_izzo","v_laboajto","m3","v_citrom","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
-/* ami nincs a listában, az a végére kerül (nem tűnik el) */
+const ORDER = ["m7","p2","v_szukosseg","k_arany","v_kerdezz","m2","v_lekvar","s_fu","v_kavefolt","p1","v_egyenruha","a_szunet","v_rokia","v_torolkozo","k_pomo","v_rim","s_izzo","v_laboajto","m3","v_citrom","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
+/* ami nincs a listában, az a végére kerül (nem tűnik el); a HIDE-ban lévők (régi duplikátumok) nem jelennek meg */
+const HIDE = ["p3","p4","p5","m1"];
+for (let i = POSTS.length - 1; i >= 0; i--) if (HIDE.includes(POSTS[i].id)) POSTS.splice(i, 1);
 const ordIdx = id => { const i = ORDER.indexOf(id); return i < 0 ? 1e6 : i; };
 POSTS.sort((a, b) => ordIdx(a.id) - ordIdx(b.id));
-POSTS.forEach(p => { p.habit = HABIT[p.id] || null; });
+/* Gábor hangja a szöveges posztokhoz: hangfájl + az egyes sorok kezdőideje (mp) */
+const VOICE = {"p1":[0.0,3.68,8.0,10.8,14.04,18.16,25.12,28.0],"p3":[0.0,5.92,7.28,13.16,18.56,23.48,27.2,30.24],"p4":[0.0,4.48,7.76,13.28,16.96,20.4,25.52,27.92],"p5":[0.0,4.24,8.88,12.4,14.72,19.52,23.52,26.32],"p6":[0.0,5.04,8.56,12.88,17.56,22.08,27.88,31.0],"m1":[0.0,4.72,8.88,13.76,16.51,20.16,25.2,29.6],"m2":[0.0,3.04,6.88,12.0,15.76,24.16,28.96,32.16],"m3":[0.0,4.48,8.16,13.25,16.8,22.56,26.72,29.92],"m4":[0.0,8.32,11.52,15.6,19.68,24.52,27.92,31.6],"m5":[0.0,4.48,8.48,12.32,15.6,20.56,25.28,27.76],"m6":[0.0,4.56,7.92,10.88,15.04,17.2,22.88,26.08]};
+POSTS.forEach(p => { p.habit = HABIT[p.id] || null; if (p.type === "text" && VOICE[p.id]) { p.voice = "media/hang/" + p.id + ".mp3"; p.vt = VOICE[p.id]; } });
 const POST = Object.fromEntries(POSTS.map(p => [p.id, p]));
 const TOPICS = [...new Set(POSTS.map(p => p.topic))];
 
@@ -370,6 +374,9 @@ function mkPlayer(){
   return v;
 }
 const players = [mkPlayer(), mkPlayer()];
+/* Felolvasó a szöveges posztokhoz: egyetlen közös hanglejátszó, amelyet szintén az első érintés old fel. */
+const narr = new Audio(); narr.preload = "auto"; narr.loop = true;
+const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
 let cur = players[0];
 function loadInto(v, p){
   if (v.dataset.src === p.src) return;
@@ -382,6 +389,11 @@ function unlockSound(){
   soundUnlocked = true;
   document.querySelectorAll(".tap-sound").forEach(x => x.remove());
   if (!soundOn) return;
+  const nCur = activeNarr();
+  narr.muted = false;
+  if (!narr.src) narr.src = SILENT;
+  const np = narr.play();
+  if (np) np.then(() => { if (!nCur) narr.pause(); }).catch(() => {});
   players.forEach(v => {
     const isCur = v === cur && activeVideo();
     v.muted = false;
@@ -443,7 +455,7 @@ function renderItem(it, idx){
       : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
     <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
     <div class="rail">
-      ${p.type === "video" ? `<button data-a="sound" class="snd" aria-label="Hang be vagy ki">${soundOn ? I.soundOn : I.soundOff}<span>${soundOn ? "Hang ki" : "Hang be"}</span></button>` : ""}
+      ${p.type === "video" || p.voice ? `<button data-a="sound" class="snd" aria-label="Hang be vagy ki">${soundOn ? I.soundOn : I.soundOff}<span>${soundOn ? "Hang ki" : "Hang be"}</span></button>` : ""}
       <button data-a="like" aria-pressed="${!!S.liked[p.id]}" aria-label="Tetszik">${I.heart}<span>${S.liked[p.id] ? "Tetszik" : "Like"}</span></button>
       <button data-a="save" aria-pressed="${!!S.saved[p.id]}" aria-label="Mentés">${I.save}<span>${S.saved[p.id] ? "Mentve" : "Mentés"}</span></button>
       <button data-a="share" aria-label="Link másolása">${I.share}<span>Küldés</span></button>
@@ -508,9 +520,12 @@ function onPostClick(e, p, el){
     players.forEach(v => { v.muted = !soundOn || v !== cur; });
     setSoundButtons();
     if (activeVideo()) cur.play().catch(() => {});
+    narr.muted = !soundOn;
+    if (activeNarr()) { if (soundOn) narr.play().catch(() => {}); else narr.pause(); }
   }
 }
 function activeVideo(){ return active && active.contains(cur) ? cur : null; }
+function activeNarr(){ const it = active && items[Number(active.dataset.idx)]; const p = it && it.kind === "post" && POST[it.id]; return p && p.voice && narr.dataset.pid === p.id ? narr : null; }
 
 function renderCheck(el, p){
   el.classList.add("check");
@@ -686,7 +701,7 @@ function openHabitSheet(p, h){
 
 /* aktiválás, lejátszás */
 let raf = null, tvState = null;
-function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; players.forEach(v => v.pause()); }
+function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; players.forEach(v => v.pause()); narr.pause(); }
 function activate(el){
   if (active === el || !$("onb").hidden) return;
   stopAll(); active = el;
@@ -715,14 +730,31 @@ function activate(el){
     loop();
   } else {
     const lineEl = el.querySelector(".line");
-    const durs = p.lines.map(l => Math.max(2.4, plain(l).length / 14));
-    const total = durs.reduce((a, b) => a + b, 0) + 1.2;
+    let durs = p.lines.map(l => Math.max(2.4, plain(l).length / 14));
+    let total = durs.reduce((a, b) => a + b, 0) + 1.2;
+    /* ha van felolvasás: a sorok a hanghoz igazodnak */
+    let useVoice = false;
+    if (p.voice && soundOn) {
+      if (narr.dataset.pid !== p.id) { narr.dataset.pid = p.id; narr.src = p.voice; } else { try { narr.currentTime = 0; } catch(e) {} }
+      narr.muted = !soundUnlocked;
+      useVoice = true;
+      const host = el.querySelector(".post-bg") || el;
+      if (!soundUnlocked && !host.querySelector(".tap-sound")) { const tp = document.createElement("div"); tp.className = "tap-sound"; tp.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(tp); }
+      narr.play().catch(() => { narr.muted = true; narr.play().catch(() => { useVoice = false; }); });
+    }
+    if (p.vt) {
+      durs = p.vt.map((t, i) => (i + 1 < p.vt.length ? p.vt[i + 1] : t + Math.max(2.4, plain(p.lines[i]).length / 14)) - t);
+      total = p.vt[p.vt.length - 1] + durs[durs.length - 1] + 1.2;
+    }
     const t0 = performance.now(); let shown = -1;
     const loop = now => {
       if (active !== el) return;
-      const t = ((now - t0) / 1000) % total;
+      const tv = useVoice && narr.dataset.pid === p.id && !narr.paused && narr.readyState > 1;
+      if (tv && narr.duration) total = narr.duration;
+      const t = tv ? narr.currentTime : ((now - t0) / 1000) % total;
       let acc = 0, k = durs.length - 1;
-      for (let i = 0; i < durs.length; i++) { if (t < acc + durs[i]) { k = i; break; } acc += durs[i]; }
+      if (tv && p.vt) { k = 0; for (let i = 0; i < p.vt.length; i++) if (t >= p.vt[i] - 0.05) k = i; }
+      else for (let i = 0; i < durs.length; i++) { if (t < acc + durs[i]) { k = i; break; } acc += durs[i]; }
       if (k !== shown) { shown = k; lineEl.classList.add("out"); setTimeout(() => { if (active !== el) return; lineEl.innerHTML = `<span>${hl(p.lines[k])}</span>`; lineEl.classList.remove("out"); }, shown === 0 && !lineEl.innerHTML ? 0 : 180); }
       bar.style.width = (t / total * 100) + "%";
       raf = requestAnimationFrame(loop);
