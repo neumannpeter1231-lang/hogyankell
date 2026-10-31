@@ -1,0 +1,57 @@
+# Hogyankell – munkafüzet (átadás új beszélgetéshez)
+
+Utolsó frissítés: 2026-10-31. Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
+
+## Mi ez?
+A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magyarázóvideók gyakorlati élettudásról (meggyőzés, pszichológia, pénzügyek, idő és fókusz, kommunikáció, biztonság, alvás), szavazással, ellenőrző kérdésekkel, „Mélyebben” résszel (forrás), szokásvállalással, Arénával (párbaj, liga), kommentekkel.
+
+## Hol van minden?
+- **Élő app (zárt, meghívásos):** https://rough-sound-2c04.neumann-peter1231.workers.dev
+- **Kód:** GitHub, privát: `neumannpeter1231-lang/hogyankell`. A `main` ágra pusholt változás kb. 1 perc alatt automatikusan élesedik (Cloudflare Worker „rough-sound-2c04”, a `site/` mappát szolgálja ki).
+- **Adatbázis, belépés:** Supabase projekt `unzmjkzvkaqmumeqwsyf` (Google-belépés, meghívottak az `invites` táblában, adatok a `docs` táblában, RLS-szabályok a `supabase/*.sql` fájlokban).
+- **Értesítések:** Supabase Edge Function `send-reminders` + pg_cron 5 percenként.
+- **Hang:** ElevenLabs (Starter csomag), API-n. Hangok: Gábor `7B7mSWflzRSaO1yGeJH6`, Vera `xjlfQQ3ynqiEyRpArrT8`.
+- **Képek:** ElevenLabs Image & Video, Nano Banana 2.1 modell, 9:16 – jelenleg a böngészőben generálva, Péter zipben tölti fel. (Google Gemini API-kulcs megvan, de előre feltöltött egyenleg kell hozzá – lásd Nyitott pontok.)
+
+## A repó felépítése
+- `prototipus/hogyankell.html` – az egész app egy fájlban (ezt kell szerkeszteni).
+- `build.py` – a prototípusból elkészíti a `site/` mappát (ezt szolgálja ki a Cloudflare). Mindig: szerkesztés → `python3 build.py` → commit → push.
+- `webapp/` – a webes burok: `backend.js` (Supabase-adapter, belépés, meghívás-ellenőrzés), service worker, manifest, adatvédelem.
+- `tools/hang.py` – felolvasás ElevenLabs API-val, betűszintű időzítéssel → `anyag/<id>/hang.mp3` + `align.json`.
+- `tools/osszerak.py` – videó összevágása: `anyag/<id>/01.png…` + hang → `media/<id>.mp4` (Ken Burns mozgás, pontos feliratok).
+- `tools/posztok.py` – a sorozat-JSON alapján beszúrja a posztokat az appba (szavazás, ellenőrző kérdés, Mélyebben, forrás, szokás).
+- `tools/szoveghang.py` – felolvasás a szöveges (nem videós) posztokhoz.
+- `anyag/sorozat1.json`, `anyag/sorozat2.json` – a forgatókönyvek (jelenetszöveg + képleírás + kérdések + forrás).
+- `.secrets.env` – API-kulcsok, **gitből kizárva, nincs a GitHubon**. Új munkakörnyezetben Péternek újra meg kell adnia (ElevenLabs `sk_…` kulcs, Gemini kulcs).
+
+## Új videósorozat menete
+1. Forgatókönyv `anyag/sorozatN.json`-ba: 6 jelenet, 25–35 mp, valódi kutatás + forrás, a végén „így véded magad” tipp, néhány „tévhit vs. valóság” formátumban. Számokat ellenőrizni / kiszámolni.
+2. `python3 tools/hang.py anyag/sorozatN.json`
+3. Képek: ElevenLabs Image & Video, Nano Banana 2.1, 9:16, 1 generálás/prompt, a stílus-utótag a JSON `style` mezőjében. Péter letölti, zipben feltölti; a fájlnévben a prompt első 15 karaktere + időbélyeg alapján kell párosítani (kétes esetben kontaktlappal ellenőrizni).
+4. `python3 tools/osszerak.py anyag/sorozatN.json` → `python3 tools/posztok.py anyag/sorozatN.json` → ORDER-listába nem kötelező felvenni (a feed amúgy is keveri).
+5. `python3 build.py`, commit, push, ellenőrzés élesben.
+
+## Péter döntései (ezekhez tartsd magad)
+- Mindig **magyarul** válaszolj.
+- **Narráció aránya:** 1/2 Gábor, 1/6 Vera tanító, 1/6 Vera közepes, 1/6 Vera élénk (tools/hang.py sorsolja; a forgatókönyvben `"hang"` mezővel felülírható). Tanító jelleg, ne gesztikuláljon túl.
+- **Hang mindig szól**, a feedben nincs némító és nincs megállító gomb; koppintásra áll meg / indul.
+- **Kommentek** a Mentés helyén. **Nem tetszik** gomb (Profilban visszahozható).
+- **Feed keverve** minden megnyitáskor (nem látott elöl, témák váltakoznak).
+- **Címek = a videó lényege** (pl. „Horgonyhatás”, „Szűkösség elve”).
+- **Munkamódszer:** a 26 fős AI-tesztelőpanel (6 + 20 célcsoport-persona) szavaz minden javaslatra; ebben a sorrendben haladunk. Új javaslatot mindig az egész panellel kell szavaztatni. (Ez szimuláció, nem valódi emberek – ezt mindig jelezni kell.)
+- Teljesen automatikus gyártást szeretne (API), nem gépéhez kötött megoldást.
+- Minden válasz végén **„Péter teendői”** lista: amit Claude nem tehet meg (fizetés, éles adatbázis-módosítás Run gombja, letöltés).
+
+## A panel szavazási sorrendje (a következő teendők alapja)
+1. ✅ Pénzügyek téma (6 videó kész) · 2. ✅ +pont konfettivel · 3. **Csalások felismerése** (következő sorozat) · 4. ✅ Rövidebb videók · 5. ✅ „Így védd magad” rész · 6. Néma mód a Profilban (Péter eddig a mindig szóló hangot kérte – egyeztetni) · 7. ✅ részben Tévhit-formátum · 8. ✅ Sorozatszámláló · 9. Egyszerűbb szavak · 10. Munkahely (interjú, tárgyalás, munkajog) · 11. Egészség és alvás · 12. ✅ Rezgés · 13. Önbizalom és első benyomás · 14. Kapcsolatok · 15. Barát meghívása a ligába · 16. Pörgő pontszám · 17. Nagyobb betűs mód · 18. Gyerek és család · 19. Kommentmoderálás · 20. Viselkedési közgazdaságtan · 21. „Megelőzted X-et” · 22. Csak hang mód · 23. Egyszerű mód · 24. Borravaló-pszichológia
+
+## Tartalom most (élesben)
+- 17 AI-videó: Horgonyhatás, Szűkösség elve, Láb az ajtóban, Társas bizonyíték, Pratfall-hatás, Azonosítható áldozat hatás, Választási bénulás, Rím mint érv, A visszakérdezés ereje, Tekintély elve, Előfeszítés, Kamatos kamat, A fizetés fájdalma, A minimum törlesztés horgonya, Fizesd ki először magad, Infláció, Mentális könyvelés.
+- 8 podcastrészlet-videó + 7 felolvasott szöveges poszt. Rejtve (duplikátum): p3, p4, p5, m1.
+
+## Nyitott pontok
+- **Kommentek Supabase-szabálya:** `supabase/4_kommentek.sql` – Péternek kell a Supabase SQL Editorban a Run gombot megnyomnia (Claude-nak nem engedélyezett az éles adatbázis módosítása). Nem tudni, megtörtént-e – rákérdezni, és egy próbakommenttel ellenőrizni.
+- **Teljesen automatikus képek:** Google AI Studio-ban kb. 5 $ előre feltöltés kell (a Gemini-kulcs `hogyankell` projektben megvan, service accounthoz kötve). Alternatíva: ingyenes Google Cloud próbakeret Vertex AI-on (a kulcs mentése „Save failed” hibát adott).
+- **ElevenLabs keret:** a havi keret nagy része elfogyott (okt. 31-én kb. 11 kép maradt); a következő megújulásig kevés új videó fér bele.
+- **Valódi tesztelők:** 5–10 Gmail-cím kell az `invites` táblába; javasolt nézési statisztika (végignézés, elgörgetés, dislike) heti összefoglalóval.
+- Ötletek a jövőre: ütemezett heti videógyártás, ha a képek is automatikusak.
