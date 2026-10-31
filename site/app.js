@@ -18,6 +18,8 @@ const I = {
   save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>',
   share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg>',
   layers:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l10 5-10 5L2 7z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>',
+  pause:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg>',
   soundOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>',
   soundOn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>',
   phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10.5 18.5h3"/><path d="M3 7l1.5 1M21 7l-1.5 1M2.5 12h1.5M21.5 12H20"/></svg>',
@@ -362,7 +364,8 @@ function nextItem(){
 }
 
 const feed = $("feed");
-let observer = null, active = null, soundOn = true, soundUnlocked = false;
+let observer = null, active = null, soundOn = true, soundUnlocked = false, paused = false;
+/* Hang mindig bekapcsolva (Péter döntése): némítani nem lehet, csak megállítani. */
 /* Két közös videólejátszó váltja egymást: az egyik játssza a látható videót, a másik közben már a következőt tölti,
    így lapozáskor azonnal indul. iPhone-on csak az a lejátszó szólhat hanggal, amelyet egy érintés „feloldott”,
    ezért nem videónként újat használunk, hanem ezt a kettőt tesszük át mindig a megfelelő helyre. */
@@ -384,9 +387,10 @@ function loadInto(v, p){
 }
 /* Hang alapból bekapcsolva. A böngésző az első érintés előtt nem enged hangot, ezért az első koppintásnál
    mindkét lejátszót „feloldjuk”, onnantól minden videó hanggal megy. */
+let unlockAt = 0;
 function unlockSound(){
   if (soundUnlocked) return;
-  soundUnlocked = true;
+  soundUnlocked = true; unlockAt = Date.now();
   document.querySelectorAll(".tap-sound").forEach(x => x.remove());
   if (!soundOn) return;
   const nCur = activeNarr();
@@ -418,7 +422,15 @@ function prefetchNext(fromIdx){
     return;
   }
 }
-function setSoundButtons(){ feed.querySelectorAll(".snd").forEach(s => s.innerHTML = (soundOn ? I.soundOn : I.soundOff) + `<span>${soundOn ? "Hang ki" : "Hang be"}</span>`); }
+function setSoundButtons(){ feed.querySelectorAll(".snd").forEach(s => { const on = paused && active && active.contains(s); s.innerHTML = (on ? I.play : I.pause) + `<span>${on ? "Folytatás" : "Megállítás"}</span>`; }); }
+function setPaused(v){
+  paused = v;
+  const vid = activeVideo(), n = activeNarr();
+  if (paused) { if (vid) vid.pause(); if (n) n.pause(); }
+  else { if (vid) vid.play().catch(() => {}); if (n) n.play().catch(() => {}); }
+  if (active) active.classList.toggle("is-paused", paused);
+  setSoundButtons();
+}
 function buildFeed(){
   stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear();
   if (observer) observer.disconnect();
@@ -455,7 +467,7 @@ function renderItem(it, idx){
       : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
     <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
     <div class="rail">
-      ${p.type === "video" || p.voice ? `<button data-a="sound" class="snd" aria-label="Hang be vagy ki">${soundOn ? I.soundOn : I.soundOff}<span>${soundOn ? "Hang ki" : "Hang be"}</span></button>` : ""}
+      <button data-a="pause" class="snd" aria-label="Megállítás vagy folytatás">${I.pause}<span>Megállítás</span></button>
       <button data-a="like" aria-pressed="${!!S.liked[p.id]}" aria-label="Tetszik">${I.heart}<span>${S.liked[p.id] ? "Tetszik" : "Like"}</span></button>
       <button data-a="save" aria-pressed="${!!S.saved[p.id]}" aria-label="Mentés">${I.save}<span>${S.saved[p.id] ? "Mentve" : "Mentés"}</span></button>
       <button data-a="share" aria-label="Link másolása">${I.share}<span>Küldés</span></button>
@@ -493,7 +505,8 @@ function pollHTML(p, voted){
   return head + opts + (done ? `<div class="why">${esc(p.poll.why)}</div>` : "");
 }
 function onPostClick(e, p, el){
-  const b = e.target.closest("[data-a]"); if (!b) return;
+  const b = e.target.closest("[data-a]");
+  if (!b) { if (Date.now() - unlockAt < 700) return; if (el === active && !e.target.closest("button,a,input,textarea,.poll,.sheet") ) setPaused(!paused); return; }
   const a = b.dataset.a;
   if (a === "poll") {
     const pb = el.querySelector(".poll"), open = pb.hidden;
@@ -515,14 +528,7 @@ function onPostClick(e, p, el){
     const txt = p.title + " – Hogyankell";
     try { navigator.clipboard.writeText(txt).then(() => toast("Cím vágólapra másolva"), () => toast("A másolás itt nem érhető el")); } catch(err) { toast("A másolás itt nem érhető el"); }
   } else if (a === "deeper") openDeeper(p);
-  else if (a === "sound") {
-    soundOn = !soundOn; soundUnlocked = true; S.sound = soundOn; save();
-    players.forEach(v => { v.muted = !soundOn || v !== cur; });
-    setSoundButtons();
-    if (activeVideo()) cur.play().catch(() => {});
-    narr.muted = !soundOn;
-    if (activeNarr()) { if (soundOn) narr.play().catch(() => {}); else narr.pause(); }
-  }
+  else if (a === "pause") setPaused(!paused);
 }
 function activeVideo(){ return active && active.contains(cur) ? cur : null; }
 function activeNarr(){ const it = active && items[Number(active.dataset.idx)]; const p = it && it.kind === "post" && POST[it.id]; return p && p.voice && narr.dataset.pid === p.id ? narr : null; }
@@ -704,7 +710,7 @@ let raf = null, tvState = null;
 function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; players.forEach(v => v.pause()); narr.pause(); }
 function activate(el){
   if (active === el || !$("onb").hidden) return;
-  stopAll(); active = el;
+  stopAll(); active = el; paused = false; feed.querySelectorAll(".is-paused").forEach(x => x.classList.remove("is-paused")); setSoundButtons();
   const idx = Number(el.dataset.idx), it = items[idx];
   if (idx >= items.length - 2) appendItems(3);
   if (!it || it.kind !== "post") return;
@@ -723,7 +729,7 @@ function activate(el){
     if (v.parentNode !== host) host.appendChild(v);
     if (v.dataset.src !== p.src) loadInto(v, p); else { try { v.currentTime = 0; } catch(e) {} }
     v.muted = !(soundOn && soundUnlocked);
-    const hint = () => { if (soundOn && !soundUnlocked && !host.querySelector(".tap-sound")) { const t = document.createElement("div"); t.className = "tap-sound"; t.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(t); } };
+    const hint = () => { if (soundOn && !soundUnlocked && !host.querySelector(".tap-sound")) { const t = document.createElement("div"); t.className = "tap-sound"; t.innerHTML = I.soundOn + "<span>Koppints, és indul a hang</span>"; host.appendChild(t); } };
     hint();
     v.play().catch(() => { v.muted = true; soundUnlocked = false; hint(); v.play().catch(() => {}); });
     const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
@@ -739,7 +745,7 @@ function activate(el){
       narr.muted = !soundUnlocked;
       useVoice = true;
       const host = el.querySelector(".post-bg") || el;
-      if (!soundUnlocked && !host.querySelector(".tap-sound")) { const tp = document.createElement("div"); tp.className = "tap-sound txt"; tp.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(tp); }
+      if (!soundUnlocked && !host.querySelector(".tap-sound")) { const tp = document.createElement("div"); tp.className = "tap-sound txt"; tp.innerHTML = I.soundOn + "<span>Koppints, és indul a hang</span>"; host.appendChild(tp); }
       narr.play().catch(() => { narr.muted = true; narr.play().catch(() => { useVoice = false; }); });
     }
     if (p.vt) {
@@ -747,8 +753,12 @@ function activate(el){
       total = p.vt[p.vt.length - 1] + durs[durs.length - 1] + 1.2;
     }
     const t0 = performance.now(); let shown = -1;
+    let pausedAt = null, shift = 0;
     const loop = now => {
       if (active !== el) return;
+      if (paused) { if (pausedAt === null) pausedAt = now; raf = requestAnimationFrame(loop); return; }
+      if (pausedAt !== null) { shift += now - pausedAt; pausedAt = null; }
+      now -= shift;
       const tv = useVoice && narr.dataset.pid === p.id && !narr.paused && narr.readyState > 1;
       if (tv && narr.duration) total = narr.duration;
       const t = tv ? narr.currentTime : ((now - t0) / 1000) % total;
@@ -1186,7 +1196,7 @@ window.addEventListener("hashchange", route);
 /* ---------------- indulás ---------------- */
 async function boot(){
   const local = lsGet(); if (local) S = normalize(local);
-  if (S.sound === false) soundOn = false;
+  soundOn = true;
   updateHeader(); buildFeed(); route();
   if (S.interests === null) showOnb();
   let db = null, user = null;
