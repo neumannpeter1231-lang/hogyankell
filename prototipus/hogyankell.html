@@ -632,9 +632,10 @@ const POSTS = [
   source:{label:"Bazu podcast – Róf Kis Ágnes, Beszéderő", url:"https://www.youtube.com/watch?v=wo3fXNYE6lw"}}
 
 ];
-const ORDER = ["p2","k_arany","m2","s_fu","p1","a_szunet","m1","k_pomo","s_izzo","m3","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
-for (let i = POSTS.length - 1; i >= 0; i--) if (!ORDER.includes(POSTS[i].id)) POSTS.splice(i, 1);
-POSTS.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
+const ORDER = ["m7","p2","v_szukosseg","k_arany","v_kerdezz","m2","v_lekvar","s_fu","v_kavefolt","p1","v_egyenruha","a_szunet","v_rokia","m1","v_torolkozo","k_pomo","v_rim","s_izzo","v_laboajto","m3","v_citrom","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
+/* ami nincs a listában, az a végére kerül (nem tűnik el) */
+const ordIdx = id => { const i = ORDER.indexOf(id); return i < 0 ? 1e6 : i; };
+POSTS.sort((a, b) => ordIdx(a.id) - ordIdx(b.id));
 POSTS.forEach(p => { p.habit = HABIT[p.id] || null; });
 const POST = Object.fromEntries(POSTS.map(p => [p.id, p]));
 const TOPICS = [...new Set(POSTS.map(p => p.topic))];
