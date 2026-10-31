@@ -34,7 +34,7 @@ const I = {
   play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>'
 };
 const TOPIC_ICON = {"Meggyőzés":"chat","Pszichológia":"brain","Biztonság otthon":"ladder","Idő és fókusz":"clock","Kommunikáció":"mic","Alvás és egészség":"moon","Pénzügyek":"coin","Ügyintézés":"doc","Gyerek és család":"family"};
-const SOON_TOPICS = ["Pénzügyek", "Ügyintézés", "Gyerek és család"];
+const SOON_TOPICS = ["Ügyintézés", "Gyerek és család"];
 const APP_URL = window.HOGYANKELL_URL || "https://claude.ai/artifact/4qefATfjxKR3ozy4WgKdpf";
 const HABIT = {
   v_citrom:{text:"Este előkészítem a reggeli célomhoz kellő tárgyat, hogy az legyen szem előtt.", time:"21:00", days:7},
@@ -303,6 +303,32 @@ function normalize(o){ const f = fresh(); for (const k in f) if (o[k] === undefi
 let toastT = null;
 function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 1500); }
 function markActive(){ const d = today(); if (!S.days.includes(d)) { S.days.push(d); S.days = S.days.slice(-60); } }
+/* Látványos visszajelzés (a tesztelőpanel kérése): nagy pontszám konfettivel, rezgés, sorozatszámláló. */
+let combo = 0;
+function celebrate(n, extra){
+  const host = $("app") || document.body;
+  const w = document.createElement("div"); w.className = "celeb";
+  w.innerHTML = `<div class="celeb-n">+${n}</div>${extra ? `<div class="celeb-x">${esc(extra)}</div>` : ""}`;
+  const cols = ["#F2C230", "#E0338F", "#1FB5A8", "#FFFFFF", "#7CE07C"];
+  for (let i = 0; i < 34; i++) {
+    const c = document.createElement("i");
+    const a = Math.random() * Math.PI * 2, d = 90 + Math.random() * 160;
+    c.style.cssText = `--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d - 60}px;--r:${Math.random() * 720 - 360}deg;background:${cols[i % cols.length]};animation-delay:${Math.random() * 80}ms`;
+    w.appendChild(c);
+  }
+  host.appendChild(w);
+  try { if (navigator.vibrate) navigator.vibrate(extra ? [30, 40, 30] : 30); } catch (e) {}
+  setTimeout(() => w.remove(), 1300);
+}
+function shakeWrong(el){ if (!el) return; el.classList.remove("wrong-flash"); void el.offsetWidth; el.classList.add("wrong-flash"); try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {} }
+/* helyes válasz: pont + ünneplés; minden 3. egymás utáni jó válasz dupla pont */
+function rightAnswer(n){
+  combo++;
+  const bonus = combo % 3 === 0;
+  const pts = bonus ? n * 2 : n;
+  addPoints(pts, false);
+  celebrate(pts, bonus ? "Sorozat ×" + combo + "! Dupla pont" : combo >= 2 ? combo + " jó egymás után" : "");
+}
 function addPoints(n, label){
   if (S.week.id !== isoWeek(new Date())) S.week = {id:isoWeek(new Date()), pts:0};
   S.total += n; S.week.pts += n; markActive(); save(true); updateHeader(); syncLeague();
@@ -519,7 +545,7 @@ function onPostClick(e, p, el){
     const i = Number(b.dataset.i); S.polls[p.id] = i; const ok = i === p.poll.a; record(p.topic, ok);
     el.querySelector(".poll").innerHTML = pollHTML(p, i);
     el.querySelector('[data-a="poll"]').innerHTML = toggleHTML(p, i, true);
-    if (ok) addPoints(5); else { markActive(); save(true); }
+    if (ok) rightAnswer(5); else { combo = 0; shakeWrong(el.querySelector(".poll")); markActive(); save(true); }
   } else if (a === "like" || a === "save") {
     const m = a === "like" ? S.liked : S.saved; m[p.id] = !m[p.id];
     b.setAttribute("aria-pressed", m[p.id]); b.querySelector("span").textContent = a === "like" ? (m[p.id] ? "Tetszik" : "Like") : (m[p.id] ? "Mentve" : "Mentés");
@@ -559,7 +585,7 @@ function renderCheck(el, p){
     const fb = el.querySelector(".fb"); fb.hidden = false;
     fb.innerHTML = `<div class="h"><span>${ok ? "Pontosan." : "Majdnem."}</span><span>${ok ? "+15 pont" : ""}</span></div><div>${esc(p.check.why)} ${next}</div>`;
     el.querySelector(".hint").textContent = "Görgess tovább a következő videóhoz";
-    if (ok) addPoints(15, false); else { markActive(); save(true); }
+    if (ok) rightAnswer(15); else { combo = 0; shakeWrong(el.querySelector(".fb")); markActive(); save(true); }
   });
   return el;
 }
