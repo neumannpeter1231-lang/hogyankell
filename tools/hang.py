@@ -7,6 +7,8 @@ A kulcsok a .secrets.env fájlban vannak (ELEVENLABS_API_KEY, GABOR_VOICE_ID).
 """
 import base64, json, os, random, sys, urllib.request
 
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Péter kérése: a narráció ne legyen egyhangú. Arányok: 1/2 Gábor, 1/6-1/6-1/6 Vera (tanító / közepes / élénk).
 # Egy videó a forgatókönyvben "hang" mezővel kötelezően megkaphat egy profilt (kontextusfüggő választás),
 # pl. komoly, biztonsági témánál "vera_tanito", meglepő kísérletnél "vera_elenk".
