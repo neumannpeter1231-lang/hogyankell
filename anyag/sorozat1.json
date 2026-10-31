@@ -1,174 +1,776 @@
 {
  "style": "Vertical 9:16 illustration, bold flat cartoon style with thick black outlines, vivid magenta, teal and yellow palette, high contrast retro comic look with halftone dots, quirky characters with big round eyes, natural skin tones, no text, no letters, no numbers, no logos",
  "videos": [
-  {"id": "szukosseg", "title": "Miért ízletesebb az utolsó süti?", "topic": "Meggyőzés", "tags": "#szűkösség #vásárlás",
+  {
+   "id": "szukosseg",
+   "title": "Szűkösség elve",
+   "topic": "Meggyőzés",
+   "tags": "#szűkösség #vásárlás",
    "scenes": [
-    {"tag": "[curious]", "text": "Két üveg süti, mindkettőben ugyanaz a fajta.", "prompt": "Two glass cookie jars side by side on a table, one with only two cookies, the other full with ten cookies, identical cookies"},
-    {"text": "Az egyikben csak kettő van, a másikban tíz.", "prompt": "A quirky young woman looking curiously at an almost empty cookie jar with two cookies left"},
-    {"text": "Kutatók kétszáz egyetemistát kérdeztek meg, melyik süti a finomabb.", "prompt": "A group of quirky university students tasting cookies at a long table with a researcher holding a clipboard"},
-    {"tag": "[surprised]", "text": "A kevés sütit tartalmazó üvegből vett sütit jobbnak értékelték. Pedig ugyanaz volt!", "prompt": "A quirky student with eyes wide in delight tasting a cookie, sparkles and hearts around the cookie"},
-    {"text": "És még értékesebbnek látták, ha a szemük előtt fogyott el a készlet.", "prompt": "Hands grabbing cookies from a jar that is rapidly emptying, a worried quirky person watching"},
-    {"text": "Ez a szűkösség elve: ami ritka vagy elfogyhat, azt többre tartjuk.", "prompt": "A single golden glowing cookie on a pedestal under a spotlight, admiring cartoon crowd around it"},
-    {"text": "A boltok ezért írják ki: már csak kettő darab, csak ma!", "prompt": "A quirky shopper in a store staring at a flashing red alarm light and a nearly empty shelf with one product left"},
-    {"tag": "[thoughtful]", "text": "A tipp: ha sürget egy ajánlat, kérdezd meg magadtól: magát a dolgot akarom, vagy csak nem akarok lemaradni?", "prompt": "A calm quirky person standing still and thinking with hand on chin while a stressed crowd rushes past"}
+    {
+     "tag": "[curious]",
+     "text": "Két üveg süti, mindkettőben ugyanaz a fajta.",
+     "prompt": "Two glass cookie jars side by side on a table, one with only two cookies, the other full with ten cookies, identical cookies"
+    },
+    {
+     "text": "Az egyikben csak kettő van, a másikban tíz.",
+     "prompt": "A quirky young woman looking curiously at an almost empty cookie jar with two cookies left"
+    },
+    {
+     "text": "Kutatók kétszáz egyetemistát kérdeztek meg, melyik süti a finomabb.",
+     "prompt": "A group of quirky university students tasting cookies at a long table with a researcher holding a clipboard"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "A kevés sütit tartalmazó üvegből vett sütit jobbnak értékelték. Pedig ugyanaz volt!",
+     "prompt": "A quirky student with eyes wide in delight tasting a cookie, sparkles and hearts around the cookie"
+    },
+    {
+     "text": "És még értékesebbnek látták, ha a szemük előtt fogyott el a készlet.",
+     "prompt": "Hands grabbing cookies from a jar that is rapidly emptying, a worried quirky person watching"
+    },
+    {
+     "text": "Ez a szűkösség elve: ami ritka vagy elfogyhat, azt többre tartjuk.",
+     "prompt": "A single golden glowing cookie on a pedestal under a spotlight, admiring cartoon crowd around it"
+    },
+    {
+     "text": "A boltok ezért írják ki: már csak kettő darab, csak ma!",
+     "prompt": "A quirky shopper in a store staring at a flashing red alarm light and a nearly empty shelf with one product left"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: ha sürget egy ajánlat, kérdezd meg magadtól: magát a dolgot akarom, vagy csak nem akarok lemaradni?",
+     "prompt": "A calm quirky person standing still and thinking with hand on chin while a stressed crowd rushes past"
+    }
    ],
-   "poll": {"q": "Melyik sütit értékelték jobbnak?", "o": ["A tele üvegből valót", "A majdnem üres üvegből valót", "Egyformának ítélték"], "a": 1, "why": "Ugyanaz a süti volt, csak a ritkasága miatt tűnt jobbnak."},
-   "check": {"q": "Mit kérdezz magadtól, ha egy ajánlat sürget?", "o": ["Mennyi még a készlet?", "A dolgot akarom, vagy csak nem akarok lemaradni?", "Hol olcsóbb?"], "a": 1, "why": "Így szétválasztod a terméket a sürgetés érzésétől."},
-   "deeper": ["Worchel, Lee és Adewole 1975-ös kísérletében a két darab sütit tartalmazó üvegből vett sütit jobbnak ítélték, mint a tízdarabosból vettet.", "Még értékesebbnek látták, ha a készlet a szemük előtt fogyott el, és ha a hiányt mások nagy kereslete okozta.", "A hamis szűkösség („már csak 2 darab!”, ha nem igaz) manipuláció, és sok helyen fogyasztóvédelmi szabályba ütközik."],
-   "source": {"label": "Worchel, Lee és Adewole (1975), Journal of Personality and Social Psychology", "url": ""},
-   "habit": {"text": "Sürgető ajánlatnál 10 percet várok, mielőtt veszek.", "time": "18:00", "days": 7}},
-
-  {"id": "laboajto", "title": "A kis igen nagy igent hoz", "topic": "Meggyőzés", "tags": "#következetesség #kérés",
+   "poll": {
+    "q": "Melyik sütit értékelték jobbnak?",
+    "o": [
+     "A tele üvegből valót",
+     "A majdnem üres üvegből valót",
+     "Egyformának ítélték"
+    ],
+    "a": 1,
+    "why": "Ugyanaz a süti volt, csak a ritkasága miatt tűnt jobbnak."
+   },
+   "check": {
+    "q": "Mit kérdezz magadtól, ha egy ajánlat sürget?",
+    "o": [
+     "Mennyi még a készlet?",
+     "A dolgot akarom, vagy csak nem akarok lemaradni?",
+     "Hol olcsóbb?"
+    ],
+    "a": 1,
+    "why": "Így szétválasztod a terméket a sürgetés érzésétől."
+   },
+   "deeper": [
+    "Worchel, Lee és Adewole 1975-ös kísérletében a két darab sütit tartalmazó üvegből vett sütit jobbnak ítélték, mint a tízdarabosból vettet.",
+    "Még értékesebbnek látták, ha a készlet a szemük előtt fogyott el, és ha a hiányt mások nagy kereslete okozta.",
+    "A hamis szűkösség („már csak 2 darab!”, ha nem igaz) manipuláció, és sok helyen fogyasztóvédelmi szabályba ütközik."
+   ],
+   "source": {
+    "label": "Worchel, Lee és Adewole (1975), Journal of Personality and Social Psychology",
+    "url": ""
+   },
+   "habit": {
+    "text": "Sürgető ajánlatnál 10 percet várok, mielőtt veszek.",
+    "time": "18:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "laboajto",
+   "title": "Láb az ajtóban",
+   "topic": "Meggyőzés",
+   "tags": "#következetesség #kérés",
    "scenes": [
-    {"tag": "[curious]", "text": "Kutatók háztulajdonosoktól kértek valamit: tegyenek ki az udvarukra egy hatalmas, csúnya táblát, hogy vezess óvatosan.", "prompt": "A huge ugly billboard sign being placed on a tidy front lawn of a cute house, the shocked homeowner in the doorway"},
-    {"text": "A legtöbben persze nemet mondtak.", "prompt": "A quirky homeowner firmly shaking head and crossing arms at the front door, refusing"},
-    {"text": "Egy másik csoportot két héttel korábban egy apróságra kértek: ragasszanak ki egy kis matricát.", "prompt": "A friendly volunteer handing a tiny sticker to a smiling homeowner at the door"},
-    {"text": "Erre szinte mindenki igent mondott.", "prompt": "A happy homeowner sticking a tiny sticker on a window, thumbs up"},
-    {"tag": "[surprised]", "text": "Amikor később őket is a nagy táblára kérték, többségük igent mondott. Sokszor annyian, mint az első csoportban.", "prompt": "The same homeowner cheerfully helping to carry the huge billboard sign onto the lawn"},
-    {"text": "Ez a láb az ajtóban technika. Aki egyszer igent mondott, következetes akar maradni önmagához.", "prompt": "A cartoon foot wedged in a half open front door, a salesperson smiling behind it"},
-    {"text": "Így épül fel egy ingyenes próbaidőszak vagy egy kis szívesség is.", "prompt": "A quirky person climbing small stairs where each step gets bigger, leading to a giant door"},
-    {"tag": "[thoughtful]", "text": "A tipp: ha egy kis igen után jön a nagy kérés, döntsd el újra, tiszta lappal, mintha az első igen nem is lett volna.", "prompt": "A calm quirky person wiping a chalkboard clean with a sponge, fresh start feeling"}
+    {
+     "tag": "[curious]",
+     "text": "Kutatók háztulajdonosoktól kértek valamit: tegyenek ki az udvarukra egy hatalmas, csúnya táblát, hogy vezess óvatosan.",
+     "prompt": "A huge ugly billboard sign being placed on a tidy front lawn of a cute house, the shocked homeowner in the doorway"
+    },
+    {
+     "text": "A legtöbben persze nemet mondtak.",
+     "prompt": "A quirky homeowner firmly shaking head and crossing arms at the front door, refusing"
+    },
+    {
+     "text": "Egy másik csoportot két héttel korábban egy apróságra kértek: ragasszanak ki egy kis matricát.",
+     "prompt": "A friendly volunteer handing a tiny sticker to a smiling homeowner at the door"
+    },
+    {
+     "text": "Erre szinte mindenki igent mondott.",
+     "prompt": "A happy homeowner sticking a tiny sticker on a window, thumbs up"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Amikor később őket is a nagy táblára kérték, többségük igent mondott. Sokszor annyian, mint az első csoportban.",
+     "prompt": "The same homeowner cheerfully helping to carry the huge billboard sign onto the lawn"
+    },
+    {
+     "text": "Ez a láb az ajtóban technika. Aki egyszer igent mondott, következetes akar maradni önmagához.",
+     "prompt": "A cartoon foot wedged in a half open front door, a salesperson smiling behind it"
+    },
+    {
+     "text": "Így épül fel egy ingyenes próbaidőszak vagy egy kis szívesség is.",
+     "prompt": "A quirky person climbing small stairs where each step gets bigger, leading to a giant door"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: ha egy kis igen után jön a nagy kérés, döntsd el újra, tiszta lappal, mintha az első igen nem is lett volna.",
+     "prompt": "A calm quirky person wiping a chalkboard clean with a sponge, fresh start feeling"
+    }
    ],
-   "poll": {"q": "Kik mondtak nagyobb arányban igent a nagy táblára?", "o": ["Akiket csak a táblára kértek", "Akik előtte egy kis matricát kiraktak", "Ugyanannyian"], "a": 1, "why": "Az első kis igen után a következetesség húzta őket a nagy igen felé."},
-   "check": {"q": "Hogyan védekezz a láb az ajtóban ellen?", "o": ["Soha ne mondj igent semmire", "A nagy kérésről döntsd el újra, tiszta lappal", "Mindig alkudj"], "a": 1, "why": "Az előző igen nem kötelez; a nagy kérést önmagában mérd le."},
-   "deeper": ["Freedman és Fraser 1966-os kísérletében a kis kérés után a háztulajdonosok kb. 76 százaléka vállalta a nagy táblát, az előzmény nélküli csoportnál kb. 17 százalék.", "A magyarázat a következetesség: aki egyszer segítőkésznek mutatta magát, ehhez a képhez akar igazodni.", "A technika tisztességes, ha a második kérés is valóban jó a másiknak."],
-   "source": {"label": "Freedman és Fraser (1966), Journal of Personality and Social Psychology", "url": ""},
-   "habit": {"text": "Egy nagy kérésre csak egy éjszaka alvás után mondok igent.", "time": "20:00", "days": 7}},
-
-  {"id": "torolkozo", "title": "A szállodai törölköző-trükk", "topic": "Meggyőzés", "tags": "#társasbizonyíték #szokások",
+   "poll": {
+    "q": "Kik mondtak nagyobb arányban igent a nagy táblára?",
+    "o": [
+     "Akiket csak a táblára kértek",
+     "Akik előtte egy kis matricát kiraktak",
+     "Ugyanannyian"
+    ],
+    "a": 1,
+    "why": "Az első kis igen után a következetesség húzta őket a nagy igen felé."
+   },
+   "check": {
+    "q": "Hogyan védekezz a láb az ajtóban ellen?",
+    "o": [
+     "Soha ne mondj igent semmire",
+     "A nagy kérésről döntsd el újra, tiszta lappal",
+     "Mindig alkudj"
+    ],
+    "a": 1,
+    "why": "Az előző igen nem kötelez; a nagy kérést önmagában mérd le."
+   },
+   "deeper": [
+    "Freedman és Fraser 1966-os kísérletében a kis kérés után a háztulajdonosok kb. 76 százaléka vállalta a nagy táblát, az előzmény nélküli csoportnál kb. 17 százalék.",
+    "A magyarázat a következetesség: aki egyszer segítőkésznek mutatta magát, ehhez a képhez akar igazodni.",
+    "A technika tisztességes, ha a második kérés is valóban jó a másiknak."
+   ],
+   "source": {
+    "label": "Freedman és Fraser (1966), Journal of Personality and Social Psychology",
+    "url": ""
+   },
+   "habit": {
+    "text": "Egy nagy kérésre csak egy éjszaka alvás után mondok igent.",
+    "time": "20:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "torolkozo",
+   "title": "Társas bizonyíték",
+   "topic": "Meggyőzés",
+   "tags": "#társasbizonyíték #szokások",
    "scenes": [
-    {"tag": "[curious]", "text": "Egy szálloda arra kérte a vendégeit, hogy használják újra a törölközőjüket.", "prompt": "A cozy hotel bathroom with a neatly hanging towel and a small card on the towel rack"},
-    {"text": "Az egyik kártyán a környezetvédelemről szólt az üzenet.", "prompt": "A small hotel card illustration with a green leaf and planet earth, a guest reading it with a bored face"},
-    {"text": "A másikon ez állt: a vendégek többsége újrahasználja a törölközőjét.", "prompt": "A hotel card illustration showing many happy cartoon guests, a guest reading it with interest"},
-    {"tag": "[surprised]", "text": "A második üzenet többeket győzött meg. És a legjobban az működött: az ebben a szobában lakók többsége így tett.", "prompt": "A quirky hotel guest hanging the towel back with a proud smile, ghostly friendly silhouettes of previous guests nodding behind"},
-    {"text": "Ez a társas bizonyíték: ha nem vagyunk biztosak, azt nézzük, mit csinálnak a hozzánk hasonlók.", "prompt": "A crowd of quirky people all looking up at the sky, one newcomer joining them and looking up too"},
-    {"text": "Ezért hatnak a vélemények, a sorban állás, a sokan már választották felirat.", "prompt": "A long cheerful queue in front of a small food stand while the empty stand next door is ignored"},
-    {"text": "Csakhogy a tömeg nem mindig tudja jobban.", "prompt": "A line of quirky people following each other off the edge of a small cliff into a pond, splash"},
-    {"tag": "[thoughtful]", "text": "A tipp: ha azon kapod magad, hogy azért választasz, mert mások is, kérdezd meg: nekem is ez a jó?", "prompt": "A quirky person stepping out of a marching crowd and walking a different colorful path, confident smile"}
+    {
+     "tag": "[curious]",
+     "text": "Egy szálloda arra kérte a vendégeit, hogy használják újra a törölközőjüket.",
+     "prompt": "A cozy hotel bathroom with a neatly hanging towel and a small card on the towel rack"
+    },
+    {
+     "text": "Az egyik kártyán a környezetvédelemről szólt az üzenet.",
+     "prompt": "A small hotel card illustration with a green leaf and planet earth, a guest reading it with a bored face"
+    },
+    {
+     "text": "A másikon ez állt: a vendégek többsége újrahasználja a törölközőjét.",
+     "prompt": "A hotel card illustration showing many happy cartoon guests, a guest reading it with interest"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "A második üzenet többeket győzött meg. És a legjobban az működött: az ebben a szobában lakók többsége így tett.",
+     "prompt": "A quirky hotel guest hanging the towel back with a proud smile, ghostly friendly silhouettes of previous guests nodding behind"
+    },
+    {
+     "text": "Ez a társas bizonyíték: ha nem vagyunk biztosak, azt nézzük, mit csinálnak a hozzánk hasonlók.",
+     "prompt": "A crowd of quirky people all looking up at the sky, one newcomer joining them and looking up too"
+    },
+    {
+     "text": "Ezért hatnak a vélemények, a sorban állás, a sokan már választották felirat.",
+     "prompt": "A long cheerful queue in front of a small food stand while the empty stand next door is ignored"
+    },
+    {
+     "text": "Csakhogy a tömeg nem mindig tudja jobban.",
+     "prompt": "A line of quirky people following each other off the edge of a small cliff into a pond, splash"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: ha azon kapod magad, hogy azért választasz, mert mások is, kérdezd meg: nekem is ez a jó?",
+     "prompt": "A quirky person stepping out of a marching crowd and walking a different colorful path, confident smile"
+    }
    ],
-   "poll": {"q": "Melyik üzenet működött a legjobban?", "o": ["A környezetvédelmi", "„A vendégek többsége újrahasználja”", "„Az ebben a szobában lakók többsége így tett”"], "a": 2, "why": "Minél hasonlóbbak hozzánk mások, annál jobban hat a példájuk."},
-   "check": {"q": "Mi a társas bizonyíték lényege?", "o": ["A szakértőnek hiszünk", "Bizonytalanságban a hozzánk hasonlókat követjük", "A ritka dolog értékes"], "a": 1, "why": "Ha nem tudjuk, mi a helyes, mások viselkedése a gyors mérce."},
-   "deeper": ["Goldstein, Cialdini és Griskevicius 2008-as szállodai kísérletében a standard környezetvédelmi üzenetnél kb. 35, a „vendégek többsége” üzenetnél kb. 44, az „ebben a szobában lakók” üzenetnél kb. 49 százalék használta újra a törölközőt.", "A hatás attól erősebb, minél jobban azonosulunk azzal a csoporttal, akire hivatkoznak.", "A kitalált vélemény vagy hamis népszerűség gyártott jel, és manipuláció."],
-   "source": {"label": "Goldstein, Cialdini és Griskevicius (2008), Journal of Consumer Research", "url": ""},
-   "habit": {"text": "Vásárlás előtt leírom, nekem miért jó, nem csak azt, hogy más mit vett.", "time": "19:00", "days": 7}},
-
-  {"id": "kavefolt", "title": "Miért szerethetőbb, aki hibázik?", "topic": "Meggyőzés", "tags": "#rokonszenv #hitelesség",
+   "poll": {
+    "q": "Melyik üzenet működött a legjobban?",
+    "o": [
+     "A környezetvédelmi",
+     "„A vendégek többsége újrahasználja”",
+     "„Az ebben a szobában lakók többsége így tett”"
+    ],
+    "a": 2,
+    "why": "Minél hasonlóbbak hozzánk mások, annál jobban hat a példájuk."
+   },
+   "check": {
+    "q": "Mi a társas bizonyíték lényege?",
+    "o": [
+     "A szakértőnek hiszünk",
+     "Bizonytalanságban a hozzánk hasonlókat követjük",
+     "A ritka dolog értékes"
+    ],
+    "a": 1,
+    "why": "Ha nem tudjuk, mi a helyes, mások viselkedése a gyors mérce."
+   },
+   "deeper": [
+    "Goldstein, Cialdini és Griskevicius 2008-as szállodai kísérletében a standard környezetvédelmi üzenetnél kb. 35, a „vendégek többsége” üzenetnél kb. 44, az „ebben a szobában lakók” üzenetnél kb. 49 százalék használta újra a törölközőt.",
+    "A hatás attól erősebb, minél jobban azonosulunk azzal a csoporttal, akire hivatkoznak.",
+    "A kitalált vélemény vagy hamis népszerűség gyártott jel, és manipuláció."
+   ],
+   "source": {
+    "label": "Goldstein, Cialdini és Griskevicius (2008), Journal of Consumer Research",
+    "url": ""
+   },
+   "habit": {
+    "text": "Vásárlás előtt leírom, nekem miért jó, nem csak azt, hogy más mit vett.",
+    "time": "19:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "kavefolt",
+   "title": "Pratfall-hatás",
+   "topic": "Meggyőzés",
+   "tags": "#rokonszenv #hitelesség",
    "scenes": [
-    {"tag": "[curious]", "text": "Egy kísérletben egyetemisták hangfelvételt hallgattak egy vetélkedő jelöltjéről.", "prompt": "A quirky student wearing big headphones listening intently to an old tape recorder"},
-    {"text": "A jelölt szinte minden kérdésre jól válaszolt. Igazi zseni volt.", "prompt": "A brilliant quiz show contestant at a podium with glowing lightbulbs above his head, audience applauding"},
-    {"text": "A felvétel egyik változatában a végén fellökte a kávéját, és leöntötte magát.", "prompt": "The same brilliant contestant clumsily knocking over a cup of coffee onto his suit, splash, embarrassed face"},
-    {"tag": "[surprised]", "text": "A hallgatók őt szerethetőbbnek ítélték, mint azt a zsenit, aki nem hibázott.", "prompt": "Students holding up big heart signs toward the coffee stained contestant, he smiles sheepishly"},
-    {"text": "Egy kis baki emberivé teszi a nagyon profit.", "prompt": "A perfect shiny robot-like statue on one side and a warm smiling human with a coffee stain on the other, the crowd hugging the human"},
-    {"text": "Fontos: ez csak annak segít, aki amúgy is jól teljesít. Az átlagosnak a baki inkább árt.", "prompt": "An average quirky contestant spilling coffee while the audience groans and turns away"},
-    {"text": "Ezért hihetőbb az ajánlat is, ami egy kis hátrányt is bevall.", "prompt": "A friendly salesperson pointing honestly at a tiny scratch on a product while the customer nods trustingly"},
-    {"tag": "[warmly]", "text": "A tipp: ha jó vagy valamiben, ne rejtsd el a kis hibáidat. Egy őszinte beismerés hitelesebbé tesz.", "prompt": "A confident quirky person shrugging with a warm smile, a small coffee stain on the shirt, glowing friendly aura"}
+    {
+     "tag": "[curious]",
+     "text": "Egy kísérletben egyetemisták hangfelvételt hallgattak egy vetélkedő jelöltjéről.",
+     "prompt": "A quirky student wearing big headphones listening intently to an old tape recorder"
+    },
+    {
+     "text": "A jelölt szinte minden kérdésre jól válaszolt. Igazi zseni volt.",
+     "prompt": "A brilliant quiz show contestant at a podium with glowing lightbulbs above his head, audience applauding"
+    },
+    {
+     "text": "A felvétel egyik változatában a végén fellökte a kávéját, és leöntötte magát.",
+     "prompt": "The same brilliant contestant clumsily knocking over a cup of coffee onto his suit, splash, embarrassed face"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "A hallgatók őt szerethetőbbnek ítélték, mint azt a zsenit, aki nem hibázott.",
+     "prompt": "Students holding up big heart signs toward the coffee stained contestant, he smiles sheepishly"
+    },
+    {
+     "text": "Egy kis baki emberivé teszi a nagyon profit.",
+     "prompt": "A perfect shiny robot-like statue on one side and a warm smiling human with a coffee stain on the other, the crowd hugging the human"
+    },
+    {
+     "text": "Fontos: ez csak annak segít, aki amúgy is jól teljesít. Az átlagosnak a baki inkább árt.",
+     "prompt": "An average quirky contestant spilling coffee while the audience groans and turns away"
+    },
+    {
+     "text": "Ezért hihetőbb az ajánlat is, ami egy kis hátrányt is bevall.",
+     "prompt": "A friendly salesperson pointing honestly at a tiny scratch on a product while the customer nods trustingly"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: ha jó vagy valamiben, ne rejtsd el a kis hibáidat. Egy őszinte beismerés hitelesebbé tesz.",
+     "prompt": "A confident quirky person shrugging with a warm smile, a small coffee stain on the shirt, glowing friendly aura"
+    }
    ],
-   "poll": {"q": "Kit tartottak a legszerethetőbbnek?", "o": ["A hibátlan zsenit", "A zsenit, aki leöntötte magát kávéval", "Az átlagos jelöltet"], "a": 1, "why": "A nagyon jónál egy kis baki emberivé, rokonszenvessé tesz."},
-   "check": {"q": "Kinek segít egy kis baki?", "o": ["Mindenkinek", "Annak, aki amúgy is kiválóan teljesít", "Annak, aki gyengén teljesít"], "a": 1, "why": "Az átlagosnál a baki inkább ront a képen."},
-   "deeper": ["Aronson, Willerman és Floyd 1966-os kísérlete (pratfall-hatás): a kiválóan teljesítő jelölt kávéöntés után rokonszenvesebb lett, az átlagos jelölt viszont veszített.", "A későbbi kutatások szerint a hatás erőssége függ a hallgató önértékelésétől és a helyzettől is.", "Kapcsolódó jelenség a „kétoldalú üzenet”: egy kisebb hátrány beismerése növeli az erős állítások hitelét."],
-   "source": {"label": "Aronson, Willerman és Floyd (1966), Psychonomic Science", "url": ""},
-   "habit": {"text": "Ma egy kis hibámat nyugodtan, magyarázkodás nélkül beismerem.", "time": "20:00", "days": 7}},
-
-  {"id": "rokia", "title": "Egy arc többet ér millió számnál", "topic": "Meggyőzés", "tags": "#történetmesélés #adományozás",
+   "poll": {
+    "q": "Kit tartottak a legszerethetőbbnek?",
+    "o": [
+     "A hibátlan zsenit",
+     "A zsenit, aki leöntötte magát kávéval",
+     "Az átlagos jelöltet"
+    ],
+    "a": 1,
+    "why": "A nagyon jónál egy kis baki emberivé, rokonszenvessé tesz."
+   },
+   "check": {
+    "q": "Kinek segít egy kis baki?",
+    "o": [
+     "Mindenkinek",
+     "Annak, aki amúgy is kiválóan teljesít",
+     "Annak, aki gyengén teljesít"
+    ],
+    "a": 1,
+    "why": "Az átlagosnál a baki inkább ront a képen."
+   },
+   "deeper": [
+    "Aronson, Willerman és Floyd 1966-os kísérlete (pratfall-hatás): a kiválóan teljesítő jelölt kávéöntés után rokonszenvesebb lett, az átlagos jelölt viszont veszített.",
+    "A későbbi kutatások szerint a hatás erőssége függ a hallgató önértékelésétől és a helyzettől is.",
+    "Kapcsolódó jelenség a „kétoldalú üzenet”: egy kisebb hátrány beismerése növeli az erős állítások hitelét."
+   ],
+   "source": {
+    "label": "Aronson, Willerman és Floyd (1966), Psychonomic Science",
+    "url": ""
+   },
+   "habit": {
+    "text": "Ma egy kis hibámat nyugodtan, magyarázkodás nélkül beismerem.",
+    "time": "20:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "rokia",
+   "title": "Azonosítható áldozat hatás",
+   "topic": "Meggyőzés",
+   "tags": "#történetmesélés #adományozás",
    "scenes": [
-    {"tag": "[curious]", "text": "Kutatók adományt gyűjtöttek, és kétféle levelet mutattak az embereknek.", "prompt": "Two different letters on a table, one full of charts and statistics, the other with a drawing of a little girl"},
-    {"text": "Az egyikben számok voltak: milliók éheznek Afrikában.", "prompt": "A quirky person reading a sheet full of bar charts and huge numbers with a glazed, tired expression"},
-    {"text": "A másikban egyetlen kislány története: Rokiáé, aki hétéves és szegény.", "prompt": "A warm portrait of a smiling little African girl drawn in soft colors, a reader holding the letter with emotion"},
-    {"tag": "[surprised]", "text": "Rokia történetére az emberek nagyjából kétszer annyit adtak.", "prompt": "A donation box overflowing with coins and banknotes next to the little girl's letter, while a box next to the chart letter is nearly empty"},
-    {"tag": "[thoughtful]", "text": "És ami meglepő: amikor a kislány mellé a számokat is odaírták, csökkent az adomány.", "prompt": "A reader frowning at a letter where charts are covering the girl's portrait, coins falling back out of the hand"},
-    {"text": "Ez az azonosítható áldozat hatása. Egy embert átérzünk, a számokat csak megértjük.", "prompt": "A big glowing heart connecting a reader and a single person, while a giant cloud of numbers floats away unnoticed"},
-    {"text": "Ezért nyit minden jó beszéd egy konkrét emberrel.", "prompt": "A speaker on a small stage holding up a single photo while the audience leans forward captivated"},
-    {"tag": "[warmly]", "text": "A tipp: ha meg akarsz győzni valakit, ne statisztikával kezdd. Mesélj el egy ember történetét, és utána jöhet a szám.", "prompt": "A quirky person telling a story at a campfire with friends listening wide-eyed, warm glow"}
+    {
+     "tag": "[curious]",
+     "text": "Kutatók adományt gyűjtöttek, és kétféle levelet mutattak az embereknek.",
+     "prompt": "Two different letters on a table, one full of charts and statistics, the other with a drawing of a little girl"
+    },
+    {
+     "text": "Az egyikben számok voltak: milliók éheznek Afrikában.",
+     "prompt": "A quirky person reading a sheet full of bar charts and huge numbers with a glazed, tired expression"
+    },
+    {
+     "text": "A másikban egyetlen kislány története: Rokiáé, aki hétéves és szegény.",
+     "prompt": "A warm portrait of a smiling little African girl drawn in soft colors, a reader holding the letter with emotion"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Rokia történetére az emberek nagyjából kétszer annyit adtak.",
+     "prompt": "A donation box overflowing with coins and banknotes next to the little girl's letter, while a box next to the chart letter is nearly empty"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "És ami meglepő: amikor a kislány mellé a számokat is odaírták, csökkent az adomány.",
+     "prompt": "A reader frowning at a letter where charts are covering the girl's portrait, coins falling back out of the hand"
+    },
+    {
+     "text": "Ez az azonosítható áldozat hatása. Egy embert átérzünk, a számokat csak megértjük.",
+     "prompt": "A big glowing heart connecting a reader and a single person, while a giant cloud of numbers floats away unnoticed"
+    },
+    {
+     "text": "Ezért nyit minden jó beszéd egy konkrét emberrel.",
+     "prompt": "A speaker on a small stage holding up a single photo while the audience leans forward captivated"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: ha meg akarsz győzni valakit, ne statisztikával kezdd. Mesélj el egy ember történetét, és utána jöhet a szám.",
+     "prompt": "A quirky person telling a story at a campfire with friends listening wide-eyed, warm glow"
+    }
    ],
-   "poll": {"q": "Melyik levél hozott több adományt?", "o": ["A statisztikás", "A kislány története", "A kettő együtt"], "a": 1, "why": "Egy konkrét emberrel együtt tudunk érezni, a számokkal kevésbé."},
-   "check": {"q": "Mi történt, amikor a kislány mellé számokat is írtak?", "o": ["Nőtt az adomány", "Csökkent az adomány", "Nem változott"], "a": 1, "why": "A számok „elemző módba” kapcsoltak, és ez gyengítette az együttérzést."},
-   "deeper": ["Small, Loewenstein és Slovic 2007-es vizsgálatában Rokia története átlagosan kb. 2,4 dollárt, a statisztikai levél kb. 1,1 dollárt hozott (5 dollárból).", "A kettő együtt kb. 1,4 dollárt hozott: a számok csökkentették az egyéni történet hatását.", "A jelenség neve azonosítható áldozat hatás (identifiable victim effect)."],
-   "source": {"label": "Small, Loewenstein és Slovic (2007), Organizational Behavior and Human Decision Processes", "url": ""},
-   "habit": {"text": "A következő érvelésemet egy konkrét ember történetével kezdem.", "time": "19:00", "days": 7}},
-
-  {"id": "lekvar", "title": "A 24 féle lekvár csapdája", "topic": "Pszichológia", "tags": "#döntés #vásárlás",
+   "poll": {
+    "q": "Melyik levél hozott több adományt?",
+    "o": [
+     "A statisztikás",
+     "A kislány története",
+     "A kettő együtt"
+    ],
+    "a": 1,
+    "why": "Egy konkrét emberrel együtt tudunk érezni, a számokkal kevésbé."
+   },
+   "check": {
+    "q": "Mi történt, amikor a kislány mellé számokat is írtak?",
+    "o": [
+     "Nőtt az adomány",
+     "Csökkent az adomány",
+     "Nem változott"
+    ],
+    "a": 1,
+    "why": "A számok „elemző módba” kapcsoltak, és ez gyengítette az együttérzést."
+   },
+   "deeper": [
+    "Small, Loewenstein és Slovic 2007-es vizsgálatában Rokia története átlagosan kb. 2,4 dollárt, a statisztikai levél kb. 1,1 dollárt hozott (5 dollárból).",
+    "A kettő együtt kb. 1,4 dollárt hozott: a számok csökkentették az egyéni történet hatását.",
+    "A jelenség neve azonosítható áldozat hatás (identifiable victim effect)."
+   ],
+   "source": {
+    "label": "Small, Loewenstein és Slovic (2007), Organizational Behavior and Human Decision Processes",
+    "url": ""
+   },
+   "habit": {
+    "text": "A következő érvelésemet egy konkrét ember történetével kezdem.",
+    "time": "19:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "lekvar",
+   "title": "Választási bénulás",
+   "topic": "Pszichológia",
+   "tags": "#döntés #vásárlás",
    "scenes": [
-    {"tag": "[curious]", "text": "Egy csemegeboltban kóstolóasztalt állítottak fel lekvárokkal.", "prompt": "A charming gourmet grocery store with a tasting table of colorful jam jars, friendly staff behind it"},
-    {"text": "Egyszer huszonnégy féle lekvár volt rajta, máskor csak hat.", "prompt": "Split view: a huge table crowded with dozens of jam jars on the left, a small neat table with six jars on the right"},
-    {"text": "A nagy választék több embert csalogatott oda.", "prompt": "A big curious crowd gathering around the huge jam table, pointing and tasting"},
-    {"tag": "[surprised]", "text": "De vásárolni a hatfélénél vásároltak sokkal többen. Körülbelül tízszer annyian.", "prompt": "Happy shoppers walking away with jam jars from the small table, while the crowd at the big table leaves empty-handed"},
-    {"text": "Ez a választási bénulás. Túl sok lehetőség között nehéz dönteni, és könnyebb inkább semmit sem választani.", "prompt": "A quirky shopper frozen in front of an endless wall of jam jars, dizzy spiral eyes"},
-    {"text": "Ugyanez történik a Netflixnél, amikor fél órát görgetsz, aztán nem nézel semmit.", "prompt": "A quirky person on a couch endlessly scrolling a TV menu with countless tiles, popcorn untouched, yawning"},
-    {"text": "És ezért ad egy jó eladó két-három ajánlatot, nem húszat.", "prompt": "A friendly shop assistant presenting just three products on a small tray to a relieved customer"},
-    {"tag": "[thoughtful]", "text": "A tipp: ha elakadsz a választásban, szűkítsd le három lehetőségre, és csak azok közül dönts.", "prompt": "A quirky person crossing out many options on a big board, circling only three, satisfied smile"}
+    {
+     "tag": "[curious]",
+     "text": "Egy csemegeboltban kóstolóasztalt állítottak fel lekvárokkal.",
+     "prompt": "A charming gourmet grocery store with a tasting table of colorful jam jars, friendly staff behind it"
+    },
+    {
+     "text": "Egyszer huszonnégy féle lekvár volt rajta, máskor csak hat.",
+     "prompt": "Split view: a huge table crowded with dozens of jam jars on the left, a small neat table with six jars on the right"
+    },
+    {
+     "text": "A nagy választék több embert csalogatott oda.",
+     "prompt": "A big curious crowd gathering around the huge jam table, pointing and tasting"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "De vásárolni a hatfélénél vásároltak sokkal többen. Körülbelül tízszer annyian.",
+     "prompt": "Happy shoppers walking away with jam jars from the small table, while the crowd at the big table leaves empty-handed"
+    },
+    {
+     "text": "Ez a választási bénulás. Túl sok lehetőség között nehéz dönteni, és könnyebb inkább semmit sem választani.",
+     "prompt": "A quirky shopper frozen in front of an endless wall of jam jars, dizzy spiral eyes"
+    },
+    {
+     "text": "Ugyanez történik a Netflixnél, amikor fél órát görgetsz, aztán nem nézel semmit.",
+     "prompt": "A quirky person on a couch endlessly scrolling a TV menu with countless tiles, popcorn untouched, yawning"
+    },
+    {
+     "text": "És ezért ad egy jó eladó két-három ajánlatot, nem húszat.",
+     "prompt": "A friendly shop assistant presenting just three products on a small tray to a relieved customer"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: ha elakadsz a választásban, szűkítsd le három lehetőségre, és csak azok közül dönts.",
+     "prompt": "A quirky person crossing out many options on a big board, circling only three, satisfied smile"
+    }
    ],
-   "poll": {"q": "Melyik asztalnál vásároltak többen?", "o": ["A 24 féle lekvárosnál", "A 6 féle lekvárosnál", "Ugyanannyian"], "a": 1, "why": "Kevesebb lehetőség közül könnyebb dönteni."},
-   "check": {"q": "Mit tegyél, ha túl sok lehetőség között elakadsz?", "o": ["Nézz meg még többet", "Szűkíts le háromra, és azok közül dönts", "Halaszd el a döntést hetekre"], "a": 1, "why": "A szűkebb választék csökkenti a döntési terhet."},
-   "deeper": ["Iyengar és Lepper 2000-es kísérletében a 24 féle lekvárnál a betérők kb. 3 százaléka, a 6 félénél kb. 30 százaléka vásárolt, pedig a nagy asztal több embert vonzott.", "Későbbi összefoglalók szerint a hatás nem mindig jelentkezik: erősebb, ha nehéz összehasonlítani a lehetőségeket, és ha nincs előre kialakult preferenciánk.", "A jelenség neve választási túlterhelés vagy választási bénulás."],
-   "source": {"label": "Iyengar és Lepper (2000), Journal of Personality and Social Psychology", "url": ""},
-   "habit": {"text": "Döntés előtt három lehetőségre szűkítem a választékot.", "time": "18:00", "days": 7}},
-
-  {"id": "rim", "title": "Ami rímel, az igaznak tűnik", "topic": "Kommunikáció", "tags": "#retorika #nyelv",
+   "poll": {
+    "q": "Melyik asztalnál vásároltak többen?",
+    "o": [
+     "A 24 féle lekvárosnál",
+     "A 6 féle lekvárosnál",
+     "Ugyanannyian"
+    ],
+    "a": 1,
+    "why": "Kevesebb lehetőség közül könnyebb dönteni."
+   },
+   "check": {
+    "q": "Mit tegyél, ha túl sok lehetőség között elakadsz?",
+    "o": [
+     "Nézz meg még többet",
+     "Szűkíts le háromra, és azok közül dönts",
+     "Halaszd el a döntést hetekre"
+    ],
+    "a": 1,
+    "why": "A szűkebb választék csökkenti a döntési terhet."
+   },
+   "deeper": [
+    "Iyengar és Lepper 2000-es kísérletében a 24 féle lekvárnál a betérők kb. 3 százaléka, a 6 félénél kb. 30 százaléka vásárolt, pedig a nagy asztal több embert vonzott.",
+    "Későbbi összefoglalók szerint a hatás nem mindig jelentkezik: erősebb, ha nehéz összehasonlítani a lehetőségeket, és ha nincs előre kialakult preferenciánk.",
+    "A jelenség neve választási túlterhelés vagy választási bénulás."
+   ],
+   "source": {
+    "label": "Iyengar és Lepper (2000), Journal of Personality and Social Psychology",
+    "url": ""
+   },
+   "habit": {
+    "text": "Döntés előtt három lehetőségre szűkítem a választékot.",
+    "time": "18:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "rim",
+   "title": "Rím mint érv",
+   "topic": "Kommunikáció",
+   "tags": "#retorika #nyelv",
    "scenes": [
-    {"tag": "[curious]", "text": "Melyik mondás tűnik igazabbnak? Amelyik rímel, vagy amelyik nem?", "prompt": "Two speech bubbles floating above a puzzled quirky person, one bubble decorated with music notes and sparkles, the other plain grey"},
-    {"text": "Kutatók régi mondásokat mutattak embereknek, két változatban.", "prompt": "A researcher showing two large cards to a curious participant in a cozy lab"},
-    {"text": "Az egyik rímelt, a másik ugyanazt mondta, csak rím nélkül.", "prompt": "Two identical cards side by side, one with a rhythmic wavy colorful border, the other plain"},
-    {"tag": "[surprised]", "text": "A rímes változatot igazabbnak ítélték, pedig a jelentése ugyanaz volt.", "prompt": "A participant nodding enthusiastically at the colorful rhythmic card with a big check mark glow"},
-    {"text": "Az agyunk a könnyen feldolgozható mondatot igaznak érzi. Ami gördülékeny, az hihető.", "prompt": "A cartoon brain happily sliding down a smooth colorful water slide"},
-    {"text": "Ezért ragadnak meg a szlogenek és a reklámdalok.", "prompt": "A quirky person humming with music notes floating out of their head while walking past colorful billboards"},
-    {"text": "És ezért győz gyakran az egyszerű, rövid mondat a bonyolult érvelés felett.", "prompt": "A tiny clear arrow hitting a target bullseye while a huge tangled knot of arrows misses completely"},
-    {"tag": "[thoughtful]", "text": "A tipp: ha valami fülbemászó, attól még nem igaz. Kérdezd meg: mi a bizonyíték?", "prompt": "A quirky detective with a magnifying glass inspecting a shiny catchy slogan bubble"}
+    {
+     "tag": "[curious]",
+     "text": "Melyik mondás tűnik igazabbnak? Amelyik rímel, vagy amelyik nem?",
+     "prompt": "Two speech bubbles floating above a puzzled quirky person, one bubble decorated with music notes and sparkles, the other plain grey"
+    },
+    {
+     "text": "Kutatók régi mondásokat mutattak embereknek, két változatban.",
+     "prompt": "A researcher showing two large cards to a curious participant in a cozy lab"
+    },
+    {
+     "text": "Az egyik rímelt, a másik ugyanazt mondta, csak rím nélkül.",
+     "prompt": "Two identical cards side by side, one with a rhythmic wavy colorful border, the other plain"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "A rímes változatot igazabbnak ítélték, pedig a jelentése ugyanaz volt.",
+     "prompt": "A participant nodding enthusiastically at the colorful rhythmic card with a big check mark glow"
+    },
+    {
+     "text": "Az agyunk a könnyen feldolgozható mondatot igaznak érzi. Ami gördülékeny, az hihető.",
+     "prompt": "A cartoon brain happily sliding down a smooth colorful water slide"
+    },
+    {
+     "text": "Ezért ragadnak meg a szlogenek és a reklámdalok.",
+     "prompt": "A quirky person humming with music notes floating out of their head while walking past colorful billboards"
+    },
+    {
+     "text": "És ezért győz gyakran az egyszerű, rövid mondat a bonyolult érvelés felett.",
+     "prompt": "A tiny clear arrow hitting a target bullseye while a huge tangled knot of arrows misses completely"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: ha valami fülbemászó, attól még nem igaz. Kérdezd meg: mi a bizonyíték?",
+     "prompt": "A quirky detective with a magnifying glass inspecting a shiny catchy slogan bubble"
+    }
    ],
-   "poll": {"q": "Melyik változatot ítélték igazabbnak?", "o": ["A rímeset", "A rím nélkülit", "Egyformának"], "a": 0, "why": "A könnyen feldolgozható mondat igaznak érződik."},
-   "check": {"q": "Miért hat jobban a rím?", "o": ["Mert hosszabb", "Mert könnyebb feldolgozni, ezért hihetőbbnek érezzük", "Mert tudományosabb"], "a": 1, "why": "Ez a feldolgozási könnyedség (fluency) hatása."},
-   "deeper": ["McGlone és Tofighbakhsh 2000-es kísérletében a rímes közmondásokat pontosabbnak ítélték, mint az azonos jelentésű, rím nélküli változatokat.", "A magyarázat a feldolgozási könnyedség: amit könnyű feldolgozni, azt ismerősnek és igaznak érezzük.", "Hasonló hatás: az olvasható betűtípus és az egyszerű szavak is hihetőbbé teszik az állítást."],
-   "source": {"label": "McGlone és Tofighbakhsh (2000), Psychological Science", "url": ""},
-   "habit": {"text": "Ha egy mondás nagyon meggyőző, megkeresem mögötte a bizonyítékot.", "time": "20:00", "days": 7}},
-
-  {"id": "kerdezz", "title": "Aki kérdez, azt kedvelik", "topic": "Kommunikáció", "tags": "#beszélgetés #randi",
+   "poll": {
+    "q": "Melyik változatot ítélték igazabbnak?",
+    "o": [
+     "A rímeset",
+     "A rím nélkülit",
+     "Egyformának"
+    ],
+    "a": 0,
+    "why": "A könnyen feldolgozható mondat igaznak érződik."
+   },
+   "check": {
+    "q": "Miért hat jobban a rím?",
+    "o": [
+     "Mert hosszabb",
+     "Mert könnyebb feldolgozni, ezért hihetőbbnek érezzük",
+     "Mert tudományosabb"
+    ],
+    "a": 1,
+    "why": "Ez a feldolgozási könnyedség (fluency) hatása."
+   },
+   "deeper": [
+    "McGlone és Tofighbakhsh 2000-es kísérletében a rímes közmondásokat pontosabbnak ítélték, mint az azonos jelentésű, rím nélküli változatokat.",
+    "A magyarázat a feldolgozási könnyedség: amit könnyű feldolgozni, azt ismerősnek és igaznak érezzük.",
+    "Hasonló hatás: az olvasható betűtípus és az egyszerű szavak is hihetőbbé teszik az állítást."
+   ],
+   "source": {
+    "label": "McGlone és Tofighbakhsh (2000), Psychological Science",
+    "url": ""
+   },
+   "habit": {
+    "text": "Ha egy mondás nagyon meggyőző, megkeresem mögötte a bizonyítékot.",
+    "time": "20:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "kerdezz",
+   "title": "A visszakérdezés ereje",
+   "topic": "Kommunikáció",
+   "tags": "#beszélgetés #randi",
    "scenes": [
-    {"tag": "[curious]", "text": "A Harvard kutatói gyorsrandikat figyeltek meg.", "prompt": "A lively speed dating event with small tables, quirky couples chatting, a bell on the wall"},
-    {"text": "Azt nézték, ki kérdez többet a beszélgetés során.", "prompt": "A researcher behind a potted plant secretly counting with a clicker, peeking at a couple"},
-    {"text": "Különösen a visszakérdezéseket: hogy érted? És aztán mi történt?", "prompt": "A quirky person leaning forward with sparkling curious eyes asking a question, the partner happily telling a story"},
-    {"tag": "[surprised]", "text": "Aki többet kérdezett, azzal többen akartak újra találkozni.", "prompt": "A cheerful person surrounded by floating hearts and multiple people waving invitations"},
-    {"text": "A kérdés azt üzeni: figyelek rád, érdekelsz.", "prompt": "A pair of oversized cartoon ears and a warm heart glowing between two people talking"},
-    {"text": "Mégis a legtöbben inkább magunkról beszélünk, mert azt hisszük, így tűnünk érdekesnek.", "prompt": "A quirky person talking nonstop with a giant speech bubble while the listener falls asleep"},
-    {"text": "Ugyanez működik állásinterjún és tárgyaláson is.", "prompt": "A job interview where a confident candidate asks a question and the interviewer smiles and takes notes"},
-    {"tag": "[warmly]", "text": "A tipp: a következő beszélgetésben tegyél fel legalább két visszakérdezést. Figyeld meg, hogyan változik a hangulat.", "prompt": "Two friends laughing together at a cafe table with coffee cups, warm sunny atmosphere"}
+    {
+     "tag": "[curious]",
+     "text": "A Harvard kutatói gyorsrandikat figyeltek meg.",
+     "prompt": "A lively speed dating event with small tables, quirky couples chatting, a bell on the wall"
+    },
+    {
+     "text": "Azt nézték, ki kérdez többet a beszélgetés során.",
+     "prompt": "A researcher behind a potted plant secretly counting with a clicker, peeking at a couple"
+    },
+    {
+     "text": "Különösen a visszakérdezéseket: hogy érted? És aztán mi történt?",
+     "prompt": "A quirky person leaning forward with sparkling curious eyes asking a question, the partner happily telling a story"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Aki többet kérdezett, azzal többen akartak újra találkozni.",
+     "prompt": "A cheerful person surrounded by floating hearts and multiple people waving invitations"
+    },
+    {
+     "text": "A kérdés azt üzeni: figyelek rád, érdekelsz.",
+     "prompt": "A pair of oversized cartoon ears and a warm heart glowing between two people talking"
+    },
+    {
+     "text": "Mégis a legtöbben inkább magunkról beszélünk, mert azt hisszük, így tűnünk érdekesnek.",
+     "prompt": "A quirky person talking nonstop with a giant speech bubble while the listener falls asleep"
+    },
+    {
+     "text": "Ugyanez működik állásinterjún és tárgyaláson is.",
+     "prompt": "A job interview where a confident candidate asks a question and the interviewer smiles and takes notes"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: a következő beszélgetésben tegyél fel legalább két visszakérdezést. Figyeld meg, hogyan változik a hangulat.",
+     "prompt": "Two friends laughing together at a cafe table with coffee cups, warm sunny atmosphere"
+    }
    ],
-   "poll": {"q": "Kivel akartak többen újra találkozni?", "o": ["Aki sokat mesélt magáról", "Aki többet kérdezett", "Aki keveset beszélt"], "a": 1, "why": "A kérdés figyelmet és érdeklődést jelez."},
-   "check": {"q": "Milyen kérdés hat a legjobban?", "o": ["Az udvariassági kérdés", "A visszakérdezés arra, amit a másik mondott", "A személyes, tolakodó kérdés"], "a": 1, "why": "A visszakérdezés mutatja, hogy valóban figyeltél."},
-   "deeper": ["Huang, Yeomans, Brooks, Minson és Gino 2017-es vizsgálata szerint a több kérdést, főleg a visszakérdezéseket feltevő résztvevők rokonszenvesebbek voltak, és gyorsrandin több második randit kaptak.", "A kutatók szerint az emberek alábecsülik, mennyire növeli a kérdezés a rokonszenvet.", "A túl sok, kihallgatásszerű kérdés viszont visszaüthet."],
-   "source": {"label": "Huang és mtsai (2017), Journal of Personality and Social Psychology; Harvard Working Knowledge", "url": "https://www.library.hbs.edu/working-knowledge/asking-questions-can-get-you-a-better-job-or-a-second-date"},
-   "habit": {"text": "Ma minden beszélgetésben felteszek legalább egy visszakérdezést.", "time": "12:00", "days": 7}},
-
-  {"id": "egyenruha", "title": "Az egyenruha ereje", "topic": "Meggyőzés", "tags": "#tekintély #engedelmesség",
+   "poll": {
+    "q": "Kivel akartak többen újra találkozni?",
+    "o": [
+     "Aki sokat mesélt magáról",
+     "Aki többet kérdezett",
+     "Aki keveset beszélt"
+    ],
+    "a": 1,
+    "why": "A kérdés figyelmet és érdeklődést jelez."
+   },
+   "check": {
+    "q": "Milyen kérdés hat a legjobban?",
+    "o": [
+     "Az udvariassági kérdés",
+     "A visszakérdezés arra, amit a másik mondott",
+     "A személyes, tolakodó kérdés"
+    ],
+    "a": 1,
+    "why": "A visszakérdezés mutatja, hogy valóban figyeltél."
+   },
+   "deeper": [
+    "Huang, Yeomans, Brooks, Minson és Gino 2017-es vizsgálata szerint a több kérdést, főleg a visszakérdezéseket feltevő résztvevők rokonszenvesebbek voltak, és gyorsrandin több második randit kaptak.",
+    "A kutatók szerint az emberek alábecsülik, mennyire növeli a kérdezés a rokonszenvet.",
+    "A túl sok, kihallgatásszerű kérdés viszont visszaüthet."
+   ],
+   "source": {
+    "label": "Huang és mtsai (2017), Journal of Personality and Social Psychology; Harvard Working Knowledge",
+    "url": "https://www.library.hbs.edu/working-knowledge/asking-questions-can-get-you-a-better-job-or-a-second-date"
+   },
+   "habit": {
+    "text": "Ma minden beszélgetésben felteszek legalább egy visszakérdezést.",
+    "time": "12:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "egyenruha",
+   "title": "Tekintély elve",
+   "topic": "Meggyőzés",
+   "tags": "#tekintély #engedelmesség",
    "scenes": [
-    {"tag": "[curious]", "text": "Egy kutató megállította a járókelőket az utcán, és utasításokat adott nekik.", "prompt": "A busy city sidewalk where a man stops passersby and points, curious pedestrians"},
-    {"text": "Például: vegye fel azt a szemetet, vagy dobjon pénzt ennek az úrnak a parkolóórába.", "prompt": "A pedestrian picking up a paper bag from the sidewalk while another puts a coin into a parking meter"},
-    {"text": "Egyszer hétköznapi ruhában, máskor biztonsági őr egyenruhájában tette ezt.", "prompt": "The same man shown twice: once in a casual t-shirt, once in a stern security guard uniform with a cap"},
-    {"tag": "[surprised]", "text": "Az egyenruhásnak sokkal többen engedelmeskedtek, pedig semmilyen hatalma nem volt.", "prompt": "A crowd obediently following the uniformed man's pointing finger, while the casual version is ignored"},
-    {"text": "Egy másik vizsgálatban a piros lámpán átmenő öltönyös férfit három és félszer annyian követték, mint a hétköznapi ruhásat.", "prompt": "A man in a sharp suit jaywalking across a red light with several people following him, a casual dressed man crossing alone"},
-    {"text": "Ez a tekintély elve. A tekintély jeleire, a címre, a ruhára, gyorsan reagálunk, gondolkodás nélkül.", "prompt": "A giant glowing police style cap and badge floating above a crowd of obedient quirky people"},
-    {"text": "A csalók ezért öltöznek szerelőnek vagy hivatalnoknak.", "prompt": "A sneaky fake repairman with a toolbox and a too-big uniform ringing a doorbell, shifty eyes"},
-    {"tag": "[thoughtful]", "text": "A tipp: kérdezd meg magadtól két dolgot. Valóban szakértő ebben? És mit nyer, ha igazat adok neki?", "prompt": "A calm quirky person at a door checking an ID card closely with a magnifying glass"}
+    {
+     "tag": "[curious]",
+     "text": "Egy kutató megállította a járókelőket az utcán, és utasításokat adott nekik.",
+     "prompt": "A busy city sidewalk where a man stops passersby and points, curious pedestrians"
+    },
+    {
+     "text": "Például: vegye fel azt a szemetet, vagy dobjon pénzt ennek az úrnak a parkolóórába.",
+     "prompt": "A pedestrian picking up a paper bag from the sidewalk while another puts a coin into a parking meter"
+    },
+    {
+     "text": "Egyszer hétköznapi ruhában, máskor biztonsági őr egyenruhájában tette ezt.",
+     "prompt": "The same man shown twice: once in a casual t-shirt, once in a stern security guard uniform with a cap"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Az egyenruhásnak sokkal többen engedelmeskedtek, pedig semmilyen hatalma nem volt.",
+     "prompt": "A crowd obediently following the uniformed man's pointing finger, while the casual version is ignored"
+    },
+    {
+     "text": "Egy másik vizsgálatban a piros lámpán átmenő öltönyös férfit három és félszer annyian követték, mint a hétköznapi ruhásat.",
+     "prompt": "A man in a sharp suit jaywalking across a red light with several people following him, a casual dressed man crossing alone"
+    },
+    {
+     "text": "Ez a tekintély elve. A tekintély jeleire, a címre, a ruhára, gyorsan reagálunk, gondolkodás nélkül.",
+     "prompt": "A giant glowing police style cap and badge floating above a crowd of obedient quirky people"
+    },
+    {
+     "text": "A csalók ezért öltöznek szerelőnek vagy hivatalnoknak.",
+     "prompt": "A sneaky fake repairman with a toolbox and a too-big uniform ringing a doorbell, shifty eyes"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: kérdezd meg magadtól két dolgot. Valóban szakértő ebben? És mit nyer, ha igazat adok neki?",
+     "prompt": "A calm quirky person at a door checking an ID card closely with a magnifying glass"
+    }
    ],
-   "poll": {"q": "Kinek engedelmeskedtek többen?", "o": ["A hétköznapi ruhásnak", "Az egyenruhásnak", "Ugyanannyian"], "a": 1, "why": "Az egyenruha a tekintély jele, és erre gyorsan reagálunk."},
-   "check": {"q": "Mit kérdezz egy tekintélyesnek tűnő embertől magadban?", "o": ["Mennyi idős?", "Valóban szakértő ebben, és mit nyer, ha igazat adok neki?", "Hol vette a ruháját?"], "a": 1, "why": "A jel nem azonos a valódi szakértelemmel."},
-   "deeper": ["Bickman 1974-es vizsgálatában a biztonsági őrnek öltözött utasítónak sokkal többen engedelmeskedtek, mint a civil ruhásnak, pedig nem volt valódi hatalma.", "Lefkowitz, Blake és Mouton 1955-ös megfigyelése szerint a piros lámpán átmenő öltönyös férfit kb. három és félszer annyian követték.", "Az ilyen jelek (egyenruha, cím, drága autó) a valódi szakértelem nélkül is hatnak."],
-   "source": {"label": "Bickman (1974), Journal of Applied Social Psychology; Lefkowitz, Blake és Mouton (1955)", "url": ""},
-   "habit": {"text": "Ha valaki egyenruhában vagy hivatalosan kér valamit, ellenőrzöm, ki ő.", "time": "18:00", "days": 7}},
-
-  {"id": "citrom", "title": "Egy illat, ami rendet rak", "topic": "Pszichológia", "tags": "#környezet #szokások",
+   "poll": {
+    "q": "Kinek engedelmeskedtek többen?",
+    "o": [
+     "A hétköznapi ruhásnak",
+     "Az egyenruhásnak",
+     "Ugyanannyian"
+    ],
+    "a": 1,
+    "why": "Az egyenruha a tekintély jele, és erre gyorsan reagálunk."
+   },
+   "check": {
+    "q": "Mit kérdezz egy tekintélyesnek tűnő embertől magadban?",
+    "o": [
+     "Mennyi idős?",
+     "Valóban szakértő ebben, és mit nyer, ha igazat adok neki?",
+     "Hol vette a ruháját?"
+    ],
+    "a": 1,
+    "why": "A jel nem azonos a valódi szakértelemmel."
+   },
+   "deeper": [
+    "Bickman 1974-es vizsgálatában a biztonsági őrnek öltözött utasítónak sokkal többen engedelmeskedtek, mint a civil ruhásnak, pedig nem volt valódi hatalma.",
+    "Lefkowitz, Blake és Mouton 1955-ös megfigyelése szerint a piros lámpán átmenő öltönyös férfit kb. három és félszer annyian követték.",
+    "Az ilyen jelek (egyenruha, cím, drága autó) a valódi szakértelem nélkül is hatnak."
+   ],
+   "source": {
+    "label": "Bickman (1974), Journal of Applied Social Psychology; Lefkowitz, Blake és Mouton (1955)",
+    "url": ""
+   },
+   "habit": {
+    "text": "Ha valaki egyenruhában vagy hivatalosan kér valamit, ellenőrzöm, ki ő.",
+    "time": "18:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "citrom",
+   "title": "Előfeszítés",
+   "topic": "Pszichológia",
+   "tags": "#környezet #szokások",
    "scenes": [
-    {"tag": "[curious]", "text": "Holland kutatók egy kísérletben az egyik szobában halvány citrusos tisztítószer-illatot permeteztek.", "prompt": "A tidy small lab room with a hidden spray bottle releasing a faint yellow citrus scented mist with lemon slices floating"},
-    {"text": "A résztvevők semmit nem vettek észre belőle tudatosan.", "prompt": "A quirky participant sitting calmly at a desk, completely unaware of the faint lemon mist around them"},
-    {"text": "Utána egy másik szobában kekszet kellett enniük, ami nagyon morzsázott.", "prompt": "A quirky person eating a very crumbly cookie at a table, crumbs flying everywhere"},
-    {"tag": "[surprised]", "text": "Akik előtte a citrusillatot érezték, sokkal gyakrabban takarították fel a morzsákat.", "prompt": "The participant happily sweeping crumbs off the table into a hand, sparkles of cleanliness"},
-    {"text": "Az illat előhívta a tisztaság gondolatát, és ez a viselkedésüket is irányította.", "prompt": "A cartoon brain with a lemon and a broom glowing inside a thought bubble"},
-    {"text": "Ezt hívják előfeszítésnek: egy apró jel előkészíti, mire gondolunk és mit teszünk.", "prompt": "A small domino tipping over a chain of colorful dominoes leading to a neat clean room"},
-    {"text": "A boltok és a szállodák is tudatosan használják az illatokat.", "prompt": "A cozy boutique store with a subtle scent diffuser and relaxed happy shoppers"},
-    {"tag": "[warmly]", "text": "A tipp: tedd a környezetedet a céljaid szövetségesévé. Ha tanulni akarsz, legyen előtted a könyv, ne a telefon.", "prompt": "A tidy desk with an open book and a glowing lamp, a phone placed far away in a drawer, a happy student"}
+    {
+     "tag": "[curious]",
+     "text": "Holland kutatók egy kísérletben az egyik szobában halvány citrusos tisztítószer-illatot permeteztek.",
+     "prompt": "A tidy small lab room with a hidden spray bottle releasing a faint yellow citrus scented mist with lemon slices floating"
+    },
+    {
+     "text": "A résztvevők semmit nem vettek észre belőle tudatosan.",
+     "prompt": "A quirky participant sitting calmly at a desk, completely unaware of the faint lemon mist around them"
+    },
+    {
+     "text": "Utána egy másik szobában kekszet kellett enniük, ami nagyon morzsázott.",
+     "prompt": "A quirky person eating a very crumbly cookie at a table, crumbs flying everywhere"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Akik előtte a citrusillatot érezték, sokkal gyakrabban takarították fel a morzsákat.",
+     "prompt": "The participant happily sweeping crumbs off the table into a hand, sparkles of cleanliness"
+    },
+    {
+     "text": "Az illat előhívta a tisztaság gondolatát, és ez a viselkedésüket is irányította.",
+     "prompt": "A cartoon brain with a lemon and a broom glowing inside a thought bubble"
+    },
+    {
+     "text": "Ezt hívják előfeszítésnek: egy apró jel előkészíti, mire gondolunk és mit teszünk.",
+     "prompt": "A small domino tipping over a chain of colorful dominoes leading to a neat clean room"
+    },
+    {
+     "text": "A boltok és a szállodák is tudatosan használják az illatokat.",
+     "prompt": "A cozy boutique store with a subtle scent diffuser and relaxed happy shoppers"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: tedd a környezetedet a céljaid szövetségesévé. Ha tanulni akarsz, legyen előtted a könyv, ne a telefon.",
+     "prompt": "A tidy desk with an open book and a glowing lamp, a phone placed far away in a drawer, a happy student"
+    }
    ],
-   "poll": {"q": "Mit csináltak többen a citrusillat után?", "o": ["Többet ettek", "Gyakrabban feltakarították a morzsát", "Hamarabb elmentek"], "a": 1, "why": "Az illat előhívta a tisztaság gondolatát."},
-   "check": {"q": "Mi az előfeszítés (priming)?", "o": ["Amikor valaki rábeszél", "Amikor egy apró jel előkészíti a gondolatainkat és tetteinket", "Egy illatfajta"], "a": 1, "why": "A jel tudatosítás nélkül is hat a következő lépésekre."},
-   "deeper": ["Holland, Hendriks és Aarts 2005-ös kísérletében a halvány citrusos tisztítószer-illatnak kitett résztvevők gyakrabban takarították el a morzsákat evés közben.", "A résztvevők nem voltak tudatában az illat hatásának.", "Az előfeszítéses kutatások egy részét később nem sikerült megismételni, ezért a hatások erősségét óvatosan kell kezelni; a környezet tudatos alakítása azonban jól bevált szokásstratégia."],
-   "source": {"label": "Holland, Hendriks és Aarts (2005), Psychological Science", "url": ""},
-   "habit": {"text": "Este előkészítem a reggeli célomhoz kellő tárgyat, hogy az legyen szem előtt.", "time": "21:00", "days": 7}}
+   "poll": {
+    "q": "Mit csináltak többen a citrusillat után?",
+    "o": [
+     "Többet ettek",
+     "Gyakrabban feltakarították a morzsát",
+     "Hamarabb elmentek"
+    ],
+    "a": 1,
+    "why": "Az illat előhívta a tisztaság gondolatát."
+   },
+   "check": {
+    "q": "Mi az előfeszítés (priming)?",
+    "o": [
+     "Amikor valaki rábeszél",
+     "Amikor egy apró jel előkészíti a gondolatainkat és tetteinket",
+     "Egy illatfajta"
+    ],
+    "a": 1,
+    "why": "A jel tudatosítás nélkül is hat a következő lépésekre."
+   },
+   "deeper": [
+    "Holland, Hendriks és Aarts 2005-ös kísérletében a halvány citrusos tisztítószer-illatnak kitett résztvevők gyakrabban takarították el a morzsákat evés közben.",
+    "A résztvevők nem voltak tudatában az illat hatásának.",
+    "Az előfeszítéses kutatások egy részét később nem sikerült megismételni, ezért a hatások erősségét óvatosan kell kezelni; a környezet tudatos alakítása azonban jól bevált szokásstratégia."
+   ],
+   "source": {
+    "label": "Holland, Hendriks és Aarts (2005), Psychological Science",
+    "url": ""
+   },
+   "habit": {
+    "text": "Este előkészítem a reggeli célomhoz kellő tárgyat, hogy az legyen szem előtt.",
+    "time": "21:00",
+    "days": 7
+   }
+  }
  ]
 }

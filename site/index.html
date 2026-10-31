@@ -60,6 +60,8 @@ h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balanc
 .post-bg{position:absolute;inset:0}
 .tap-sound{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:4;display:flex;align-items:center;gap:8px;background:rgba(7,9,12,.62);color:var(--ink);border-radius:999px;padding:10px 16px;font-weight:700;font-size:15px;pointer-events:none;backdrop-filter:blur(4px)}
 .tap-sound svg{width:22px;height:22px}
+.item.disliked .post-bg{filter:grayscale(1) brightness(.5);transition:filter .3s}
+.dl-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:15px}
 .celeb{position:absolute;left:50%;top:42%;z-index:60;pointer-events:none;transform:translate(-50%,-50%)}
 .celeb-n{font-size:84px;font-weight:900;color:#F2C230;text-shadow:0 4px 0 #14120A,0 0 24px rgba(242,194,48,.6);animation:celebPop 1.2s cubic-bezier(.2,1.4,.4,1) forwards;text-align:center}
 .celeb-x{margin-top:4px;font-size:20px;font-weight:800;color:#fff;text-align:center;white-space:nowrap;text-shadow:0 2px 6px rgba(0,0,0,.6);animation:celebPop 1.2s .08s cubic-bezier(.2,1.4,.4,1) both}
@@ -390,6 +392,11 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
         <div class="eyebrow">Szokásaim</div>
         <div class="hlist" id="habitList"></div>
       </div>
+      <div class="card stack" style="gap:10px" id="dislikeCard" hidden>
+        <div class="eyebrow">Nem tetszett videók</div>
+        <div class="small muted">Ezeket nem mutatjuk a feedben. Ha meggondolod magad, visszahozhatod őket.</div>
+        <div class="hlist" id="dislikeList"></div>
+      </div>
       <div class="card stack" style="gap:8px">
         <div class="eyebrow">Hogyan gyűlik a pont?</div>
         <div class="small">Helyes szavazás: <b>+5</b> · Ellenőrző kártya: <b>+15</b> · Szokás-beszámoló: <b>+5</b> · Megnyert párbaj: <b>+20</b> · Napi 10 perc tanulás teljesítve: <b>+10</b></div>
@@ -425,8 +432,8 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 
 
 <div id="gate" class="gate"><p class="g-muted">Betöltés…</p></div>
-<script src="/config.js?v=202610312058"></script>
+<script src="/config.js?v=202610312111"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
-<script src="/backend.js?v=202610312058"></script>
+<script src="/backend.js?v=202610312111"></script>
 </body>
 </html>

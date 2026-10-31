@@ -1,94 +1,418 @@
 {
  "style": "Vertical 9:16 illustration, bold flat cartoon style with thick black outlines, vivid magenta, teal and yellow palette, high contrast retro comic look with halftone dots, quirky characters with big round eyes, natural skin tones, no text, no letters, no numbers, no logos",
  "videos": [
-  {"id": "kamatos", "title": "Tévhit: Einstein és a kamatos kamat", "topic": "Pénzügyek", "tags": "#megtakarítás #tévhit", "hang": "vera_elenk",
+  {
+   "id": "kamatos",
+   "title": "Kamatos kamat",
+   "topic": "Pénzügyek",
+   "tags": "#megtakarítás #tévhit",
+   "hang": "vera_elenk",
    "scenes": [
-    {"tag": "[curious]", "text": "Biztos hallottad: Einstein szerint a kamatos kamat a világ nyolcadik csodája.", "prompt": "A quirky Einstein-like cartoon scientist with wild white hair winking, a glowing golden coin floating above his hand"},
-    {"text": "Tévhit! Nincs rá bizonyíték, hogy ezt valaha mondta.", "prompt": "A big red cross stamp over an old fake quote poster, a detective with a magnifying glass shaking head"},
-    {"text": "A lényege viszont igaz: a kamat után is kamat jár, és ez az évekkel meglódul.", "prompt": "A small snowball rolling down a hill growing into a giant snowball made of coins"},
-    {"tag": "[surprised]", "text": "Havi tízezer forint, évi hét százalékos hozammal, harminc év alatt több mint tizenkét millió lesz. Pedig csak három és fél milliót tettél be.", "prompt": "A small piggy bank next to a huge towering pile of coins and banknotes, a quirky person staring up in amazement"},
-    {"text": "A titok nem az összeg, hanem az idő.", "prompt": "A quirky young person planting a tiny money tree that grows into a huge tree with coin leaves, a big clock in the background"},
-    {"tag": "[warmly]", "text": "A tipp: kezdd most, akár kis összeggel. Tíz év késés többet visz el, mint gondolnád.", "prompt": "A cheerful quirky person dropping a single coin into a glass jar on a sunny windowsill"}
+    {
+     "tag": "[curious]",
+     "text": "Biztos hallottad: Einstein szerint a kamatos kamat a világ nyolcadik csodája.",
+     "prompt": "A quirky Einstein-like cartoon scientist with wild white hair winking, a glowing golden coin floating above his hand"
+    },
+    {
+     "text": "Tévhit! Nincs rá bizonyíték, hogy ezt valaha mondta.",
+     "prompt": "A big red cross stamp over an old fake quote poster, a detective with a magnifying glass shaking head"
+    },
+    {
+     "text": "A lényege viszont igaz: a kamat után is kamat jár, és ez az évekkel meglódul.",
+     "prompt": "A small snowball rolling down a hill growing into a giant snowball made of coins"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Havi tízezer forint, évi hét százalékos hozammal, harminc év alatt több mint tizenkét millió lesz. Pedig csak három és fél milliót tettél be.",
+     "prompt": "A small piggy bank next to a huge towering pile of coins and banknotes, a quirky person staring up in amazement"
+    },
+    {
+     "text": "A titok nem az összeg, hanem az idő.",
+     "prompt": "A quirky young person planting a tiny money tree that grows into a huge tree with coin leaves, a big clock in the background"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: kezdd most, akár kis összeggel. Tíz év késés többet visz el, mint gondolnád.",
+     "prompt": "A cheerful quirky person dropping a single coin into a glass jar on a sunny windowsill"
+    }
    ],
-   "poll": {"q": "Mondta Einstein, hogy a kamatos kamat a világ nyolcadik csodája?", "o": ["Igen, híres idézete", "Nincs rá bizonyíték", "Csak a könyveiben írta"], "a": 1, "why": "Az idézetet nem sikerült hiteles forrásban megtalálni, valószínűleg ráfogták."},
-   "check": {"q": "Mi számít a legtöbbet a kamatos kamatnál?", "o": ["Az, hogy mekkora összeggel kezded", "Az idő, vagyis hogy mikor kezded", "Hogy melyik bankban vagy"], "a": 1, "why": "Minél hosszabb ideig dolgozik a pénz, annál inkább a kamat kamata hozza a növekedést."},
-   "deeper": ["A számítás: havi 10 000 Ft befizetés, havonta jóváírt évi 7%-os hozammal, 30 év alatt kb. 12,2 millió Ft; befizetve 3,6 millió Ft.", "Ez szemléltetés: a valós hozam ingadozik, az inflációt és a költségeket is figyelembe kell venni, és a múltbeli hozam nem garantálja a jövőbelit.", "Az Einsteinnek tulajdonított mondásnak nincs hiteles forrása; az idézetkutatók szerint jóval halála után kezdett terjedni."],
-   "source": {"label": "Saját számítás (havi kamatos kamat képlete); Quote Investigator az Einstein-idézetről", "url": ""},
-   "habit": {"text": "Beállítok egy kis havi automatikus megtakarítást, akár 2000 forintot.", "time": "19:00", "days": 1}},
-
-  {"id": "kartya", "title": "Kártyával többet költesz", "topic": "Pénzügyek", "tags": "#vásárlás #költés",
+   "poll": {
+    "q": "Mondta Einstein, hogy a kamatos kamat a világ nyolcadik csodája?",
+    "o": [
+     "Igen, híres idézete",
+     "Nincs rá bizonyíték",
+     "Csak a könyveiben írta"
+    ],
+    "a": 1,
+    "why": "Az idézetet nem sikerült hiteles forrásban megtalálni, valószínűleg ráfogták."
+   },
+   "check": {
+    "q": "Mi számít a legtöbbet a kamatos kamatnál?",
+    "o": [
+     "Az, hogy mekkora összeggel kezded",
+     "Az idő, vagyis hogy mikor kezded",
+     "Hogy melyik bankban vagy"
+    ],
+    "a": 1,
+    "why": "Minél hosszabb ideig dolgozik a pénz, annál inkább a kamat kamata hozza a növekedést."
+   },
+   "deeper": [
+    "A számítás: havi 10 000 Ft befizetés, havonta jóváírt évi 7%-os hozammal, 30 év alatt kb. 12,2 millió Ft; befizetve 3,6 millió Ft.",
+    "Ez szemléltetés: a valós hozam ingadozik, az inflációt és a költségeket is figyelembe kell venni, és a múltbeli hozam nem garantálja a jövőbelit.",
+    "Az Einsteinnek tulajdonított mondásnak nincs hiteles forrása; az idézetkutatók szerint jóval halála után kezdett terjedni."
+   ],
+   "source": {
+    "label": "Saját számítás (havi kamatos kamat képlete); Quote Investigator az Einstein-idézetről",
+    "url": ""
+   },
+   "habit": {
+    "text": "Beállítok egy kis havi automatikus megtakarítást, akár 2000 forintot.",
+    "time": "19:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "kartya",
+   "title": "A fizetés fájdalma",
+   "topic": "Pénzügyek",
+   "tags": "#vásárlás #költés",
    "scenes": [
-    {"tag": "[curious]", "text": "Az MIT kutatói kosárlabdajegyekre licitáltattak diákokat.", "prompt": "A quirky university auction room with students raising paddles, basketball tickets on a stand"},
-    {"text": "Az egyik csoport készpénzzel fizethetett, a másik bankkártyával.", "prompt": "Split scene: one student holding cash banknotes, another holding a shiny bank card"},
-    {"tag": "[surprised]", "text": "A kártyások átlagosan majdnem kétszer annyit ajánlottak ugyanazért a jegyért.", "prompt": "A quirky student with a bank card raising a paddle extremely high above a surprised cash holding student"},
-    {"text": "A készpénzt fáj odaadni, látod, ahogy fogy. A kártya ezt a fájdalmat elveszi.", "prompt": "A quirky person sadly watching banknotes fly out of a wallet like birds, next to a person happily tapping a card"},
-    {"text": "Ezért drágább minden, amit egy érintéssel fizetsz.", "prompt": "A quirky shopper tapping a phone on a card reader while a pile of shopping bags grows behind them"},
-    {"tag": "[thoughtful]", "text": "A tipp: a heti szórakozásra vegyél fel készpénzt, és csak abból költs. Ha elfogyott, elfogyott.", "prompt": "A calm quirky person putting a few banknotes into an envelope, a small calendar on the wall"}
+    {
+     "tag": "[curious]",
+     "text": "Az MIT kutatói kosárlabdajegyekre licitáltattak diákokat.",
+     "prompt": "A quirky university auction room with students raising paddles, basketball tickets on a stand"
+    },
+    {
+     "text": "Az egyik csoport készpénzzel fizethetett, a másik bankkártyával.",
+     "prompt": "Split scene: one student holding cash banknotes, another holding a shiny bank card"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "A kártyások átlagosan majdnem kétszer annyit ajánlottak ugyanazért a jegyért.",
+     "prompt": "A quirky student with a bank card raising a paddle extremely high above a surprised cash holding student"
+    },
+    {
+     "text": "A készpénzt fáj odaadni, látod, ahogy fogy. A kártya ezt a fájdalmat elveszi.",
+     "prompt": "A quirky person sadly watching banknotes fly out of a wallet like birds, next to a person happily tapping a card"
+    },
+    {
+     "text": "Ezért drágább minden, amit egy érintéssel fizetsz.",
+     "prompt": "A quirky shopper tapping a phone on a card reader while a pile of shopping bags grows behind them"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: a heti szórakozásra vegyél fel készpénzt, és csak abból költs. Ha elfogyott, elfogyott.",
+     "prompt": "A calm quirky person putting a few banknotes into an envelope, a small calendar on the wall"
+    }
    ],
-   "poll": {"q": "Mennyivel ajánlottak többet a kártyával fizetők?", "o": ["Kb. 10%-kal", "Majdnem kétszer annyit", "Ugyanannyit"], "a": 1, "why": "A kártya csökkenti a fizetés „fájdalmát”, ezért többet adunk ki."},
-   "check": {"q": "Miért költünk kártyával többet?", "o": ["Mert a kártyán több pénz van", "Mert nem érezzük a pénz fogyását", "Mert a kártya kedvezményt ad"], "a": 1, "why": "A készpénz kiadását érezzük, a kártyás fizetés elvontabb."},
-   "deeper": ["Prelec és Simester 2001-es MIT-kísérletében a hitelkártyás fizetést választó diákok átlagos licitje közel kétszerese volt a készpénzesekének ugyanazokra a jegyekre.", "A jelenséget a fizetés „fájdalmával” (pain of paying) magyarázzák: a készpénz kiadása kézzelfoghatóbb.", "A hatás nagysága helyzetenként eltér; a későbbi vizsgálatok vegyes eredményeket hoztak, de az irány többnyire ugyanaz."],
-   "source": {"label": "Prelec és Simester (2001), Marketing Letters", "url": ""},
-   "habit": {"text": "Egy hétig a szórakozásra csak egy előre felvett készpénzkeretből költök.", "time": "18:00", "days": 7}},
-
-  {"id": "minimum", "title": "A minimum törlesztés csapdája", "topic": "Pénzügyek", "tags": "#hitel #horgony",
+   "poll": {
+    "q": "Mennyivel ajánlottak többet a kártyával fizetők?",
+    "o": [
+     "Kb. 10%-kal",
+     "Majdnem kétszer annyit",
+     "Ugyanannyit"
+    ],
+    "a": 1,
+    "why": "A kártya csökkenti a fizetés „fájdalmát”, ezért többet adunk ki."
+   },
+   "check": {
+    "q": "Miért költünk kártyával többet?",
+    "o": [
+     "Mert a kártyán több pénz van",
+     "Mert nem érezzük a pénz fogyását",
+     "Mert a kártya kedvezményt ad"
+    ],
+    "a": 1,
+    "why": "A készpénz kiadását érezzük, a kártyás fizetés elvontabb."
+   },
+   "deeper": [
+    "Prelec és Simester 2001-es MIT-kísérletében a hitelkártyás fizetést választó diákok átlagos licitje közel kétszerese volt a készpénzesekének ugyanazokra a jegyekre.",
+    "A jelenséget a fizetés „fájdalmával” (pain of paying) magyarázzák: a készpénz kiadása kézzelfoghatóbb.",
+    "A hatás nagysága helyzetenként eltér; a későbbi vizsgálatok vegyes eredményeket hoztak, de az irány többnyire ugyanaz."
+   ],
+   "source": {
+    "label": "Prelec és Simester (2001), Marketing Letters",
+    "url": ""
+   },
+   "habit": {
+    "text": "Egy hétig a szórakozásra csak egy előre felvett készpénzkeretből költök.",
+    "time": "18:00",
+    "days": 7
+   }
+  },
+  {
+   "id": "minimum",
+   "title": "A minimum törlesztés horgonya",
+   "topic": "Pénzügyek",
+   "tags": "#hitel #horgony",
    "scenes": [
-    {"tag": "[curious]", "text": "A hitelkártya-számlán mindig ott van egy szám: a minimum törlesztés.", "prompt": "A quirky person opening an envelope with a credit card bill, a small glowing number highlighted on the paper"},
-    {"text": "Brit kutatók megnézték, mennyit fizetnek vissza az emberek, ha ez a szám ott van, és ha nincs.", "prompt": "A researcher comparing two bills side by side, one with a small highlighted box, the other plain"},
-    {"tag": "[surprised]", "text": "Ahol ott volt a minimum, az emberek jóval kevesebbet fizettek vissza. A kis szám lehúzta a döntést.", "prompt": "A tiny anchor attached to a quirky person's wallet pulling it down, coins staying in the wallet"},
-    {"text": "Ez a horgonyhatás, és sokba kerül: a maradék után kamatot fizetsz, hónapról hónapra.", "prompt": "A quirky person on a treadmill made of bills, running but not moving forward, sweating"},
-    {"text": "A minimum nem javaslat. Csak az a legkevesebb, amivel nem késel.", "prompt": "A quirky bank clerk smiling slyly while pointing to a tiny number on a huge bill"},
-    {"tag": "[thoughtful]", "text": "A tipp: mielőtt ránézel a minimumra, döntsd el, mennyit tudsz befizetni. Ha lehet, a teljes összeget.", "prompt": "A confident quirky person writing a big number on a payment slip with a determined smile"}
+    {
+     "tag": "[curious]",
+     "text": "A hitelkártya-számlán mindig ott van egy szám: a minimum törlesztés.",
+     "prompt": "A quirky person opening an envelope with a credit card bill, a small glowing number highlighted on the paper"
+    },
+    {
+     "text": "Brit kutatók megnézték, mennyit fizetnek vissza az emberek, ha ez a szám ott van, és ha nincs.",
+     "prompt": "A researcher comparing two bills side by side, one with a small highlighted box, the other plain"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Ahol ott volt a minimum, az emberek jóval kevesebbet fizettek vissza. A kis szám lehúzta a döntést.",
+     "prompt": "A tiny anchor attached to a quirky person's wallet pulling it down, coins staying in the wallet"
+    },
+    {
+     "text": "Ez a horgonyhatás, és sokba kerül: a maradék után kamatot fizetsz, hónapról hónapra.",
+     "prompt": "A quirky person on a treadmill made of bills, running but not moving forward, sweating"
+    },
+    {
+     "text": "A minimum nem javaslat. Csak az a legkevesebb, amivel nem késel.",
+     "prompt": "A quirky bank clerk smiling slyly while pointing to a tiny number on a huge bill"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "A tipp: mielőtt ránézel a minimumra, döntsd el, mennyit tudsz befizetni. Ha lehet, a teljes összeget.",
+     "prompt": "A confident quirky person writing a big number on a payment slip with a determined smile"
+    }
    ],
-   "poll": {"q": "Mi történt, amikor a számlán ott volt a minimum összeg?", "o": ["Többet fizettek vissza", "Kevesebbet fizettek vissza", "Nem számított"], "a": 1, "why": "A kis szám horgonyként lehúzta a befizetett összeget."},
-   "check": {"q": "Mit tegyél, mielőtt megnézed a minimum törlesztést?", "o": ["Fizesd be a minimumot", "Döntsd el előre, mennyit tudsz befizetni", "Várj a határidő végéig"], "a": 1, "why": "Így a saját döntésed a kiindulópont, nem a bank horgonya."},
-   "deeper": ["Neil Stewart 2009-es kísérletében a minimum összeget nem látók átlagosan kb. 175 fontot (az egyenleg 40%-át), a minimumot látók kb. 99 fontot (23%) fizettek vissza, ha nem a teljes összeget fizették.", "A teljes összeget visszafizetők aránya a két csoportban ugyanannyi volt.", "A visszafizetetlen rész után kamat jár, ezért a horgony hosszú távon drága."],
-   "source": {"label": "Stewart (2009), Psychological Science", "url": "https://www.sciencedaily.com/releases/2008/10/081006130542.htm"},
-   "habit": {"text": "A következő számlánál előbb eldöntöm, mennyit fizetek, és csak utána nézem a minimumot.", "time": "19:00", "days": 1}},
-
-  {"id": "elobbmagad", "title": "Fizesd ki először magad", "topic": "Pénzügyek", "tags": "#megtakarítás #szokások",
+   "poll": {
+    "q": "Mi történt, amikor a számlán ott volt a minimum összeg?",
+    "o": [
+     "Többet fizettek vissza",
+     "Kevesebbet fizettek vissza",
+     "Nem számított"
+    ],
+    "a": 1,
+    "why": "A kis szám horgonyként lehúzta a befizetett összeget."
+   },
+   "check": {
+    "q": "Mit tegyél, mielőtt megnézed a minimum törlesztést?",
+    "o": [
+     "Fizesd be a minimumot",
+     "Döntsd el előre, mennyit tudsz befizetni",
+     "Várj a határidő végéig"
+    ],
+    "a": 1,
+    "why": "Így a saját döntésed a kiindulópont, nem a bank horgonya."
+   },
+   "deeper": [
+    "Neil Stewart 2009-es kísérletében a minimum összeget nem látók átlagosan kb. 175 fontot (az egyenleg 40%-át), a minimumot látók kb. 99 fontot (23%) fizettek vissza, ha nem a teljes összeget fizették.",
+    "A teljes összeget visszafizetők aránya a két csoportban ugyanannyi volt.",
+    "A visszafizetetlen rész után kamat jár, ezért a horgony hosszú távon drága."
+   ],
+   "source": {
+    "label": "Stewart (2009), Psychological Science",
+    "url": "https://www.sciencedaily.com/releases/2008/10/081006130542.htm"
+   },
+   "habit": {
+    "text": "A következő számlánál előbb eldöntöm, mennyit fizetek, és csak utána nézem a minimumot.",
+    "time": "19:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "elobbmagad",
+   "title": "Fizesd ki először magad",
+   "topic": "Pénzügyek",
+   "tags": "#megtakarítás #szokások",
    "scenes": [
-    {"tag": "[curious]", "text": "A legtöbben így spórolnak: ami a hónap végén megmarad. És szinte sosem marad semmi.", "prompt": "A quirky person shaking an empty wallet upside down at the end of the month, a calendar showing the last day"},
-    {"text": "Két közgazdász, Thaler és Benartzi, megfordította a sorrendet.", "prompt": "Two quirky economists flipping a giant hourglass upside down together"},
-    {"text": "A dolgozók előre vállalták: minden fizetésemelésből egy rész automatikusan megtakarításba megy.", "prompt": "A quirky worker receiving a pay raise envelope, part of the money automatically flowing into a piggy bank through a pipe"},
-    {"tag": "[surprised]", "text": "Négy év alatt a megtakarítási arányuk három és fél százalékról majdnem tizennégy százalékra nőtt.", "prompt": "A small plant growing into a tall tree beside a smiling worker, coins hanging like fruits"},
-    {"text": "Nem kellett hozzá akaraterő. Az automatika döntött helyettük.", "prompt": "A friendly robot arm gently placing coins into a savings jar while the quirky person relaxes"},
-    {"tag": "[warmly]", "text": "A tipp: állíts be automatikus átutalást fizetésnapra. Előbb megy a megtakarítás, utána költesz.", "prompt": "A quirky person setting an automatic transfer on a phone on payday, a calendar with a star"}
+    {
+     "tag": "[curious]",
+     "text": "A legtöbben így spórolnak: ami a hónap végén megmarad. És szinte sosem marad semmi.",
+     "prompt": "A quirky person shaking an empty wallet upside down at the end of the month, a calendar showing the last day"
+    },
+    {
+     "text": "Két közgazdász, Thaler és Benartzi, megfordította a sorrendet.",
+     "prompt": "Two quirky economists flipping a giant hourglass upside down together"
+    },
+    {
+     "text": "A dolgozók előre vállalták: minden fizetésemelésből egy rész automatikusan megtakarításba megy.",
+     "prompt": "A quirky worker receiving a pay raise envelope, part of the money automatically flowing into a piggy bank through a pipe"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Négy év alatt a megtakarítási arányuk három és fél százalékról majdnem tizennégy százalékra nőtt.",
+     "prompt": "A small plant growing into a tall tree beside a smiling worker, coins hanging like fruits"
+    },
+    {
+     "text": "Nem kellett hozzá akaraterő. Az automatika döntött helyettük.",
+     "prompt": "A friendly robot arm gently placing coins into a savings jar while the quirky person relaxes"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: állíts be automatikus átutalást fizetésnapra. Előbb megy a megtakarítás, utána költesz.",
+     "prompt": "A quirky person setting an automatic transfer on a phone on payday, a calendar with a star"
+    }
    ],
-   "poll": {"q": "Mennyire nőtt a résztvevők megtakarítási aránya?", "o": ["3,5%-ról kb. 6%-ra", "3,5%-ról közel 14%-ra", "Nem változott"], "a": 1, "why": "Az automatikus, előre vállalt emelés négyszeresére növelte a megtakarítást."},
-   "check": {"q": "Mi a „fizesd ki először magad” lényege?", "o": ["Előbb költesz, a maradékot félreteszed", "Fizetésnapon előbb automatikusan félreteszel", "Csak nagy fizetésből lehet spórolni"], "a": 1, "why": "Az automatika kiváltja az akaraterőt."},
-   "deeper": ["Thaler és Benartzi 2004-es „Save More Tomorrow” programjában a résztvevők átlagos megtakarítási aránya kb. 40 hónap alatt 3,5%-ról 13,6%-ra nőtt.", "A program három elvre épít: a jövőbeli vállalás könnyebb, a fizetésemelésből félretenni nem fáj, és a beállított automatikát ritkán változtatjuk meg.", "Thaler 2017-ben közgazdasági Nobel-emlékdíjat kapott, részben az ilyen viselkedési közgazdasági munkáiért."],
-   "source": {"label": "Thaler és Benartzi (2004), Journal of Political Economy", "url": ""},
-   "habit": {"text": "Beállítok egy automatikus átutalást a fizetésem napjára.", "time": "19:00", "days": 1}},
-
-  {"id": "inflacio", "title": "Tévhit: a párnacihában biztonságban a pénz", "topic": "Pénzügyek", "tags": "#infláció #tévhit", "hang": "vera_tanito",
+   "poll": {
+    "q": "Mennyire nőtt a résztvevők megtakarítási aránya?",
+    "o": [
+     "3,5%-ról kb. 6%-ra",
+     "3,5%-ról közel 14%-ra",
+     "Nem változott"
+    ],
+    "a": 1,
+    "why": "Az automatikus, előre vállalt emelés négyszeresére növelte a megtakarítást."
+   },
+   "check": {
+    "q": "Mi a „fizesd ki először magad” lényege?",
+    "o": [
+     "Előbb költesz, a maradékot félreteszed",
+     "Fizetésnapon előbb automatikusan félreteszel",
+     "Csak nagy fizetésből lehet spórolni"
+    ],
+    "a": 1,
+    "why": "Az automatika kiváltja az akaraterőt."
+   },
+   "deeper": [
+    "Thaler és Benartzi 2004-es „Save More Tomorrow” programjában a résztvevők átlagos megtakarítási aránya kb. 40 hónap alatt 3,5%-ról 13,6%-ra nőtt.",
+    "A program három elvre épít: a jövőbeli vállalás könnyebb, a fizetésemelésből félretenni nem fáj, és a beállított automatikát ritkán változtatjuk meg.",
+    "Thaler 2017-ben közgazdasági Nobel-emlékdíjat kapott, részben az ilyen viselkedési közgazdasági munkáiért."
+   ],
+   "source": {
+    "label": "Thaler és Benartzi (2004), Journal of Political Economy",
+    "url": ""
+   },
+   "habit": {
+    "text": "Beállítok egy automatikus átutalást a fizetésem napjára.",
+    "time": "19:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "inflacio",
+   "title": "Infláció",
+   "topic": "Pénzügyek",
+   "tags": "#infláció #tévhit",
+   "hang": "vera_tanito",
    "scenes": [
-    {"text": "Sokan úgy érzik: ami a fiókban van, az legalább nem veszhet el.", "prompt": "A quirky grandma hiding banknotes inside a pillowcase on a cozy bed, satisfied smile"},
-    {"text": "Tévhit. Az infláció csendben dolgozik ellene.", "prompt": "A sneaky little shadow monster nibbling the edges of banknotes inside a drawer"},
-    {"text": "Ha az árak évente öt százalékkal nőnek, tíz év múlva a pénzed nagyjából hatvan százalékát éri.", "prompt": "A shopping basket getting emptier while the price tags above it grow bigger, a confused shopper"},
-    {"text": "A papíron ugyanannyi, de a boltban kevesebbet vehetsz belőle.", "prompt": "A quirky person holding the same banknote at a market stall, now buying only one apple instead of a full bag"},
-    {"text": "A biztonság érzése tehát nem ugyanaz, mint a valódi biztonság.", "prompt": "A sturdy looking safe with a tiny leak of coins dripping out from the bottom"},
-    {"text": "A tipp: a vésztartalékod legyen elérhető, de ami fölötte van, azt tedd olyan helyre, ami legalább követi az inflációt.", "prompt": "A calm quirky person sorting money into two jars, one small labeled by a shield icon, one larger with a growing plant"}
+    {
+     "text": "Sokan úgy érzik: ami a fiókban van, az legalább nem veszhet el.",
+     "prompt": "A quirky grandma hiding banknotes inside a pillowcase on a cozy bed, satisfied smile"
+    },
+    {
+     "text": "Tévhit. Az infláció csendben dolgozik ellene.",
+     "prompt": "A sneaky little shadow monster nibbling the edges of banknotes inside a drawer"
+    },
+    {
+     "text": "Ha az árak évente öt százalékkal nőnek, tíz év múlva a pénzed nagyjából hatvan százalékát éri.",
+     "prompt": "A shopping basket getting emptier while the price tags above it grow bigger, a confused shopper"
+    },
+    {
+     "text": "A papíron ugyanannyi, de a boltban kevesebbet vehetsz belőle.",
+     "prompt": "A quirky person holding the same banknote at a market stall, now buying only one apple instead of a full bag"
+    },
+    {
+     "text": "A biztonság érzése tehát nem ugyanaz, mint a valódi biztonság.",
+     "prompt": "A sturdy looking safe with a tiny leak of coins dripping out from the bottom"
+    },
+    {
+     "text": "A tipp: a vésztartalékod legyen elérhető, de ami fölötte van, azt tedd olyan helyre, ami legalább követi az inflációt.",
+     "prompt": "A calm quirky person sorting money into two jars, one small labeled by a shield icon, one larger with a growing plant"
+    }
    ],
-   "poll": {"q": "Mennyit ér 10 év múlva a pénz, ha évente 5% az infláció?", "o": ["Ugyanannyit", "Nagyjából 60%-át", "Nagyjából 95%-át"], "a": 1, "why": "1 / 1,05 a tizediken ≈ 0,61, vagyis kb. 61%."},
-   "check": {"q": "Mi a gond a fiókban tartott pénzzel?", "o": ["Elveszhet", "Az infláció csökkenti a vásárlóerejét", "Adót kell fizetni utána"], "a": 1, "why": "A névérték marad, a vásárlóerő csökken."},
-   "deeper": ["Számítás: 5%-os éves árszintnövekedés mellett 10 év után a pénz vásárlóereje 1 / 1,05^10 ≈ 0,614, vagyis kb. 61%.", "A vésztartalék (általában néhány havi kiadás) legyen gyorsan elérhető; erre a célra a biztonság fontosabb a hozamnál.", "Az inflációkövető megoldásokról (például inflációkövető állampapír) a pontos és aktuális feltételeket mindig a hivatalos forrásban érdemes ellenőrizni; ez nem befektetési tanács."],
-   "source": {"label": "Saját számítás; az infláció fogalma: MNB", "url": ""},
-   "habit": {"text": "Kiszámolom, hány havi kiadásom van vésztartalékban.", "time": "20:00", "days": 1}},
-
-  {"id": "taltpenz", "title": "Miért tűnik el a talált pénz?", "topic": "Pénzügyek", "tags": "#mentáliskönyvelés #költés",
+   "poll": {
+    "q": "Mennyit ér 10 év múlva a pénz, ha évente 5% az infláció?",
+    "o": [
+     "Ugyanannyit",
+     "Nagyjából 60%-át",
+     "Nagyjából 95%-át"
+    ],
+    "a": 1,
+    "why": "1 / 1,05 a tizediken ≈ 0,61, vagyis kb. 61%."
+   },
+   "check": {
+    "q": "Mi a gond a fiókban tartott pénzzel?",
+    "o": [
+     "Elveszhet",
+     "Az infláció csökkenti a vásárlóerejét",
+     "Adót kell fizetni utána"
+    ],
+    "a": 1,
+    "why": "A névérték marad, a vásárlóerő csökken."
+   },
+   "deeper": [
+    "Számítás: 5%-os éves árszintnövekedés mellett 10 év után a pénz vásárlóereje 1 / 1,05^10 ≈ 0,614, vagyis kb. 61%.",
+    "A vésztartalék (általában néhány havi kiadás) legyen gyorsan elérhető; erre a célra a biztonság fontosabb a hozamnál.",
+    "Az inflációkövető megoldásokról (például inflációkövető állampapír) a pontos és aktuális feltételeket mindig a hivatalos forrásban érdemes ellenőrizni; ez nem befektetési tanács."
+   ],
+   "source": {
+    "label": "Saját számítás; az infláció fogalma: MNB",
+    "url": ""
+   },
+   "habit": {
+    "text": "Kiszámolom, hány havi kiadásom van vésztartalékban.",
+    "time": "20:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "taltpenz",
+   "title": "Mentális könyvelés",
+   "topic": "Pénzügyek",
+   "tags": "#mentáliskönyvelés #költés",
    "scenes": [
-    {"tag": "[curious]", "text": "Találsz egy ötezrest a kabátzsebedben. Mit csinálsz vele?", "prompt": "A delighted quirky person pulling a banknote out of a winter coat pocket, sparkles around it"},
-    {"text": "A legtöbben gyorsan elköltik. Hiszen ez csak talált pénz.", "prompt": "The same quirky person happily buying a big ice cream sundae and a toy with the found banknote"},
-    {"text": "A fizetésükből viszont ugyanezt az ötezrest sokáig fontolgatnák.", "prompt": "A quirky person hesitating at a store with a calculator and a long receipt, thinking hard"},
-    {"tag": "[thoughtful]", "text": "Richard Thaler ezt mentális könyvelésnek nevezte: a pénzt fejben külön dobozokba tesszük.", "prompt": "A cartoon brain with many small labeled-free colorful boxes inside, coins sorted into them"},
-    {"text": "Pedig a pénz mindig ugyanannyit ér, akárhonnan jött.", "prompt": "Two identical banknotes side by side on a scale, perfectly balanced"},
-    {"tag": "[warmly]", "text": "A tipp: ha váratlan pénz jön, az ajándékot vagy a visszatérítést, mielőtt elköltöd, tedd félre legalább a felét.", "prompt": "A smiling quirky person splitting a gift envelope of money into two halves, one going into a savings jar"}
+    {
+     "tag": "[curious]",
+     "text": "Találsz egy ötezrest a kabátzsebedben. Mit csinálsz vele?",
+     "prompt": "A delighted quirky person pulling a banknote out of a winter coat pocket, sparkles around it"
+    },
+    {
+     "text": "A legtöbben gyorsan elköltik. Hiszen ez csak talált pénz.",
+     "prompt": "The same quirky person happily buying a big ice cream sundae and a toy with the found banknote"
+    },
+    {
+     "text": "A fizetésükből viszont ugyanezt az ötezrest sokáig fontolgatnák.",
+     "prompt": "A quirky person hesitating at a store with a calculator and a long receipt, thinking hard"
+    },
+    {
+     "tag": "[thoughtful]",
+     "text": "Richard Thaler ezt mentális könyvelésnek nevezte: a pénzt fejben külön dobozokba tesszük.",
+     "prompt": "A cartoon brain with many small labeled-free colorful boxes inside, coins sorted into them"
+    },
+    {
+     "text": "Pedig a pénz mindig ugyanannyit ér, akárhonnan jött.",
+     "prompt": "Two identical banknotes side by side on a scale, perfectly balanced"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: ha váratlan pénz jön, az ajándékot vagy a visszatérítést, mielőtt elköltöd, tedd félre legalább a felét.",
+     "prompt": "A smiling quirky person splitting a gift envelope of money into two halves, one going into a savings jar"
+    }
    ],
-   "poll": {"q": "Mit csinálunk általában a talált pénzzel?", "o": ["Gondosan félretesszük", "Könnyebben elköltjük", "Ugyanúgy kezeljük, mint a fizetést"], "a": 1, "why": "A mentális könyvelés miatt a „talált” pénzt kevésbé értékeljük."},
-   "check": {"q": "Mi a mentális könyvelés?", "o": ["Egy könyvelőprogram", "Amikor fejben külön dobozokba tesszük a pénzt", "Amikor mindent leírunk"], "a": 1, "why": "A pénz forrása szerint másképp költjük, pedig ugyanannyit ér."},
-   "deeper": ["A mentális könyvelés fogalmát Richard Thaler írta le az 1980-as években (például Thaler, 1985; 1999).", "Ugyanaz az összeg másként viselkedik, ha bónusznak, visszatérítésnek vagy fizetésnek érezzük: a „váratlan” pénzt jellemzően könnyebben költjük el.", "A „dobozok” hasznosak is lehetnek, például ha egy külön számla védi a megtakarítást."],
-   "source": {"label": "Thaler (1999), Mental Accounting Matters, Journal of Behavioral Decision Making", "url": ""},
-   "habit": {"text": "A következő váratlan pénz felét elköltés előtt félreteszem.", "time": "19:00", "days": 7}}
+   "poll": {
+    "q": "Mit csinálunk általában a talált pénzzel?",
+    "o": [
+     "Gondosan félretesszük",
+     "Könnyebben elköltjük",
+     "Ugyanúgy kezeljük, mint a fizetést"
+    ],
+    "a": 1,
+    "why": "A mentális könyvelés miatt a „talált” pénzt kevésbé értékeljük."
+   },
+   "check": {
+    "q": "Mi a mentális könyvelés?",
+    "o": [
+     "Egy könyvelőprogram",
+     "Amikor fejben külön dobozokba tesszük a pénzt",
+     "Amikor mindent leírunk"
+    ],
+    "a": 1,
+    "why": "A pénz forrása szerint másképp költjük, pedig ugyanannyit ér."
+   },
+   "deeper": [
+    "A mentális könyvelés fogalmát Richard Thaler írta le az 1980-as években (például Thaler, 1985; 1999).",
+    "Ugyanaz az összeg másként viselkedik, ha bónusznak, visszatérítésnek vagy fizetésnek érezzük: a „váratlan” pénzt jellemzően könnyebben költjük el.",
+    "A „dobozok” hasznosak is lehetnek, például ha egy külön számla védi a megtakarítást."
+   ],
+   "source": {
+    "label": "Thaler (1999), Mental Accounting Matters, Journal of Behavioral Decision Making",
+    "url": ""
+   },
+   "habit": {
+    "text": "A következő váratlan pénz felét elköltés előtt félreteszem.",
+    "time": "19:00",
+    "days": 7
+   }
+  }
  ]
 }
