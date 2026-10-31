@@ -41,9 +41,9 @@ def main():
                 text += " "
             starts.append(len(text))
             text += l
-        url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env['GABOR_VOICE_ID']}"
+        url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env.get('NARRATOR_VOICE_ID', env['GABOR_VOICE_ID'])}"
                "/with-timestamps?output_format=mp3_44100_96")
-        req = urllib.request.Request(url, data=json.dumps({"text": text, "model_id": "eleven_v4"}).encode(),
+        req = urllib.request.Request(url, data=json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": {"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}}).encode(),
                                      method="POST", headers={"xi-api-key": env["ELEVENLABS_API_KEY"],
                                                              "Content-Type": "application/json"})
         with urllib.request.urlopen(req, timeout=180) as r:

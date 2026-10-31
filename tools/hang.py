@@ -20,9 +20,9 @@ def secrets():
 
 
 def tts(text, env):
-    url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env['GABOR_VOICE_ID']}"
+    url = (f"https://api.elevenlabs.io/v1/text-to-speech/{env.get('NARRATOR_VOICE_ID', env['GABOR_VOICE_ID'])}"
            "/with-timestamps?output_format=mp3_44100_128")
-    body = json.dumps({"text": text, "model_id": "eleven_v4"}).encode()
+    body = json.dumps({"text": text, "model_id": "eleven_v4", "voice_settings": {"stability": 0.6, "similarity_boost": 0.75, "style": 0.15}}).encode()
     req = urllib.request.Request(url, data=body, method="POST", headers={
         "xi-api-key": env["ELEVENLABS_API_KEY"], "Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=180) as r:
@@ -33,7 +33,8 @@ def build(video):
     """Teljes szöveg címkékkel + az egyes jelenetek kezdő karakterpozíciója."""
     parts, offsets, pos = [], [], 0
     for sc in video["scenes"]:
-        chunk = (sc.get("tag", "") + " " if sc.get("tag") else "")
+        # tanító hangnem: érzelmi címkék nélkül (Péter kérése: ne gesztikuláljon túl)
+        chunk = ""
         start = pos + len(chunk)
         chunk += sc["text"]
         offsets.append({"start": start, "end": start + len(sc["text"])})
