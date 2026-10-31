@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/daralthus/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/daralthus/align.json",
+ "out": "/home/claude/hogyankell/media/daralthus.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/daralthus/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/daralthus/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/daralthus/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/daralthus/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/daralthus/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/daralthus/06.png",
+   "text": ""
+  }
+ ]
+}

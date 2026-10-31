@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/sielosjegy/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/sielosjegy/align.json",
+ "out": "/home/claude/hogyankell/media/sielosjegy.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/sielosjegy/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/sielosjegy/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/sielosjegy/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/sielosjegy/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/sielosjegy/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/sielosjegy/06.png",
+   "text": ""
+  }
+ ]
+}

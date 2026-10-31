@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/penzfeldobas/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/penzfeldobas/align.json",
+ "out": "/home/claude/hogyankell/media/penzfeldobas.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/penzfeldobas/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/penzfeldobas/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/penzfeldobas/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/penzfeldobas/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/penzfeldobas/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/penzfeldobas/06.png",
+   "text": ""
+  }
+ ]
+}

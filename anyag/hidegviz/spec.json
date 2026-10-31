@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/hidegviz/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/hidegviz/align.json",
+ "out": "/home/claude/hogyankell/media/hidegviz.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/hidegviz/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/hidegviz/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/hidegviz/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/hidegviz/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/hidegviz/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/hidegviz/06.png",
+   "text": ""
+  }
+ ]
+}

@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/holdudvar/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/holdudvar/align.json",
+ "out": "/home/claude/hogyankell/media/holdudvar.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/holdudvar/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/holdudvar/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/holdudvar/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/holdudvar/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/holdudvar/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/holdudvar/06.png",
+   "text": ""
+  }
+ ]
+}

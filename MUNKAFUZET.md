@@ -1,6 +1,6 @@
 # Hogyankell – munkafüzet (átadás új beszélgetéshez)
 
-Utolsó frissítés: 2026-10-31. Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
+Utolsó frissítés: 2026-10-31 (este, 3. sorozat után). Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
 
 ## Mi ez?
 A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magyarázóvideók gyakorlati élettudásról (meggyőzés, pszichológia, pénzügyek, idő és fókusz, kommunikáció, biztonság, alvás), szavazással, ellenőrző kérdésekkel, „Mélyebben” résszel (forrás), szokásvállalással, Arénával (párbaj, liga), kommentekkel.
@@ -10,8 +10,8 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - **Kód:** GitHub, privát: `neumannpeter1231-lang/hogyankell`. A `main` ágra pusholt változás kb. 1 perc alatt automatikusan élesedik (Cloudflare Worker „rough-sound-2c04”, a `site/` mappát szolgálja ki).
 - **Adatbázis, belépés:** Supabase projekt `unzmjkzvkaqmumeqwsyf` (Google-belépés, meghívottak az `invites` táblában, adatok a `docs` táblában, RLS-szabályok a `supabase/*.sql` fájlokban).
 - **Értesítések:** Supabase Edge Function `send-reminders` + pg_cron 5 percenként.
-- **Hang:** ElevenLabs (Starter csomag), API-n. Hangok: Gábor `7B7mSWflzRSaO1yGeJH6`, Vera `xjlfQQ3ynqiEyRpArrT8`.
-- **Képek:** ElevenLabs Image & Video, Nano Banana 2.1 modell, 9:16 – jelenleg a böngészőben generálva, Péter zipben tölti fel. (Google Gemini API-kulcs megvan, de előre feltöltött egyenleg kell hozzá – lásd Nyitott pontok.)
+- **Hang:** ElevenLabs (Starter csomag), API-n. Hangok: Gábor `7B7mSWflzRSaO1yGeJH6`, Vera `xjlfQQ3ynqiEyRpArrT8`. Mellette Gemini TTS (`gemini-3.8-flash-tts`, ugyanaz a Gemini-kulcs és egyenleg): Charon, Orus, Fenrir (férfi), Kore, Aoede (női) – Péter választotta, a Sulafat kiesett.
+- **Képek:** Gemini API, `gemini-nano-banana-2.1`, 9:16 – **teljesen automatikus** a `tools/kepek.py`-val (2026-10-31 óta; 5 $ előre feltöltve az AI Studióban). A régi böngészős ElevenLabs-módszer csak tartalék.
 
 ## A repó felépítése
 - `prototipus/hogyankell.html` – az egész app egy fájlban (ezt kell szerkeszteni).
@@ -21,19 +21,20 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `tools/osszerak.py` – videó összevágása: `anyag/<id>/01.png…` + hang → `media/<id>.mp4` (Ken Burns mozgás, pontos feliratok).
 - `tools/posztok.py` – a sorozat-JSON alapján beszúrja a posztokat az appba (szavazás, ellenőrző kérdés, Mélyebben, forrás, szokás).
 - `tools/szoveghang.py` – felolvasás a szöveges (nem videós) posztokhoz.
+- `tools/kepek.py` – jelenetképek a Gemini API-ból (prompt + a sorozat `style` mezője) → `anyag/<id>/01.png…`; a meglévőket kihagyja.
 - `anyag/sorozat1.json`, `anyag/sorozat2.json` – a forgatókönyvek (jelenetszöveg + képleírás + kérdések + forrás).
 - `.secrets.env` – API-kulcsok, **gitből kizárva, nincs a GitHubon**. Új munkakörnyezetben Péternek újra meg kell adnia (ElevenLabs `sk_…` kulcs, Gemini kulcs).
 
 ## Új videósorozat menete
 1. Forgatókönyv `anyag/sorozatN.json`-ba: 6 jelenet, 25–35 mp, valódi kutatás + forrás, a végén „így véded magad” tipp, néhány „tévhit vs. valóság” formátumban. Számokat ellenőrizni / kiszámolni.
 2. `python3 tools/hang.py anyag/sorozatN.json`
-3. Képek: ElevenLabs Image & Video, Nano Banana 2.1, 9:16, 1 generálás/prompt, a stílus-utótag a JSON `style` mezőjében. Péter letölti, zipben feltölti; a fájlnévben a prompt első 15 karaktere + időbélyeg alapján kell párosítani (kétes esetben kontaktlappal ellenőrizni).
+3. `python3 tools/kepek.py anyag/sorozatN.json` (automatikus; utána kontaktlappal átnézni: nincs-e szöveg, valódi személy, márka a képen).
 4. `python3 tools/osszerak.py anyag/sorozatN.json` → `python3 tools/posztok.py anyag/sorozatN.json` → ORDER-listába nem kötelező felvenni (a feed amúgy is keveri).
 5. `python3 build.py`, commit, push, ellenőrzés élesben.
 
 ## Péter döntései (ezekhez tartsd magad)
 - Mindig **magyarul** válaszolj.
-- **Narráció aránya:** 1/2 Gábor, 1/6 Vera tanító, 1/6 Vera közepes, 1/6 Vera élénk (tools/hang.py sorsolja; a forgatókönyvben `"hang"` mezővel felülírható). Tanító jelleg, ne gesztikuláljon túl.
+- **Hang (2026-10-31-től):** minden videóban más hang szóljon, két egymást követőben soha ne ugyanaz. Profilok a `"hang"` mezőben: `gabor`, `vera_tanito`, `vera_kozepes`, `vera_elenk` (ElevenLabs), `gemini_charon`, `gemini_orus`, `gemini_fenrir`, `gemini_kore`, `gemini_aoede`. A 3. sorozat kiosztása: Charon, Vera, Kore, Gábor, Aoede, Orus → a 4. sorozat Fenrirrel kezd. Tanító jelleg, ne gesztikuláljon túl. A Gemini-hangnál a modell MINDEN szöveges előtagot (stílusutasítást) felolvas, ezért csak a sima szöveget kapja; jelenetenként külön olvas, az időzítést a hang.py becsüli a jeleneten belül.
 - **Hang mindig szól**, a feedben nincs némító és nincs megállító gomb; koppintásra áll meg / indul.
 - **Kommentek** a Mentés helyén. **Nem tetszik** gomb (Profilban visszahozható).
 - **Feed keverve** minden megnyitáskor (nem látott elöl, témák váltakoznak).
@@ -46,13 +47,14 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 1. ✅ Pénzügyek téma (6 videó kész) · 2. ✅ +pont konfettivel · 3. **Csalások felismerése** (következő sorozat) · 4. ✅ Rövidebb videók · 5. ✅ „Így védd magad” rész · 6. Néma mód a Profilban (Péter eddig a mindig szóló hangot kérte – egyeztetni) · 7. ✅ részben Tévhit-formátum · 8. ✅ Sorozatszámláló · 9. Egyszerűbb szavak · 10. Munkahely (interjú, tárgyalás, munkajog) · 11. Egészség és alvás · 12. ✅ Rezgés · 13. Önbizalom és első benyomás · 14. Kapcsolatok · 15. Barát meghívása a ligába · 16. Pörgő pontszám · 17. Nagyobb betűs mód · 18. Gyerek és család · 19. Kommentmoderálás · 20. Viselkedési közgazdaságtan · 21. „Megelőzted X-et” · 22. Csak hang mód · 23. Egyszerű mód · 24. Borravaló-pszichológia
 
 ## Tartalom most (élesben)
-- 17 AI-videó: Horgonyhatás, Szűkösség elve, Láb az ajtóban, Társas bizonyíték, Pratfall-hatás, Azonosítható áldozat hatás, Választási bénulás, Rím mint érv, A visszakérdezés ereje, Tekintély elve, Előfeszítés, Kamatos kamat, A fizetés fájdalma, A minimum törlesztés horgonya, Fizesd ki először magad, Infláció, Mentális könyvelés.
+- 23 AI-videó: Horgonyhatás, Szűkösség elve, Láb az ajtóban, Társas bizonyíték, Pratfall-hatás, Azonosítható áldozat hatás, Választási bénulás, Rím mint érv, A visszakérdezés ereje, Tekintély elve, Előfeszítés, Kamatos kamat, A fizetés fájdalma, A minimum törlesztés horgonya, Fizesd ki először magad, Infláció, Mentális könyvelés; 3. sorozat (a könyv „Védekezz” részeiből): Elsüllyedt költség, Csalimadár, Veszteségkerülés, Keretezés, Holdudvarhatás, Csúcs-vég szabály. **Új videó előtt ezt a listát ellenőrizni, téma nem ismétlődhet.**
 - 8 podcastrészlet-videó + 7 felolvasott szöveges poszt. Rejtve (duplikátum): p3, p4, p5, m1.
 
 ## Nyitott pontok
-- **Kommentek Supabase-szabálya:** `supabase/4_kommentek.sql` – Péternek kell a Supabase SQL Editorban a Run gombot megnyomnia (Claude-nak nem engedélyezett az éles adatbázis módosítása). Nem tudni, megtörtént-e – rákérdezni, és egy próbakommenttel ellenőrizni.
-- **Teljesen automatikus képek:** Google AI Studio-ban kb. 5 $ előre feltöltés kell (a Gemini-kulcs `hogyankell` projektben megvan, service accounthoz kötve). Alternatíva: ingyenes Google Cloud próbakeret Vertex AI-on (a kulcs mentése „Save failed” hibát adott).
-- **ElevenLabs keret:** a havi keret nagy része elfogyott (okt. 31-én kb. 11 kép maradt); a következő megújulásig kevés új videó fér bele.
+- ✅ **Kommentek Supabase-szabálya:** `supabase/4_kommentek.sql` lefutott (2026-10-31), Péter próbakommentet írt.
+- ✅ **Teljesen automatikus képek:** 5 $ előre feltöltve (2026-10-31), a 3. sorozat (36 kép) után kb. 2,5 $ maradt. A Google Cloud 300 $-os próbakerete a Gemini API-ra NEM vonatkozik. Auto-reload kikapcsolva.
+- **Meghívottak:** Mira (mira.hasznosi@gmail.com) meghívó-SQL-je beírva, Péter Run gombjára vár (2026-10-31).
+- **ElevenLabs keret:** a 3. sorozat után kb. 1 100 karakter maradt november 30-ig (kb. 2 rövid narráció); addig főleg Gemini-hangok.
 - **Valódi tesztelők:** 5–10 Gmail-cím kell az `invites` táblába; javasolt nézési statisztika (végignézés, elgörgetés, dislike) heti összefoglalóval.
 - Ötletek a jövőre: ütemezett heti videógyártás, ha a képek is automatikusak.
 
@@ -86,6 +88,6 @@ Eredmények: átlag 7,2 (1. csapat) és 7,0 (2. csapat); legjobban a munkájukho
 ## Fiókok, költségek
 - GitHub: neumannpeter1231-lang · Cloudflare: Worker „rough-sound-2c04” · Supabase: free tier · Google Cloud: „Hogyankell” projekt (OAuth + Gemini kulcs) · ElevenLabs: Starter.
 - ElevenLabs keret megújul: **2026. november 30.** (Starter első hónap 1 $, utána 6 $/hó, kb. 39 000 kredit/hó). Egy 6 jelenetes videó kb. 1 000 kredit kép + 400–600 kredit hang.
-- Google Gemini kép: kb. 0,067 $/kép (Nano Banana 2), előre feltöltéssel.
+- Google Gemini kép: kb. 0,067 $/kép (Nano Banana 2.1), előre feltöltéssel; Gemini TTS: pár cent videónként.
 - Push-értesítés: a szerveroldal működik (cron 200 OK), Péter telefonján még nincs megerősítve, hogy megérkezett.
 - Meghívott hozzáadása: Supabase → Table Editor → `invites` → új sor e-mail-címmel (vagy SQL: `insert into public.invites(email) values ('…');`).

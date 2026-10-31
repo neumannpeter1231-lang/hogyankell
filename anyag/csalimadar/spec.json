@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/csalimadar/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/csalimadar/align.json",
+ "out": "/home/claude/hogyankell/media/csalimadar.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/csalimadar/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/csalimadar/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/csalimadar/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/csalimadar/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/csalimadar/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/csalimadar/06.png",
+   "text": ""
+  }
+ ]
+}

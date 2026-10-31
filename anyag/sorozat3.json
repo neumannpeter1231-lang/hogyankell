@@ -1,0 +1,413 @@
+{
+ "style": "Vertical 9:16 illustration, bold flat cartoon style with thick black outlines, vivid magenta, teal and yellow palette, high contrast retro comic look with halftone dots, quirky characters with big round eyes, natural skin tones, no text, no letters, no numbers, no logos",
+ "videos": [
+  {
+   "id": "sielosjegy",
+   "title": "Elsüllyedt költség",
+   "topic": "Pszichológia",
+   "tags": "#döntés #pénz",
+   "hang": "gemini_charon",
+   "scenes": [
+    {
+     "text": "Unalmas a film, de végigülöd, mert kifizetted a jegyet. Ismerős?",
+     "prompt": "A bored quirky young man slumped in a cinema seat with half-closed eyes, holding a crumpled ticket, popcorn spilling, dim cinema light"
+    },
+    {
+     "text": "Kutatók megkérdezték: két síút ugyanarra a hétvégére, és véletlenül mindkettőre vettél jegyet.",
+     "prompt": "A surprised quirky woman holding two different ski trip tickets, one in each hand, snowy mountains in the background"
+    },
+    {
+     "text": "Az egyik drágább, a másik olcsóbb, de sokkal élvezetesebb. Melyikre mennél?",
+     "prompt": "A split scene: on the left a grey gloomy expensive ski slope, on the right a sunny joyful small ski slope with happy skiers"
+    },
+    {
+     "text": "Az emberek több mint fele a drágábbat választotta. Csak mert több pénz ment el rá.",
+     "prompt": "A crowd of quirky people walking toward a gloomy grey mountain, while a sunny cheerful mountain stands empty"
+    },
+    {
+     "text": "Ez az elsüllyedt költség. A pénz már elment, akármit döntesz.",
+     "prompt": "A pile of coins slowly sinking into deep teal water, a quirky person on a small boat looking down sadly"
+    },
+    {
+     "text": "A tipp: kérdezd meg magadtól, ha most kezdeném, belevágnék? Ha nem, nyugodtan állj fel.",
+     "prompt": "A cheerful quirky person standing up from a cinema seat and walking out into bright sunlight, relieved smile"
+    }
+   ],
+   "poll": {
+    "q": "Két síútra vettél jegyet ugyanarra a hétvégére. Melyikre mennél?",
+    "o": [
+     "A drágábbra, ha már annyit fizettem",
+     "Az élvezetesebbre, akármennyibe került",
+     "Egyikre sem"
+    ],
+    "a": 1,
+    "why": "Mindkét jegy ára már elment. Csak az számít, melyik útnak örülnél jobban."
+   },
+   "check": {
+    "q": "Mi az elsüllyedt költség csapdája?",
+    "o": [
+     "Túl sokat költünk az elején",
+     "A már elköltött pénz miatt folytatunk valamit, ami nem éri meg",
+     "Mindig a legolcsóbbat választjuk"
+    ],
+    "a": 1,
+    "why": "Az elköltött pénz nem jön vissza, mégis hagyjuk, hogy a következő döntésünket irányítsa."
+   },
+   "deeper": [
+    "Arkes és Blumer (1985) kísérletében egy 100 dolláros és egy 50 dolláros síútról volt szó; az olcsóbbat élvezetesebbnek írták le. A résztvevők kb. 54 százaléka mégis a drágábbat választotta.",
+    "Ez kérdőíves, elképzelt helyzet volt. Valós helyzetekben a hatás erőssége változó, és néha más ok is áll a kitartás mögött (például a következetesség vagy az, hogy mások mit gondolnak).",
+    "Tárgyaláson is működik: aki sok időt tett már bele, nehezebben száll ki. Ezzel ne élj vissza."
+   ],
+   "source": {
+    "label": "Arkes, H. R. és Blumer, C. (1985): The psychology of sunk cost. Organizational Behavior and Human Decision Processes",
+    "url": ""
+   },
+   "habit": {
+    "text": "Ma egy dolgot átnézek, amit csak azért csinálok, mert már sokat beletettem.",
+    "time": "20:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "csalimadar",
+   "title": "Csalimadár",
+   "topic": "Meggyőzés",
+   "tags": "#vásárlás #árazás",
+   "hang": "vera_elenk",
+   "scenes": [
+    {
+     "tag": "[curious]",
+     "text": "Egy újság három előfizetést kínált. Csak online, ötvenkilenc dollár.",
+     "prompt": "A quirky young woman looking at a big laptop screen showing three colorful subscription cards, a newspaper on the desk"
+    },
+    {
+     "text": "Csak nyomtatott, százhuszonöt dollár. Nyomtatott és online együtt, szintén százhuszonöt.",
+     "prompt": "Two identical shiny price tags side by side, one with a single newspaper, the other with a newspaper and a laptop, a quirky shopper squinting"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Ki venné meg a középsőt? Senki. A diákok nyolcvannégy százaléka a csomagot választotta.",
+     "prompt": "A crowd of quirky students rushing toward a glowing combo package, one lonely box in the middle with nobody near it"
+    },
+    {
+     "text": "Aztán kivették a középső ajánlatot. A csomag aránya harminckét százalékra esett.",
+     "prompt": "A hand removing a middle box from a shelf, and the crowd of quirky students turning away from the combo package"
+    },
+    {
+     "text": "A senki által nem vett ajánlat csali volt. Azért volt ott, hogy a drágább jó üzletnek tűnjön.",
+     "prompt": "A wooden decoy duck floating on a pond, real ducks swimming toward a shiny golden box on the shore"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: ha két ajánlat túl közel van egymáshoz, takard le a harmadikat. Akkor is azt választanád?",
+     "prompt": "A quirky person covering one of three price cards with their hand, thoughtful smile, bright shop background"
+    }
+   ],
+   "poll": {
+    "q": "Kicsi popcorn 1000 Ft, közepes 1900 Ft, nagy 2000 Ft. Melyik a csali?",
+    "o": [
+     "A kicsi",
+     "A közepes",
+     "A nagy"
+    ],
+    "a": 1,
+    "why": "A közepest szinte senki nem veszi meg, de mellette a nagy nagyon jó üzletnek tűnik."
+   },
+   "check": {
+    "q": "Mi a csalimadár szerepe egy árlistán?",
+    "o": [
+     "Hogy azt vegyék meg a legtöbben",
+     "Hogy egy másik ajánlat jobb üzletnek tűnjön mellette",
+     "Hogy olcsóbbnak tűnjön az üzlet"
+    ],
+    "a": 1,
+    "why": "A csalit nem eladásra szánják: az a dolga, hogy egy másik ajánlat vonzóbb legyen mellette."
+   },
+   "deeper": [
+    "A példa Dan Ariely Kiszámíthatóan irracionális című könyvéből való: diákokkal kipróbálta az Economist ajánlatait. Három opciónál 84 százalék választotta a csomagot, a középső nélkül csak 32 százalék.",
+    "A jelenséget Huber, Payne és Puto (1982) írta le először. Fontos korlát: Frederick, Lee és Baskin (2014) 38 vizsgálatban azt találta, hogy főleg számokkal leírt, mesterséges helyzetekben erős, valódi termékeknél gyakran eltűnik.",
+    "Tisztességes használat: a csali is érje meg annak, aki azt választja."
+   ],
+   "source": {
+    "label": "Huber, Payne és Puto (1982), Journal of Consumer Research; Ariely, D. (2008): Kiszámíthatóan irracionális",
+    "url": ""
+   },
+   "habit": {
+    "text": "Legközelebb vásárláskor megkeresem, melyik ajánlat lehet a csali.",
+    "time": "18:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "penzfeldobas",
+   "title": "Veszteségkerülés",
+   "topic": "Meggyőzés",
+   "tags": "#döntés #reklám",
+   "hang": "gemini_kore",
+   "scenes": [
+    {
+     "text": "Feldobunk egy érmét. Ha fej, nyersz tízezer forintot. Ha írás, veszítesz tízezret. Belemennél?",
+     "prompt": "A big shiny coin spinning in the air above a table, a quirky young man watching it nervously"
+    },
+    {
+     "text": "A legtöbben nem. Csak nagyjából húszezres nyereményért mennének bele.",
+     "prompt": "A quirky person shaking head at a small coin, then nodding at a much bigger stack of coins"
+    },
+    {
+     "text": "Ez a veszteségkerülés. A veszteség körülbelül kétszer annyira fáj, mint amennyire ugyanakkora nyereség örömet okoz.",
+     "prompt": "A balance scale where a small red weight labeled with a sad face outweighs a big yellow weight with a happy face"
+    },
+    {
+     "text": "A reklámok ezt ki is használják: nem azt mondják, mit nyersz, hanem hogy mit veszítesz.",
+     "prompt": "A quirky person scrolling a phone, colorful flashing warning symbols and a worried face reflected on the screen"
+    },
+    {
+     "text": "Ugyanaz az ajánlat így sürgetőbbnek tűnik, pedig semmi nem változott.",
+     "prompt": "Two identical gift boxes, one surrounded by red alarm bells, the other calm, a quirky shopper confused between them"
+    },
+    {
+     "text": "A tipp: fordítsd át fejben nyereséggé. Ha így is megvennéd, rendben. Ha nem, a félelem döntött.",
+     "prompt": "A calm quirky person putting a phone face down on a table, sipping tea, peaceful sunny room"
+    }
+   ],
+   "poll": {
+    "q": "Fej: nyersz 10 000 Ft-ot. Írás: veszítesz 10 000 Ft-ot. Belemennél?",
+    "o": [
+     "Igen, belemennék",
+     "Nem, inkább kihagynám",
+     "Csak nagyobb nyereményért"
+    ],
+    "a": 2,
+    "why": "A kísérletekben a legtöbben csak akkor fogadnak, ha a nyeremény kb. kétszerese a veszteségnek."
+   },
+   "check": {
+    "q": "Mit jelent a veszteségkerülés?",
+    "o": [
+     "Hogy soha nem kockáztatunk",
+     "Hogy a veszteség jobban fáj, mint amennyire ugyanakkora nyereség örömet okoz",
+     "Hogy mindig a biztosat választjuk"
+    ],
+    "a": 1,
+    "why": "Kahneman és Tversky szerint a veszteség fájdalma kb. kétszer erősebb, mint ugyanakkora nyereség öröme."
+   },
+   "deeper": [
+    "Kahneman és Tversky kilátáselmélete (1979) írta le. Sok kísérletben az emberek egy 50:50 fogadást csak akkor fogadnak el, ha a nyeremény kb. a veszteség duplája.",
+    "Korlát: Gal és Rucker (2018) szerint a hatás nem általános, kis összegeknél gyakran nem jelenik meg, és sok mögötte inkább tehetetlenség vagy megszokás.",
+    "A lemaradás-keretezés („ezt fogod elveszíteni”) a könyv szerint a fiatalabbaknál különösen hat."
+   ],
+   "source": {
+    "label": "Kahneman, D. és Tversky, A. (1979): Prospect theory. Econometrica; Gal, D. és Rucker, D. (2018), Journal of Consumer Psychology",
+    "url": ""
+   },
+   "habit": {
+    "text": "A következő sürgető ajánlatnál átfogalmazom magamnak: mit nyerek vele?",
+    "time": "19:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "daralthus",
+   "title": "Keretezés",
+   "topic": "Meggyőzés",
+   "tags": "#vásárlás #tévhit",
+   "hang": "gabor",
+   "scenes": [
+    {
+     "tag": "[curious]",
+     "text": "Melyik darált húst vennéd meg? A hetvenöt százalékban soványat, vagy a huszonöt százalékban zsírosat?",
+     "prompt": "A quirky shopper in a supermarket holding two identical packages of minced meat, one with a happy green sticker, one with a gloomy red sticker"
+    },
+    {
+     "tag": "[surprised]",
+     "text": "Pedig a kettő ugyanaz. Mégis az elsőt tartjuk jobbnak, ízletesebbnek.",
+     "prompt": "Two identical meat packages shown side by side with an equal sign glowing between them, a surprised quirky shopper"
+    },
+    {
+     "text": "Egy kísérletben az emberek a soványnak címkézett húst értékelték jobbnak, még kóstolás után is.",
+     "prompt": "Quirky people tasting small meatballs on toothpicks at a supermarket tasting stand, smiling at one plate and frowning at the other"
+    },
+    {
+     "text": "Ez a keretezés. Nem az számít, mi az igazság, hanem hogy milyen szavakkal mondják.",
+     "prompt": "A picture frame held up around a plate of food, changing its colors from gloomy to bright, a quirky chef holding it"
+    },
+    {
+     "text": "Kilencven százalékos túlélés, vagy tíz százalékos halálozás. Ugyanaz, mégis másképp döntünk.",
+     "prompt": "A quirky doctor showing two signs to a patient, one bright sunny sign and one dark stormy sign, the patient looking confused"
+    },
+    {
+     "tag": "[warmly]",
+     "text": "A tipp: mindig fordítsd meg a mondatot. Ha a másik változat is jól hangzik, akkor jó az ajánlat.",
+     "prompt": "A cheerful quirky person flipping a big card around with a smile, supermarket in the background"
+    }
+   ],
+   "poll": {
+    "q": "„75% sovány” vagy „25% zsír”. Melyik a jobb hús?",
+    "o": [
+     "A 75% sovány",
+     "A 25% zsíros",
+     "Egyformák"
+    ],
+    "a": 2,
+    "why": "Ugyanazt jelenti a kettő, csak más keretben mondják. Mégis a „sovány” címkét értékeljük jobbnak."
+   },
+   "check": {
+    "q": "Mit érdemes tenni, ha egy ajánlat nagyon jól hangzik?",
+    "o": [
+     "Azonnal elfogadni",
+     "Megfordítani a mondatot, és úgy is meghallgatni",
+     "Megkérdezni, mennyibe kerül a drágább változat"
+    ],
+    "a": 1,
+    "why": "A keretezés ellen a megfordítás véd: „90% túlélés” ugyanaz, mint „10% halálozás”."
+   },
+   "deeper": [
+    "Levin és Gaeth (1988) kísérletében a „75% sovány” címkéjű darált húst jobbnak, kevésbé zsírosnak és jobb minőségűnek értékelték, mint a „25% zsír” címkéjűt. A különbség kóstolás után kisebb lett, de megmaradt.",
+    "A híres „ázsiai betegség” feladatban (Tversky és Kahneman, 1981) a „200 embert megmentünk” változatot 72 százalék választotta, a pontosan ugyanazt jelentő „400 ember meghal” változatnál a többség a kockázatos programot választotta.",
+    "Korlát: a hatás mérete kísérletenként eltér, és ha az emberek előre végiggondolják a számokat, kisebb."
+   ],
+   "source": {
+    "label": "Levin, I. P. és Gaeth, G. J. (1988), Journal of Consumer Research; Tversky, A. és Kahneman, D. (1981), Science",
+    "url": ""
+   },
+   "habit": {
+    "text": "Ma egy reklám vagy címke szövegét fejben megfordítom.",
+    "time": "18:30",
+    "days": 1
+   }
+  },
+  {
+   "id": "holdudvar",
+   "title": "Holdudvarhatás",
+   "topic": "Pszichológia",
+   "tags": "#elsőbenyomás #ítélet",
+   "hang": "gemini_aoede",
+   "scenes": [
+    {
+     "text": "Ha valaki szép, hajlamosak vagyunk azt hinni, hogy kedves, okos és sikeres is.",
+     "prompt": "A stylish quirky person surrounded by a glowing golden halo-like light, other quirky people looking at them admiringly"
+    },
+    {
+     "text": "Ezt már száz éve észrevették: egy jó tulajdonság rávetül az összes többire.",
+     "prompt": "A bright sunbeam from one star spreading golden light over many small icons of a heart, a book and a trophy, retro comic style"
+    },
+    {
+     "text": "Egy kísérletben fényképek alapján a vonzóbbnak látott embereket kedvesebbnek és sikeresebbnek is gondolták.",
+     "prompt": "A quirky judge panel looking at three framed portrait drawings of fictional cartoon people, giving thumbs up to the most smiling one"
+    },
+    {
+     "text": "Tanárok is jobb jövőt jósoltak a szebbnek látszó gyereknek, pedig a bizonyítványuk ugyanaz volt.",
+     "prompt": "A quirky teacher looking at two identical school report cards next to two cartoon children, smiling more at one of them"
+    },
+    {
+     "text": "Ugyanez történik állásinterjún, randin, vagy amikor egy szép weboldalnak jobban hiszünk.",
+     "prompt": "A collage of a job interview, a cafe date and a shiny website on a laptop, all with a soft golden glow"
+    },
+    {
+     "text": "A tipp: ha valakiről döntesz, írd le a fontos tulajdonságokat, és egyenként értékeld őket.",
+     "prompt": "A focused quirky person writing a checklist on a notepad at a desk, a cup of coffee beside them, calm light"
+    }
+   ],
+   "poll": {
+    "q": "Azonos bizonyítvány, két gyerek. Kitől várnak a tanárok többet?",
+    "o": [
+     "A szorgalmasabbnak látszótól",
+     "A vonzóbbnak látszótól",
+     "Egyformán várnak"
+    ],
+    "a": 1,
+    "why": "Clifford és Walster (1973) szerint azonos bizonyítványnál is jobb jövőt vártak a vonzóbbnak látszó gyerektől."
+   },
+   "check": {
+    "q": "Mi a holdudvarhatás?",
+    "o": [
+     "Amikor egy jó tulajdonság miatt a többit is jobbnak látjuk",
+     "Amikor valakit csak a hibái alapján ítélünk meg",
+     "Amikor mindenkit egyformának látunk"
+    ],
+    "a": 0,
+    "why": "Egy kiemelkedő tulajdonság, például a vonzó külső, „rávetül” a többire."
+   },
+   "deeper": [
+    "Edward Thorndike (1920) figyelte meg először katonatisztek értékelésénél, hogy egy jó tulajdonság a többi megítélésére is kihat.",
+    "Dion, Berscheid és Walster (1972) „Ami szép, az jó” vizsgálatában a vonzóbbnak látott emberek fotói alapján a résztvevők kedvesebb, sikeresebb életet jósoltak.",
+    "Korlát: a hatás erőssége helyzettől függ, és ha az emberek konkrét, mérhető szempontok szerint értékelnek, gyengül. Ezért segít a lista."
+   ],
+   "source": {
+    "label": "Thorndike (1920); Dion, Berscheid és Walster (1972), Journal of Personality and Social Psychology; Clifford és Walster (1973)",
+    "url": ""
+   },
+   "habit": {
+    "text": "Ma, ha valakiről véleményt formálok, külön nézem a külsőt és a tetteit.",
+    "time": "20:00",
+    "days": 1
+   }
+  },
+  {
+   "id": "hidegviz",
+   "title": "Csúcs-vég szabály",
+   "topic": "Pszichológia",
+   "tags": "#emlékezet #élmény",
+   "hang": "gemini_orus",
+   "scenes": [
+    {
+     "text": "Egy kísérletben az embereknek a kezüket hideg vízbe kellett tartaniuk, egy egész percig.",
+     "prompt": "A quirky young man grimacing while holding his hand in a bucket of icy blue water, a big stopwatch on the wall"
+    },
+    {
+     "text": "Máskor egy percig ugyanolyan hidegben, aztán még fél percig egy kicsit melegebb vízben.",
+     "prompt": "The same quirky man holding his hand in water that turns from icy blue to slightly warmer teal, his face relaxing a little"
+    },
+    {
+     "text": "Melyiket ismételnék meg? A többség a hosszabbat választotta, pedig abban több kellemetlenség volt.",
+     "prompt": "A quirky man pointing at the longer of two water buckets with a surprised crowd watching"
+    },
+    {
+     "text": "Ez a csúcs-vég szabály. Egy élményből főleg a legerősebb pillanatra és a végére emlékszünk.",
+     "prompt": "A winding road of memories with a big glowing peak in the middle and a bright sunset at the end, everything else faded"
+    },
+    {
+     "text": "Egy nyaralásnál sem a hossza számít, hanem a legjobb nap és az utolsó este.",
+     "prompt": "Quirky friends laughing together on a beach at sunset on the last evening of a holiday, fairy lights and a campfire"
+    },
+    {
+     "text": "A tipp: amit szervezel, annak a végét tedd a legjobbá. Egy beszélgetést is zárj kedvesen.",
+     "prompt": "A quirky host waving goodbye to happy guests at the door, warm golden light, small gift bags in their hands"
+    }
+   ],
+   "poll": {
+    "q": "Mire emlékszünk legjobban egy élményből?",
+    "o": [
+     "Az egészre, átlagosan",
+     "A legerősebb pillanatra és a végére",
+     "Csak az elejére"
+    ],
+    "a": 1,
+    "why": "Kahneman kutatásai szerint az utólagos értékelést főleg a csúcs és a vég határozza meg, a hossza alig számít."
+   },
+   "check": {
+    "q": "Melyik hideg vizes próbát ismételték volna meg többen?",
+    "o": [
+     "A rövidebbet",
+     "A hosszabbat, aminek a vége enyhébb volt",
+     "Egyiket sem"
+    ],
+    "a": 1,
+    "why": "A hosszabb próba vége enyhébb volt, ezért utólag kevésbé rossznak emlékeztek rá."
+   },
+   "deeper": [
+    "Kahneman, Fredrickson, Schreiber és Redelmeier (1993) kísérletében a résztvevők egyszer 60 másodpercig 14 fokos vízben tartották a kezüket, máskor 60 másodperc után még 30 másodpercig kicsit melegebb vízben. Kb. kétharmaduk a hosszabbat ismételte volna meg.",
+    "Hasonló eredményt hozott egy orvosi vizsgálatokkal végzett kutatás is (Redelmeier, Katz és Kahneman, 2003).",
+    "Korlát: a szabály nem minden élményre érvényes egyformán; hosszabb, összetett élményeknél más tényezők is számítanak."
+   ],
+   "source": {
+    "label": "Kahneman, D. és mtsai (1993): When more pain is preferred to less. Psychological Science",
+    "url": ""
+   },
+   "habit": {
+    "text": "Ma egy beszélgetést vagy találkozót kifejezetten kedvesen zárok.",
+    "time": "21:00",
+    "days": 1
+   }
+  }
+ ]
+}
