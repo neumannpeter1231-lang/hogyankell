@@ -46,6 +46,14 @@ h1,h2,h3{font-family:var(--f-display);margin:0;line-height:1.12;text-wrap:balanc
 .post-bg{position:absolute;inset:0}
 .tap-sound{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:4;display:flex;align-items:center;gap:8px;background:rgba(7,9,12,.62);color:var(--ink);border-radius:999px;padding:10px 16px;font-weight:700;font-size:15px;pointer-events:none;backdrop-filter:blur(4px)}
 .tap-sound svg{width:22px;height:22px}
+.cm-list{display:flex;flex-direction:column;gap:12px;max-height:42vh;overflow-y:auto;margin:6px 0 10px}
+.cm{background:var(--surface-2);border-radius:14px;padding:10px 12px}
+.cm-h{display:flex;gap:8px;align-items:baseline;font-size:14px}
+.cm-h span{color:var(--muted);font-size:12px}
+.cm-del{margin-left:auto;background:none;border:0;color:var(--muted);font-size:12px;cursor:pointer}
+.cm-t{margin-top:4px;color:#D5DAE1;font-size:15px;line-height:1.4;overflow-wrap:anywhere}
+.cm-new{display:flex;gap:8px;align-items:flex-end}
+.cm-new textarea{flex:1;resize:none;border-radius:12px;padding:10px;background:var(--surface-2);color:var(--ink);border:1px solid rgba(255,255,255,.12);font:inherit}
 .item.is-paused .post-bg::before{content:"";position:absolute;left:50%;top:44%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:rgba(7,9,12,.55) url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27white%27%3E%3Cpath d=%27M8 5v14l11-7z%27/%3E%3C/svg%3E") center/40px no-repeat;z-index:5;pointer-events:none}
 .tv .tap-sound,.item .tap-sound.txt{top:auto;bottom:150px}
 .post-bg video,.post-bg img.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}
@@ -835,9 +843,9 @@ function renderItem(it, idx){
       : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
     <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
     <div class="rail">
-      <button data-a="pause" class="snd" aria-label="Megállítás vagy folytatás">${I.pause}<span>Megállítás</span></button>
+      
       <button data-a="like" aria-pressed="${!!S.liked[p.id]}" aria-label="Tetszik">${I.heart}<span>${S.liked[p.id] ? "Tetszik" : "Like"}</span></button>
-      <button data-a="save" aria-pressed="${!!S.saved[p.id]}" aria-label="Mentés">${I.save}<span>${S.saved[p.id] ? "Mentve" : "Mentés"}</span></button>
+      <button data-a="comment" aria-label="Kommentek">${I.chat}<span>Komment</span></button>
       <button data-a="share" aria-label="Link másolása">${I.share}<span>Küldés</span></button>
       <button data-a="deeper" class="deeper" aria-label="Mélyebben: miért így van">${I.layers}<span>Mélyebb</span></button>
     </div>
@@ -896,6 +904,7 @@ function onPostClick(e, p, el){
     const txt = p.title + " – Hogyankell";
     try { navigator.clipboard.writeText(txt).then(() => toast("Cím vágólapra másolva"), () => toast("A másolás itt nem érhető el")); } catch(err) { toast("A másolás itt nem érhető el"); }
   } else if (a === "deeper") openDeeper(p);
+  else if (a === "comment") openComments(p);
   else if (a === "pause") setPaused(!paused);
 }
 function activeVideo(){ return active && active.contains(cur) ? cur : null; }
@@ -1167,6 +1176,50 @@ function openDeeper(p){
   back.onclick = closeSheet;
   $("v-feed").append(back, sh);
   $("sheetClose").onclick = closeSheet; $("sheetClose").focus();
+}
+/* Kommentek: mindenki látja a meghívottak közül, mindenki csak a sajátját törölheti. */
+let myName = "";
+const ago = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? "most" : m < 60 ? m + " perce" : m < 1440 ? Math.round(m / 60) + " órája" : Math.round(m / 1440) + " napja"; };
+async function openComments(p){
+  closeSheet();
+  const back = document.createElement("div"); back.className = "sheet-back"; back.id = "sheetBack";
+  const sh = document.createElement("div"); sh.className = "sheet"; sh.id = "sheet"; sh.setAttribute("role", "dialog"); sh.setAttribute("aria-label", "Kommentek: " + p.title);
+  back.onclick = closeSheet;
+  $("v-feed").append(back, sh);
+  sh.innerHTML = `<div class="grab"></div><div class="levels"><span class="on">Kommentek</span></div>
+    <h2 style="font-size:20px">${esc(p.title)}</h2>
+    <div id="cmList" class="cm-list"><p class="muted small">Betöltés…</p></div>
+    <div class="cm-new"><textarea id="cmText" rows="2" maxlength="300" placeholder="${dbRef ? "Írd le, mit gondolsz…" : "A kommenteléshez lépj be az appba"}" ${dbRef ? "" : "disabled"}></textarea>
+    <button class="btn primary" id="cmSend" ${dbRef ? "" : "disabled"}>Küldés</button></div>`;
+  const list = $("cmList");
+  const load = async () => {
+    if (!dbRef) { list.innerHTML = `<p class="muted small">Itt még nem látszanak kommentek.</p>`; return; }
+    try {
+      const r = await dbRef.collection("comments/" + p.id).get();
+      const cs = r.docs.map(d => Object.assign({id: d.id}, d.data())).filter(c => c && c.text).sort((a, b) => a.at - b.at);
+      list.innerHTML = cs.length ? cs.map(c => `<div class="cm"><div class="cm-h"><b>${esc(c.name || "Valaki")}</b><span>${ago(c.at)}</span>${c.by === myId ? `<button class="cm-del" data-id="${esc(c.id)}">Törlés</button>` : ""}</div><div class="cm-t">${esc(c.text)}</div></div>`).join("")
+        : `<p class="muted small">Még nincs komment. Légy te az első!</p>`;
+      list.scrollTop = list.scrollHeight;
+    } catch (e) { list.innerHTML = `<p class="muted small">A kommenteket most nem sikerült betölteni.</p>`; }
+  };
+  list.onclick = async e => {
+    const d = e.target.closest(".cm-del"); if (!d) return;
+    try { await dbRef.doc("comments/" + p.id + "/" + d.dataset.id).delete(); } catch (err) { toast("A törlés nem sikerült"); }
+    load();
+  };
+  $("cmSend").onclick = async () => {
+    const t = $("cmText").value.trim().replace(/\s+/g, " ");
+    if (!t) { $("cmText").focus(); return; }
+    $("cmSend").disabled = true;
+    try {
+      if (!myName && userRef) { try { myName = ((await userRef.me()) || {}).name || ""; } catch (e) {} }
+      const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      await dbRef.doc("comments/" + p.id + "/" + id).set({by: myId, name: (myName || "Valaki").split(" ")[0], text: t.slice(0, 300), at: Date.now()});
+      $("cmText").value = ""; load();
+    } catch (e) { toast("A kommentet most nem sikerült elküldeni"); }
+    $("cmSend").disabled = false;
+  };
+  load();
 }
 function closeSheet(){ const a = $("sheetBack"), b = $("sheet"); if (a) a.remove(); if (b) b.remove(); }
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });

@@ -467,9 +467,9 @@ function renderItem(it, idx){
       : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
     <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
     <div class="rail">
-      <button data-a="pause" class="snd" aria-label="Megállítás vagy folytatás">${I.pause}<span>Megállítás</span></button>
+      
       <button data-a="like" aria-pressed="${!!S.liked[p.id]}" aria-label="Tetszik">${I.heart}<span>${S.liked[p.id] ? "Tetszik" : "Like"}</span></button>
-      <button data-a="save" aria-pressed="${!!S.saved[p.id]}" aria-label="Mentés">${I.save}<span>${S.saved[p.id] ? "Mentve" : "Mentés"}</span></button>
+      <button data-a="comment" aria-label="Kommentek">${I.chat}<span>Komment</span></button>
       <button data-a="share" aria-label="Link másolása">${I.share}<span>Küldés</span></button>
       <button data-a="deeper" class="deeper" aria-label="Mélyebben: miért így van">${I.layers}<span>Mélyebb</span></button>
     </div>
@@ -528,6 +528,7 @@ function onPostClick(e, p, el){
     const txt = p.title + " – Hogyankell";
     try { navigator.clipboard.writeText(txt).then(() => toast("Cím vágólapra másolva"), () => toast("A másolás itt nem érhető el")); } catch(err) { toast("A másolás itt nem érhető el"); }
   } else if (a === "deeper") openDeeper(p);
+  else if (a === "comment") openComments(p);
   else if (a === "pause") setPaused(!paused);
 }
 function activeVideo(){ return active && active.contains(cur) ? cur : null; }
@@ -799,6 +800,50 @@ function openDeeper(p){
   back.onclick = closeSheet;
   $("v-feed").append(back, sh);
   $("sheetClose").onclick = closeSheet; $("sheetClose").focus();
+}
+/* Kommentek: mindenki látja a meghívottak közül, mindenki csak a sajátját törölheti. */
+let myName = "";
+const ago = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? "most" : m < 60 ? m + " perce" : m < 1440 ? Math.round(m / 60) + " órája" : Math.round(m / 1440) + " napja"; };
+async function openComments(p){
+  closeSheet();
+  const back = document.createElement("div"); back.className = "sheet-back"; back.id = "sheetBack";
+  const sh = document.createElement("div"); sh.className = "sheet"; sh.id = "sheet"; sh.setAttribute("role", "dialog"); sh.setAttribute("aria-label", "Kommentek: " + p.title);
+  back.onclick = closeSheet;
+  $("v-feed").append(back, sh);
+  sh.innerHTML = `<div class="grab"></div><div class="levels"><span class="on">Kommentek</span></div>
+    <h2 style="font-size:20px">${esc(p.title)}</h2>
+    <div id="cmList" class="cm-list"><p class="muted small">Betöltés…</p></div>
+    <div class="cm-new"><textarea id="cmText" rows="2" maxlength="300" placeholder="${dbRef ? "Írd le, mit gondolsz…" : "A kommenteléshez lépj be az appba"}" ${dbRef ? "" : "disabled"}></textarea>
+    <button class="btn primary" id="cmSend" ${dbRef ? "" : "disabled"}>Küldés</button></div>`;
+  const list = $("cmList");
+  const load = async () => {
+    if (!dbRef) { list.innerHTML = `<p class="muted small">Itt még nem látszanak kommentek.</p>`; return; }
+    try {
+      const r = await dbRef.collection("comments/" + p.id).get();
+      const cs = r.docs.map(d => Object.assign({id: d.id}, d.data())).filter(c => c && c.text).sort((a, b) => a.at - b.at);
+      list.innerHTML = cs.length ? cs.map(c => `<div class="cm"><div class="cm-h"><b>${esc(c.name || "Valaki")}</b><span>${ago(c.at)}</span>${c.by === myId ? `<button class="cm-del" data-id="${esc(c.id)}">Törlés</button>` : ""}</div><div class="cm-t">${esc(c.text)}</div></div>`).join("")
+        : `<p class="muted small">Még nincs komment. Légy te az első!</p>`;
+      list.scrollTop = list.scrollHeight;
+    } catch (e) { list.innerHTML = `<p class="muted small">A kommenteket most nem sikerült betölteni.</p>`; }
+  };
+  list.onclick = async e => {
+    const d = e.target.closest(".cm-del"); if (!d) return;
+    try { await dbRef.doc("comments/" + p.id + "/" + d.dataset.id).delete(); } catch (err) { toast("A törlés nem sikerült"); }
+    load();
+  };
+  $("cmSend").onclick = async () => {
+    const t = $("cmText").value.trim().replace(/\s+/g, " ");
+    if (!t) { $("cmText").focus(); return; }
+    $("cmSend").disabled = true;
+    try {
+      if (!myName && userRef) { try { myName = ((await userRef.me()) || {}).name || ""; } catch (e) {} }
+      const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      await dbRef.doc("comments/" + p.id + "/" + id).set({by: myId, name: (myName || "Valaki").split(" ")[0], text: t.slice(0, 300), at: Date.now()});
+      $("cmText").value = ""; load();
+    } catch (e) { toast("A kommentet most nem sikerült elküldeni"); }
+    $("cmSend").disabled = false;
+  };
+  load();
 }
 function closeSheet(){ const a = $("sheetBack"), b = $("sheet"); if (a) a.remove(); if (b) b.remove(); }
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });

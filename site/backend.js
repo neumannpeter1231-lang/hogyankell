@@ -85,6 +85,10 @@
         const { error } = await sb.from("docs").upsert({ path, coll: collOf(path), data: obj, updated_at: new Date().toISOString() }, { onConflict: "path" });
         if (error) throw error;
       },
+      async delete() {
+        const { error } = await sb.from("docs").delete().eq("path", path);
+        if (error) throw error;
+      },
       async update(obj) {
         const keys = Object.keys(obj);
         if (path.startsWith("challenges/") && keys.length === 1 && keys[0].startsWith("r_")) {
