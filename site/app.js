@@ -739,7 +739,7 @@ function activate(el){
       narr.muted = !soundUnlocked;
       useVoice = true;
       const host = el.querySelector(".post-bg") || el;
-      if (!soundUnlocked && !host.querySelector(".tap-sound")) { const tp = document.createElement("div"); tp.className = "tap-sound"; tp.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(tp); }
+      if (!soundUnlocked && !host.querySelector(".tap-sound")) { const tp = document.createElement("div"); tp.className = "tap-sound txt"; tp.innerHTML = I.soundOn + "<span>Koppints a hangért</span>"; host.appendChild(tp); }
       narr.play().catch(() => { narr.muted = true; narr.play().catch(() => { useVoice = false; }); });
     }
     if (p.vt) {
