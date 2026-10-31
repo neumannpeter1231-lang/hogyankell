@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/taltpenz/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/taltpenz/align.json",
+ "out": "/home/claude/hogyankell/media/taltpenz.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/taltpenz/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/taltpenz/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/taltpenz/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/taltpenz/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/taltpenz/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/taltpenz/06.png",
+   "text": ""
+  }
+ ]
+}

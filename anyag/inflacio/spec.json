@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/inflacio/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/inflacio/align.json",
+ "out": "/home/claude/hogyankell/media/inflacio.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/inflacio/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/inflacio/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/inflacio/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/inflacio/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/inflacio/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/inflacio/06.png",
+   "text": ""
+  }
+ ]
+}

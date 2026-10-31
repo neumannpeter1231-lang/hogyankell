@@ -422,6 +422,12 @@ const TOPIC_ICON = {"Meggyőzés":"chat","Pszichológia":"brain","Biztonság ott
 const SOON_TOPICS = ["Ügyintézés", "Gyerek és család"];
 const APP_URL = window.HOGYANKELL_URL || "https://claude.ai/artifact/4qefATfjxKR3ozy4WgKdpf";
 const HABIT = {
+  v_taltpenz:{text:"A következő váratlan pénz felét elköltés előtt félreteszem.", time:"19:00", days:7},
+  v_inflacio:{text:"Kiszámolom, hány havi kiadásom van vésztartalékban.", time:"20:00", days:1},
+  v_elobbmagad:{text:"Beállítok egy automatikus átutalást a fizetésem napjára.", time:"19:00", days:1},
+  v_minimum:{text:"A következő számlánál előbb eldöntöm, mennyit fizetek, és csak utána nézem a minimumot.", time:"19:00", days:1},
+  v_kartya:{text:"Egy hétig a szórakozásra csak egy előre felvett készpénzkeretből költök.", time:"18:00", days:7},
+  v_kamatos:{text:"Beállítok egy kis havi automatikus megtakarítást, akár 2000 forintot.", time:"19:00", days:1},
   v_citrom:{text:"Este előkészítem a reggeli célomhoz kellő tárgyat, hogy az legyen szem előtt.", time:"21:00", days:7},
   v_egyenruha:{text:"Ha valaki egyenruhában vagy hivatalosan kér valamit, ellenőrzöm, ki ő.", time:"18:00", days:7},
   v_kerdezz:{text:"Ma minden beszélgetésben felteszek legalább egy visszakérdezést.", time:"12:00", days:7},
@@ -520,6 +526,42 @@ const POSTS = [
   check:{q:"Mi az előfeszítés (priming)?", o:["Amikor valaki rábeszél", "Amikor egy apró jel előkészíti a gondolatainkat és tetteinket", "Egy illatfajta"], a:1, why:"A jel tudatosítás nélkül is hat a következő lépésekre."},
   deeper:["Holland, Hendriks és Aarts 2005-ös kísérletében a halvány citrusos tisztítószer-illatnak kitett résztvevők gyakrabban takarították el a morzsákat evés közben.", "A résztvevők nem voltak tudatában az illat hatásának.", "Az előfeszítéses kutatások egy részét később nem sikerült megismételni, ezért a hatások erősségét óvatosan kell kezelni; a környezet tudatos alakítása azonban jól bevált szokásstratégia."],
   source:{label:"Holland, Hendriks és Aarts (2005), Psychological Science", url:""}},
+ {id:"v_kamatos", topic:"Pénzügyek", type:"video", src:"media/kamatos.mp4", poster:"media/kamatos.jpg",
+  title:"Tévhit: Einstein és a kamatos kamat", tags:"#megtakarítás #tévhit",
+  poll:{q:"Mondta Einstein, hogy a kamatos kamat a világ nyolcadik csodája?", o:["Igen, híres idézete", "Nincs rá bizonyíték", "Csak a könyveiben írta"], a:1, why:"Az idézetet nem sikerült hiteles forrásban megtalálni, valószínűleg ráfogták."},
+  check:{q:"Mi számít a legtöbbet a kamatos kamatnál?", o:["Az, hogy mekkora összeggel kezded", "Az idő, vagyis hogy mikor kezded", "Hogy melyik bankban vagy"], a:1, why:"Minél hosszabb ideig dolgozik a pénz, annál inkább a kamat kamata hozza a növekedést."},
+  deeper:["A számítás: havi 10 000 Ft befizetés, havonta jóváírt évi 7%-os hozammal, 30 év alatt kb. 12,2 millió Ft; befizetve 3,6 millió Ft.", "Ez szemléltetés: a valós hozam ingadozik, az inflációt és a költségeket is figyelembe kell venni, és a múltbeli hozam nem garantálja a jövőbelit.", "Az Einsteinnek tulajdonított mondásnak nincs hiteles forrása; az idézetkutatók szerint jóval halála után kezdett terjedni."],
+  source:{label:"Saját számítás (havi kamatos kamat képlete); Quote Investigator az Einstein-idézetről", url:""}},
+ {id:"v_kartya", topic:"Pénzügyek", type:"video", src:"media/kartya.mp4", poster:"media/kartya.jpg",
+  title:"Kártyával többet költesz", tags:"#vásárlás #költés",
+  poll:{q:"Mennyivel ajánlottak többet a kártyával fizetők?", o:["Kb. 10%-kal", "Majdnem kétszer annyit", "Ugyanannyit"], a:1, why:"A kártya csökkenti a fizetés „fájdalmát”, ezért többet adunk ki."},
+  check:{q:"Miért költünk kártyával többet?", o:["Mert a kártyán több pénz van", "Mert nem érezzük a pénz fogyását", "Mert a kártya kedvezményt ad"], a:1, why:"A készpénz kiadását érezzük, a kártyás fizetés elvontabb."},
+  deeper:["Prelec és Simester 2001-es MIT-kísérletében a hitelkártyás fizetést választó diákok átlagos licitje közel kétszerese volt a készpénzesekének ugyanazokra a jegyekre.", "A jelenséget a fizetés „fájdalmával” (pain of paying) magyarázzák: a készpénz kiadása kézzelfoghatóbb.", "A hatás nagysága helyzetenként eltér; a későbbi vizsgálatok vegyes eredményeket hoztak, de az irány többnyire ugyanaz."],
+  source:{label:"Prelec és Simester (2001), Marketing Letters", url:""}},
+ {id:"v_minimum", topic:"Pénzügyek", type:"video", src:"media/minimum.mp4", poster:"media/minimum.jpg",
+  title:"A minimum törlesztés csapdája", tags:"#hitel #horgony",
+  poll:{q:"Mi történt, amikor a számlán ott volt a minimum összeg?", o:["Többet fizettek vissza", "Kevesebbet fizettek vissza", "Nem számított"], a:1, why:"A kis szám horgonyként lehúzta a befizetett összeget."},
+  check:{q:"Mit tegyél, mielőtt megnézed a minimum törlesztést?", o:["Fizesd be a minimumot", "Döntsd el előre, mennyit tudsz befizetni", "Várj a határidő végéig"], a:1, why:"Így a saját döntésed a kiindulópont, nem a bank horgonya."},
+  deeper:["Neil Stewart 2009-es kísérletében a minimum összeget nem látók átlagosan kb. 175 fontot (az egyenleg 40%-át), a minimumot látók kb. 99 fontot (23%) fizettek vissza, ha nem a teljes összeget fizették.", "A teljes összeget visszafizetők aránya a két csoportban ugyanannyi volt.", "A visszafizetetlen rész után kamat jár, ezért a horgony hosszú távon drága."],
+  source:{label:"Stewart (2009), Psychological Science", url:"https://www.sciencedaily.com/releases/2008/10/081006130542.htm"}},
+ {id:"v_elobbmagad", topic:"Pénzügyek", type:"video", src:"media/elobbmagad.mp4", poster:"media/elobbmagad.jpg",
+  title:"Fizesd ki először magad", tags:"#megtakarítás #szokások",
+  poll:{q:"Mennyire nőtt a résztvevők megtakarítási aránya?", o:["3,5%-ról kb. 6%-ra", "3,5%-ról közel 14%-ra", "Nem változott"], a:1, why:"Az automatikus, előre vállalt emelés négyszeresére növelte a megtakarítást."},
+  check:{q:"Mi a „fizesd ki először magad” lényege?", o:["Előbb költesz, a maradékot félreteszed", "Fizetésnapon előbb automatikusan félreteszel", "Csak nagy fizetésből lehet spórolni"], a:1, why:"Az automatika kiváltja az akaraterőt."},
+  deeper:["Thaler és Benartzi 2004-es „Save More Tomorrow” programjában a résztvevők átlagos megtakarítási aránya kb. 40 hónap alatt 3,5%-ról 13,6%-ra nőtt.", "A program három elvre épít: a jövőbeli vállalás könnyebb, a fizetésemelésből félretenni nem fáj, és a beállított automatikát ritkán változtatjuk meg.", "Thaler 2017-ben közgazdasági Nobel-emlékdíjat kapott, részben az ilyen viselkedési közgazdasági munkáiért."],
+  source:{label:"Thaler és Benartzi (2004), Journal of Political Economy", url:""}},
+ {id:"v_inflacio", topic:"Pénzügyek", type:"video", src:"media/inflacio.mp4", poster:"media/inflacio.jpg",
+  title:"Tévhit: a párnacihában biztonságban a pénz", tags:"#infláció #tévhit",
+  poll:{q:"Mennyit ér 10 év múlva a pénz, ha évente 5% az infláció?", o:["Ugyanannyit", "Nagyjából 60%-át", "Nagyjából 95%-át"], a:1, why:"1 / 1,05 a tizediken ≈ 0,61, vagyis kb. 61%."},
+  check:{q:"Mi a gond a fiókban tartott pénzzel?", o:["Elveszhet", "Az infláció csökkenti a vásárlóerejét", "Adót kell fizetni utána"], a:1, why:"A névérték marad, a vásárlóerő csökken."},
+  deeper:["Számítás: 5%-os éves árszintnövekedés mellett 10 év után a pénz vásárlóereje 1 / 1,05^10 ≈ 0,614, vagyis kb. 61%.", "A vésztartalék (általában néhány havi kiadás) legyen gyorsan elérhető; erre a célra a biztonság fontosabb a hozamnál.", "Az inflációkövető megoldásokról (például inflációkövető állampapír) a pontos és aktuális feltételeket mindig a hivatalos forrásban érdemes ellenőrizni; ez nem befektetési tanács."],
+  source:{label:"Saját számítás; az infláció fogalma: MNB", url:""}},
+ {id:"v_taltpenz", topic:"Pénzügyek", type:"video", src:"media/taltpenz.mp4", poster:"media/taltpenz.jpg",
+  title:"Miért tűnik el a talált pénz?", tags:"#mentáliskönyvelés #költés",
+  poll:{q:"Mit csinálunk általában a talált pénzzel?", o:["Gondosan félretesszük", "Könnyebben elköltjük", "Ugyanúgy kezeljük, mint a fizetést"], a:1, why:"A mentális könyvelés miatt a „talált” pénzt kevésbé értékeljük."},
+  check:{q:"Mi a mentális könyvelés?", o:["Egy könyvelőprogram", "Amikor fejben külön dobozokba tesszük a pénzt", "Amikor mindent leírunk"], a:1, why:"A pénz forrása szerint másképp költjük, pedig ugyanannyit ér."},
+  deeper:["A mentális könyvelés fogalmát Richard Thaler írta le az 1980-as években (például Thaler, 1985; 1999).", "Ugyanaz az összeg másként viselkedik, ha bónusznak, visszatérítésnek vagy fizetésnek érezzük: a „váratlan” pénzt jellemzően könnyebben költjük el.", "A „dobozok” hasznosak is lehetnek, például ha egy külön számla védi a megtakarítást."],
+  source:{label:"Thaler (1999), Mental Accounting Matters, Journal of Behavioral Decision Making", url:""}},
  {id:"p2", topic:"Pszichológia", type:"video", src:"media/hazugsag.mp4", poster:"media/hazugsag.jpg",
   title:"A hazugságvizsgáló nem a hazugságot méri", tags:"#pszichológia #tévhitek",
   poll:{q:"Mit mér valójában a hazugságvizsgáló?", o:["Hogy igazat mondasz-e","A tested stresszreakcióit","Az agyhullámaidat"], a:1, why:"Légzést, izzadást és pulzust mér, vagyis a feszültséget."},
@@ -653,7 +695,7 @@ const POSTS = [
   source:{label:"Bazu podcast – Róf Kis Ágnes, Beszéderő", url:"https://www.youtube.com/watch?v=wo3fXNYE6lw"}}
 
 ];
-const ORDER = ["m7","p2","v_szukosseg","k_arany","v_kerdezz","m2","v_lekvar","s_fu","v_kavefolt","p1","v_egyenruha","a_szunet","v_rokia","v_torolkozo","k_pomo","v_rim","s_izzo","v_laboajto","m3","v_citrom","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
+const ORDER = ["m7","v_kamatos","p2","v_kartya","v_szukosseg","v_minimum","k_arany","v_kerdezz","v_elobbmagad","m2","v_lekvar","v_inflacio","s_fu","v_kavefolt","v_taltpenz","p1","v_egyenruha","a_szunet","v_rokia","v_torolkozo","k_pomo","v_rim","s_izzo","v_laboajto","m3","v_citrom","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
 /* ami nincs a listában, az a végére kerül (nem tűnik el); a HIDE-ban lévők (régi duplikátumok) nem jelennek meg */
 const HIDE = ["p3","p4","p5","m1"];
 for (let i = POSTS.length - 1; i >= 0; i--) if (HIDE.includes(POSTS[i].id)) POSTS.splice(i, 1);

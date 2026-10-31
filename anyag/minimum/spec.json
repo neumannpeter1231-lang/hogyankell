@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/minimum/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/minimum/align.json",
+ "out": "/home/claude/hogyankell/media/minimum.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/minimum/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/minimum/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/minimum/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/minimum/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/minimum/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/minimum/06.png",
+   "text": ""
+  }
+ ]
+}

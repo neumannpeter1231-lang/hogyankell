@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/elobbmagad/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/elobbmagad/align.json",
+ "out": "/home/claude/hogyankell/media/elobbmagad.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/elobbmagad/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/elobbmagad/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/elobbmagad/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/elobbmagad/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/elobbmagad/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/elobbmagad/06.png",
+   "text": ""
+  }
+ ]
+}

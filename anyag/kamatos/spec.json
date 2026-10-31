@@ -1,0 +1,31 @@
+{
+ "audio": "/home/claude/hogyankell/anyag/kamatos/hang.mp3",
+ "align": "/home/claude/hogyankell/anyag/kamatos/align.json",
+ "out": "/home/claude/hogyankell/media/kamatos.mp4",
+ "scenes": [
+  {
+   "img": "/home/claude/hogyankell/anyag/kamatos/01.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kamatos/02.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kamatos/03.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kamatos/04.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kamatos/05.png",
+   "text": ""
+  },
+  {
+   "img": "/home/claude/hogyankell/anyag/kamatos/06.png",
+   "text": ""
+  }
+ ]
+}
