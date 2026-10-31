@@ -55,3 +55,37 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - **ElevenLabs keret:** a havi keret nagy része elfogyott (okt. 31-én kb. 11 kép maradt); a következő megújulásig kevés új videó fér bele.
 - **Valódi tesztelők:** 5–10 Gmail-cím kell az `invites` táblába; javasolt nézési statisztika (végignézés, elgörgetés, dislike) heti összefoglalóval.
 - Ötletek a jövőre: ütemezett heti videógyártás, ha a képek is automatikusak.
+
+## A 26 fős AI-tesztelőpanel (ugyanezekkel kell folytatni)
+Első csapat (6): Lili 19 egyetemista, sokat TikTokozik · Bence 24 junior értékesítő · Kata 31 kisgyerekes anyuka · Tamás 45 kisvállalkozó, szkeptikus · Dóri 22 pszichológia szakos · Máté 20 gamer.
+Második csapat (20): Erzsi 67 nyugdíjas · Gergő 38 középiskolai tanár · Nóra 29 ápoló · Zoli 41 kamionsofőr · Bianka 34 HR-es · Dávid 27 programozó · Réka 20 egyetemista · Ádám 36 kétgyerekes apa · Fanni 26 fodrász · Krisztián 30 startupalapító · Petra 28 ingatlanos · Bálint 21 közgáz hallgató · Lara 23 influenszer · Feri 50 biztonsági őr · Judit 44 könyvelő · Márk 25 edző · dr. Kovács Anna 40 pszichológus · Tibi 33 gyári műszakos · Dorina 22 pincér · Ilona 60 nagymama.
+Eredmények: átlag 7,2 (1. csapat) és 7,0 (2. csapat); legjobban a munkájukhoz kötődő tartalmat értékelik, az idősebbek és a kevés idejűek a legkritikusabbak. Legkeresettebb téma: pénzügyek (26-ból 16), utána csalások, munkahely.
+
+## Tartalmi szabályok
+- Minden videó valódi, megnevezett kutatásra épül; a számokat ellenőrizd vagy számold ki; a „Mélyebben” részben a korlátokat is írd le (pl. megismétlési gondok).
+- Pénzügyben nincs befektetési tanács; aktuális feltételeknél hivatalos forrásra utalj.
+- Egyszerű, hétköznapi szavak (Tibi és Ilona kérése); 25–35 mp; 6 jelenet; a végén „A tipp: …”.
+- A posztokon „AI-jal készült” jelölés van – maradjon.
+- Valódi személyt ne rajzoltass felismerhetően (az Einstein-szerű figura határeset volt); márkát, logót, ismert rajzfilmfigurát ne.
+- Forrás a meggyőzéses témákhoz: a tudástár projektben lévő „Meggyozestechnika_konyv_pontositott.docx” (Péter tanulójegyzete Újszászi Bogár László podcastjei alapján, kutatásokkal kiegészítve).
+
+## Vizuális stílus
+- App: sötét felület (#0E1116), sárga kiemelés (#F2C230), Inter Display betű, TikTok-szerű függőleges feed, jobb oldali gombsáv (Like, Nem tetszik, Komment, Küldés, Mélyebb).
+- Képek: „bold flat cartoon, thick black outlines, vivid magenta, teal and yellow palette, retro comic, halftone dots, quirky characters with big round eyes, no text” (pontosan: sorozat-JSON `style` mező). Simpsons-szerű sárga figurák kerülendők.
+- Videó: 720×1280, lassú zoom/úszás jelenetenként, nagy fehér felirat fekete körvonallal, alsó harmadban.
+
+## Technikai buktatók (hogy ne kelljen újra kitalálni)
+- iPhone: az első érintés előtt semmilyen weboldal nem adhat hangot – ezért a témaválasztó „Mehet” gombja oldja fel; visszatérőknek „Koppints, és indul a hang” felirat. A webes rezgést az iPhone nem támogatja.
+- ElevenLabs képgenerálás automatizálása a böngészőben: a prompt mező `contenteditable`, `document.execCommand('insertText')`-tel tölthető; a Generate gomb `aria-label="Generate"`; beküldés után a History tetején ellenőrizd a prompt szövegét (különben duplán generál); a History lustán tölt (nem lát mindent a DOM).
+- A letöltött képek neve: `ElevenLabs_image_google-nano-banana-2-1_<prompt első 15 karaktere>_<időbélyeg>.png`; az időbélyeg a KÉSZ idő, nem a beküldésé.
+- A Supabase SQL-t Claude beírhatja (Monaco: `monaco.editor.getModels()[0].setValue(...)`), de a Run gombot Péternek kell megnyomnia.
+- Az app `ORDER` és `HIDE` listája: a HIDE-ban lévő posztok nem jelennek meg; ami nincs az ORDER-ben, az is megjelenik (a feed keverve van).
+- A szöveges posztok hangja: `VOICE` objektum az appban (a `media/hang/hang.json`-ből), újragenerálás: `tools/szoveghang.py`.
+- `SOON_TOPICS` = a „hamarosan” témák (jelenleg Ügyintézés, Gyerek és család).
+
+## Fiókok, költségek
+- GitHub: neumannpeter1231-lang · Cloudflare: Worker „rough-sound-2c04” · Supabase: free tier · Google Cloud: „Hogyankell” projekt (OAuth + Gemini kulcs) · ElevenLabs: Starter.
+- ElevenLabs keret megújul: **2026. november 30.** (Starter első hónap 1 $, utána 6 $/hó, kb. 39 000 kredit/hó). Egy 6 jelenetes videó kb. 1 000 kredit kép + 400–600 kredit hang.
+- Google Gemini kép: kb. 0,067 $/kép (Nano Banana 2), előre feltöltéssel.
+- Push-értesítés: a szerveroldal működik (cron 200 OK), Péter telefonján még nincs megerősítve, hogy megérkezett.
+- Meghívott hozzáadása: Supabase → Table Editor → `invites` → új sor e-mail-címmel (vagy SQL: `insert into public.invites(email) values ('…');`).
