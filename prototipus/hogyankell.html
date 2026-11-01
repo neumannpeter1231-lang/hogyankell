@@ -747,7 +747,7 @@ const POSTS = [
 ];
 const ORDER = ["m7","v_kamatos","p2","v_kartya","v_szukosseg","v_minimum","k_arany","v_kerdezz","v_elobbmagad","m2","v_lekvar","v_inflacio","s_fu","v_kavefolt","v_taltpenz","p1","v_egyenruha","a_szunet","v_rokia","v_torolkozo","k_pomo","v_rim","s_izzo","v_laboajto","m3","v_citrom","k_meet","a_tolt","m4","k_alvas","p6","m5","m6"];
 /* ami nincs a listában, az a végére kerül (nem tűnik el); a HIDE-ban lévők (régi duplikátumok) nem jelennek meg */
-const HIDE = ["p3","p4","p5","m1"];
+const HIDE = ["p3","p4","p5","m1","m4"];  // m4: duplikátum a v_csalimadar videó mellett (2026-11-01)
 for (let i = POSTS.length - 1; i >= 0; i--) if (HIDE.includes(POSTS[i].id)) POSTS.splice(i, 1);
 const ordIdx = id => { const i = ORDER.indexOf(id); return i < 0 ? 1e6 : i; };
 POSTS.sort((a, b) => ordIdx(a.id) - ordIdx(b.id));

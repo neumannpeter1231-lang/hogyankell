@@ -48,7 +48,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 
 ## Tartalom most (élesben)
 - 23 AI-videó: Horgonyhatás, Szűkösség elve, Láb az ajtóban, Társas bizonyíték, Pratfall-hatás, Azonosítható áldozat hatás, Választási bénulás, Rím mint érv, A visszakérdezés ereje, Tekintély elve, Előfeszítés, Kamatos kamat, A fizetés fájdalma, A minimum törlesztés horgonya, Fizesd ki először magad, Infláció, Mentális könyvelés; 3. sorozat (a könyv „Védekezz” részeiből): Elsüllyedt költség, Csalimadár, Veszteségkerülés, Keretezés, Holdudvarhatás, Csúcs-vég szabály. **Új videó előtt ezt a listát ellenőrizni, téma nem ismétlődhet.**
-- 8 podcastrészlet-videó + 7 felolvasott szöveges poszt. Rejtve (duplikátum): p3, p4, p5, m1.
+- 8 podcastrészlet-videó + 7 felolvasott szöveges poszt. Rejtve (duplikátum): p3, p4, p5, m1, m4 (Csalimadár-hatás szöveges poszt, a videó mellett).
 
 ## Nyitott pontok
 - ✅ **Kommentek Supabase-szabálya:** `supabase/4_kommentek.sql` lefutott (2026-10-31), Péter próbakommentet írt.
