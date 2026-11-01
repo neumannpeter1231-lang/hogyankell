@@ -694,9 +694,9 @@ function renderCheck(el, p){
     S.sched[p.id] = s;
     record(p.topic, ok);
     const fb = el.querySelector(".fb"); fb.hidden = false;
-    fb.innerHTML = `<div class="h"><span>${ok ? "Pontosan." : "Majdnem."}</span><span>${ok ? "+15 pont" : ""}</span></div><div>${esc(p.check.why)} ${next}</div>`;
+    fb.innerHTML = `<div class="h"><span>${ok ? "Pontosan." : "Majdnem."}</span><span>${ok ? "+10 pont" : ""}</span></div><div>${esc(p.check.why)} ${next}</div>`;
     el.querySelector(".hint").textContent = "Görgess tovább a következő videóhoz";
-    if (ok) rightAnswer(15); else { combo = 0; shakeWrong(el.querySelector(".fb")); markActive(); save(true); }
+    if (ok) rightAnswer(10); else { combo = 0; shakeWrong(el.querySelector(".fb")); markActive(); save(true); }
   });
   return el;
 }
