@@ -21,6 +21,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `tools/osszerak.py` – videó összevágása: `anyag/<id>/01.png…` + hang → `media/<id>.mp4` (Ken Burns mozgás, pontos feliratok).
 - `tools/posztok.py` – a sorozat-JSON alapján beszúrja a posztokat az appba (szavazás, ellenőrző kérdés, Mélyebben, forrás, szokás).
 - `tools/szoveghang.py` – felolvasás a szöveges (nem videós) posztokhoz.
+- `tools/teszt/` – bot-teszt: `bash tools/teszt/futtat.sh` helyben futtatja az éles app-kódot 5 véletlen panel-personával és egy két böngészős élő párbajjal (JS-hibák, videók, témaszűrés, kommentek, párbaj).
 - `tools/kepek.py` – jelenetképek a Gemini API-ból (prompt + a sorozat `style` mezője) → `anyag/<id>/01.png…`; a meglévőket kihagyja.
 - `anyag/sorozat1.json`, `anyag/sorozat2.json` – a forgatókönyvek (jelenetszöveg + képleírás + kérdések + forrás).
 - `.secrets.env` – API-kulcsok, **gitből kizárva, nincs a GitHubon**. Új munkakörnyezetben Péternek újra meg kell adnia (ElevenLabs `sk_…` kulcs, Gemini kulcs).
@@ -36,6 +37,8 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - Mindig **magyarul** válaszolj.
 - **Hang (2026-10-31-től):** minden videóban más hang szóljon, két egymást követőben soha ne ugyanaz. Profilok a `"hang"` mezőben: `gabor`, `vera_tanito`, `vera_kozepes`, `vera_elenk` (ElevenLabs), `gemini_charon`, `gemini_orus`, `gemini_fenrir`, `gemini_kore`, `gemini_aoede`. A 3. sorozat kiosztása: Charon, Vera, Kore, Gábor, Aoede, Orus → a 4. sorozat Fenrirrel kezd. Tanító jelleg, ne gesztikuláljon túl. A Gemini-hangnál a modell MINDEN szöveges előtagot (stílusutasítást) felolvas, ezért csak a sima szöveget kapja; jelenetenként külön olvas, az időzítést a hang.py becsüli a jeleneten belül.
 - **Hang mindig szól**, a feedben nincs némító és nincs megállító gomb; koppintásra áll meg / indul.
+- **Haver kihívása = élő párbaj (2026-11-01):** a gomb kódot ad, a játék csak akkor indul, ha a haver is beírta; egyszerre kapják a kérdéseket, élőben látják egymás pontjait, kérdésenként 20 mp (a gyakorló párbaj marad 12 mp). Ha a másik kilép, nincs pont. A régi (nem élő) kihívás-kódok továbbra is beválthatók.
+- **Témaszűrés:** a választott témák mindig elöl; a váltakozás csak a választottakon belül. **Ellenőrző kártya:** az első rákérdezés legkorábban 15 perccel a videó után.
 - **Kommentek** a Mentés helyén. **Nem tetszik** gomb (Profilban visszahozható).
 - **Feed keverve** minden megnyitáskor (nem látott elöl, témák váltakoznak).
 - **Címek = a videó lényege** (pl. „Horgonyhatás”, „Szűkösség elve”).
@@ -81,6 +84,7 @@ Eredmények: átlag 7,2 (1. csapat) és 7,0 (2. csapat); legjobban a munkájukho
 - ElevenLabs képgenerálás automatizálása a böngészőben: a prompt mező `contenteditable`, `document.execCommand('insertText')`-tel tölthető; a Generate gomb `aria-label="Generate"`; beküldés után a History tetején ellenőrizd a prompt szövegét (különben duplán generál); a History lustán tölt (nem lát mindent a DOM).
 - A letöltött képek neve: `ElevenLabs_image_google-nano-banana-2-1_<prompt első 15 karaktere>_<időbélyeg>.png`; az időbélyeg a KÉSZ idő, nem a beküldésé.
 - A Supabase SQL-t Claude beírhatja (Monaco: `monaco.editor.getModels()[0].setValue(...)`), de a Run gombot Péternek kell megnyomnia.
+- Élő párbaj: Supabase Realtime csatorna `duel-<KÓD>` (broadcast + presence, a `backend.js` `live` képessége), adatbázis-módosítás nem kellett. A házigazda gépe vezérli a kérdéseket (`q`), mindkét fél `ans` üzenetet küld; ha a haver 20+3 mp alatt nem válaszol, a házigazda továbblép.
 - Az app `ORDER` és `HIDE` listája: a HIDE-ban lévő posztok nem jelennek meg; ami nincs az ORDER-ben, az is megjelenik (a feed keverve van).
 - A szöveges posztok hangja: `VOICE` objektum az appban (a `media/hang/hang.json`-ből), újragenerálás: `tools/szoveghang.py`.
 - `SOON_TOPICS` = a „hamarosan” témák (jelenleg Ügyintézés, Gyerek és család).

@@ -173,9 +173,38 @@
     };
   }
 
+  /* Élő párbaj: Supabase Realtime csatorna (broadcast + jelenlét), adatbázis-módosítás nélkül. */
+  function makeLive(u) {
+    return {
+      open(code, name, onMsg, onPeers) {
+        const ch = sb.channel("duel-" + code, { config: { broadcast: { self: false }, presence: { key: u.id } } });
+        ch.on("broadcast", { event: "m" }, ({ payload }) => { try { onMsg(payload); } catch (e) {} });
+        ch.on("presence", { event: "sync" }, () => {
+          const st = ch.presenceState();
+          try { onPeers(Object.keys(st).map(k => ({ id: k, name: ((st[k] || [])[0] || {}).name || "" }))); } catch (e) {}
+        });
+        return new Promise((resolve, reject) => {
+          let done = false;
+          ch.subscribe(async status => {
+            if (status === "SUBSCRIBED" && !done) {
+              done = true;
+              await ch.track({ name, at: Date.now() });
+              resolve({
+                send: m => ch.send({ type: "broadcast", event: "m", payload: m }),
+                close: () => { try { ch.untrack(); } catch (e) {} sb.removeChannel(ch); }
+              });
+            } else if ((status === "CHANNEL_ERROR" || status === "TIMED_OUT") && !done) {
+              done = true; sb.removeChannel(ch); reject(new Error(status));
+            }
+          });
+        });
+      }
+    };
+  }
+
   function launch(u) {
     window.HOGYANKELL_URL = location.origin + "/";
-    const caps = { db: makeDb(), user: makeUser(u), downloads, push: makePush(u) };
+    const caps = { db: makeDb(), user: makeUser(u), downloads, push: makePush(u), live: makeLive(u) };
     window.claude = { use: async name => caps[name] || null };
     gate.hidden = true; gate.innerHTML = ""; document.body.classList.remove("locked");
     const s = document.createElement("script");

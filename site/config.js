@@ -4,5 +4,5 @@ window.HOGYANKELL_CONFIG = {
   supabaseUrl: "https://unzmjkzvkaqmumeqwsyf.supabase.co",
   supabaseKey: "sb_publishable_QIO7WSsM9xtlZxRQjrmdJg_eqnWXa0z",
   vapidPublicKey: "BC4z_ODyDVI-meFqKPk7wwlRKoLZhZhmM-f3HTvWtLYOICjW6fH8E-QQjDVnfnXgK4EjNOU12ZeSXL0ceTFEvQo",
-  version: "202611010234"
+  version: "202611010257"
 };

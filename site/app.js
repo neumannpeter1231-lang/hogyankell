@@ -450,7 +450,7 @@ function pool(){
   const pref = S.interests || [];
   const rank = p => (S.seen[p.id] ? 2 : 0) + (!filter && pref.length && !pref.includes(p.topic) ? 1 : 0);
   const groups = [0, 1, 2, 3].map(r => shuffle(l.filter(p => rank(p) === r)));
-  l = spread(groups.flat());
+  l = groups.map(spread).flat();   // a váltakozás csak a csoportokon belül, így a választott témák elöl maradnak (2026-11-01)
   poolCache = {key, list: l};
   return l;
 }
@@ -855,7 +855,7 @@ function activate(el){
   const p = POST[it.id];
   setTimeout(() => { if (active === el) prefetchNext(idx); }, 0);
   S.tick++;
-  if (!S.seen[p.id]) { S.seen[p.id] = true; S.sched[p.id] = {n:0, due:S.tick + 5, at:null}; }
+  if (!S.seen[p.id]) { S.seen[p.id] = true; S.sched[p.id] = {n:0, due:S.tick + 5, at:Date.now() + 15 * 60e3}; }   // első rákérdezés legkorábban 15 perc múlva
   S.seenAt[p.id] = Date.now();
   S.seenTick[p.id] = S.tick; markActive(); save(); updateHeader();
   const bar = el.querySelector(".progress i");
@@ -1010,7 +1010,7 @@ $("results").addEventListener("click", e => {
 });
 
 /* ---------------- Aréna ---------------- */
-let duelTopic = "Vegyes", dbRef = null, userRef = null, myId = null, dlRef = null, leagueTimer = null;
+let duelTopic = "Vegyes", dbRef = null, userRef = null, myId = null, dlRef = null, leagueTimer = null, liveRef = null;
 function syncLeague(){
   if (!dbRef || !myId) return;
   clearTimeout(leagueTimer);
@@ -1073,6 +1073,7 @@ function startDuel(mode, qs, opp){
 $("startDuel").onclick = () => startDuel("bot", questionPool(duelTopic));
 $("friendDuel").onclick = () => {
   if (!dbRef || !myId) { const n = $("friendNote"); n.hidden = false; n.textContent = "A kihíváshoz a megosztott linken kell megnyitni az appot. Ebben a nézetben csak a gyakorló párbaj működik."; return; }
+  if (liveRef) return hostLive();
   startDuel("make", questionPool(duelTopic));
 };
 function duelQ(){
@@ -1193,12 +1194,164 @@ function showChallenge(code, me, n){
   if ($("cardBtn")) $("cardBtn").onclick = () => saveCard({me, n, topic: duelTopic, code});
   $("back").onclick = () => { duel = null; box.hidden = true; renderArena(); };
 }
+/* ---------------- Élő párbaj haverral (Supabase Realtime) ----------------
+   A „Haver kihívása” kódot ad, a játék csak akkor indul, ha a haver is belépett.
+   A kérdéseket a házigazda gépe vezérli: mindketten egyszerre kapják, élőben látják egymás pontjait. */
+const LIVE_LIMIT = 20, LIVE_REVEAL = 4000;
+let lv = null;
+async function liveName(){ let n = ""; try { n = ((await userRef.me()) || {}).name || ""; } catch(e) {} return (n || "Játékos").split(" ")[0]; }
+function liveClose(){ if (lv) { clearInterval(lv.timer); clearTimeout(lv.wait); clearTimeout(lv.nextT); try { lv.ch && lv.ch.close(); } catch(e) {} } lv = null; }
+function liveBox(html){ const box = $("duelPlay"); box.hidden = false; box.innerHTML = html; return box; }
+async function hostLive(){
+  const qs = questionPool(duelTopic);
+  if (!qs || qs.length < 3) { $("duelPlay").hidden = false; return tooFew(); }
+  liveClose();
+  const code = newCode();
+  const me = await liveName();
+  lv = {role:"host", code, qs, me, opp:null, i:-1, my:0, op:0, ans:{}, oans:{}, started:false, ch:null};
+  const txt = `Gyere, párbajozzunk a Hogyankellben! Most várok rád: ${APP_URL}?kod=${code} (vagy Aréna → kód: ${code})`;
+  liveBox(`
+    <div class="stack" style="margin:auto 0;text-align:center;align-items:center">
+      <span class="eyebrow">Élő párbaj · ${qs.length} kérdés · ${LIVE_LIMIT} mp</span>
+      <h2 style="font-size:26px">Küldd el a kódot a haverodnak</h2>
+      <div class="code num" aria-label="Párbaj kódja">${code}</div>
+      <p class="muted small" style="margin:0;max-width:34ch" id="lvWait">Várjuk, hogy belépjen… A játék akkor indul, amikor ő is beírta a kódot az Arénában.</p>
+      <textarea class="sharetxt" id="shareTxt" readonly aria-label="Elküldhető szöveg">${esc(txt)}</textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn primary" id="copyCh">Meghívó másolása</button><button class="btn" id="lvCancel">Mégse</button></div>
+    </div>`);
+  $("copyCh").onclick = () => { const ta = $("shareTxt"); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch(e){} if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast("Kimásolva"), () => toast(ok ? "Kimásolva" : "Jelöld ki és másold ki kézzel")); else toast(ok ? "Kimásolva" : "Jelöld ki és másold ki kézzel"); };
+  $("lvCancel").onclick = () => { liveClose(); $("duelPlay").hidden = true; renderArena(); };
+  const mine = lv;
+  try { mine.ch = await liveRef.open(code, me, m => liveMsg(mine, m), ps => livePeers(mine, ps)); }
+  catch(e) { if (lv === mine) { $("lvWait").textContent = "Most nem sikerült megnyitni az élő párbajt. Próbáld újra kicsit később."; } }
+}
+function livePeers(L, peers){
+  if (lv !== L) return;
+  const other = (peers || []).find(p => p.id !== myId);
+  if (L.role === "host" && !L.started && other) {
+    L.started = true; L.opp = {id: other.id, name: other.name || "A haverod"};
+    L.ch.send({t:"start", refs: L.qs.map(q => q.ref), name: L.me, topic: duelTopic});
+    liveCountdown(L, () => liveAsk(L, 0));
+  } else if (L.started && !other && !L.over) {
+    liveOver(L, true);
+  }
+}
+async function joinLive(code){
+  liveClose();
+  const me = await liveName();
+  const L = lv = {role:"guest", code, qs:null, me, opp:null, i:-1, my:0, op:0, ans:{}, oans:{}, started:false, ch:null};
+  try { L.ch = await liveRef.open(code, me, m => liveMsg(L, m), ps => { if (lv !== L) return; const o = (ps || []).find(p => p.id !== myId); if (L.started && !o && !L.over) liveOver(L, true); }); }
+  catch(e) { if (lv === L) liveClose(); return false; }
+  // ha 5 mp alatt nem jön indítás, nincs ott a házigazda: régi (nem élő) kihívásként próbáljuk
+  return await new Promise(res => { L.onStart = () => res(true); L.wait = setTimeout(() => { if (lv === L && !L.started) { liveClose(); res(false); } }, 5000); });
+}
+function liveMsg(L, m){
+  if (lv !== L || !m) return;
+  if (m.t === "start" && L.role === "guest" && !L.started) {
+    L.started = true; clearTimeout(L.wait);
+    L.qs = (m.refs || []).map(qFromRef).filter(Boolean);
+    L.opp = {name: m.name || "A haverod"};
+    if (m.topic) duelTopic = m.topic;
+    route(); location.hash = "arena";
+    if (L.onStart) L.onStart();
+    liveCountdown(L, null);
+  } else if (m.t === "q" && L.role === "guest") {
+    if (m.i >= L.qs.length) liveOver(L, false); else liveAsk(L, m.i);
+  } else if (m.t === "ans") {
+    if (L.oans[m.i]) return;
+    L.oans[m.i] = true; L.op = Number(m.s) || 0;
+    const so = $("sOpp"); if (so) so.textContent = L.op;
+    const st = $("lvOpp"); if (st && m.i === L.i) st.textContent = `${L.opp.name} válaszolt${m.ok ? " (helyesen)" : ""}.`;
+    if (L.role === "host") liveMaybeNext(L);
+  }
+}
+function liveCountdown(L, then){
+  let n = 3;
+  const draw = () => liveBox(`<div class="stack" style="margin:auto 0;text-align:center;align-items:center"><span class="eyebrow">Élő párbaj · ${esc(L.me)} vs ${esc(L.opp.name)}</span><h2 style="font-size:28px">${L.role === "host" ? "Belépett!" : "Bent vagy!"} Kezdünk…</h2><div class="code num">${n}</div><p class="muted small" style="margin:0">${L.qs.length} kérdés · kérdésenként ${LIVE_LIMIT} mp</p></div>`);
+  draw();
+  const t = setInterval(() => { if (lv !== L || L.i >= 0) return clearInterval(t); n--; if (n <= 0) { clearInterval(t); if (then) then(); } else draw(); }, 1000);
+}
+function liveAsk(L, i){
+  if (lv !== L || i <= L.i) return;
+  if (L.role === "host") { L.ch.send({t:"q", i}); }
+  clearInterval(L.timer); clearTimeout(L.nextT);
+  L.i = i; const q = L.qs[i];
+  liveBox(`
+    <div style="display:flex;justify-content:space-between;align-items:center"><span class="eyebrow">Élő párbaj · ${i + 1}/${L.qs.length}</span><button class="btn" id="duelQuit" style="min-height:38px">Kilépés</button></div>
+    <div class="vs"><div class="me"><div class="sc num" id="sMe">${L.my}</div><div class="small">Te</div></div><div class="muted" style="font-weight:700">VS</div><div><div class="sc num" id="sOpp">${L.op}</div><div class="small">${esc(L.opp.name)}</div></div></div>
+    <div class="tlabel"><span>Hátralévő idő</span><span id="tSec" class="num">${LIVE_LIMIT} mp</span></div>
+    <div class="timer"><i id="tBar"></i></div>
+    <span class="small muted">${esc(q.topic)} · ${esc(q.title)}</span>
+    <h2 style="font-size:24px">${esc(q.q)}</h2>
+    <div class="stack" style="gap:10px" id="dOpts">${q.o.map((o, j) => `<button class="dopt" data-i="${j}">${esc(o)}</button>`).join("")}</div>
+    <p class="small muted" id="lvOpp" style="margin:0">${L.oans[i] ? esc(L.opp.name) + " már válaszolt." : esc(L.opp.name) + " gondolkodik…"}</p>
+    <div id="dWhy" hidden></div>`);
+  $("duelQuit").onclick = () => { liveClose(); $("duelPlay").hidden = true; renderArena(); };
+  const t0 = performance.now();
+  L.timer = setInterval(() => {
+    const el = (performance.now() - t0) / 1000;
+    const bar = $("tBar"); if (bar) bar.style.width = Math.max(0, 100 - el / LIVE_LIMIT * 100) + "%";
+    const ts = $("tSec"); if (ts) ts.textContent = Math.max(0, Math.ceil(LIVE_LIMIT - el)) + " mp";
+    if (el >= LIVE_LIMIT && !L.ans[i]) answer(-1);
+    if (L.role === "host" && el >= LIVE_LIMIT + 3) liveMaybeNext(L, true);   // ha a haver nem válaszolt, 3 mp türelem után megyünk tovább
+  }, 100);
+  $("dOpts").onclick = e => { const b = e.target.closest(".dopt"); if (b && !L.ans[i]) answer(Number(b.dataset.i)); };
+  function answer(k){
+    if (lv !== L || L.ans[i]) return;
+    L.ans[i] = true;
+    const ok = k === q.a; if (ok) L.my++;
+    $("sMe").textContent = L.my;
+    $("dOpts").querySelectorAll(".dopt").forEach((x, j) => { x.disabled = true; if (j === q.a) x.classList.add("right"); else if (j === k) x.classList.add("wrong"); });
+    L.ch.send({t:"ans", i, ok, s: L.my});
+    const w = $("dWhy"); w.hidden = false;
+    w.innerHTML = `<div class="why-box"><b>${k === -1 ? "Lejárt az idő." : ok ? "Helyes!" : "Nem ez volt."}</b> ${esc(q.why || "")}</div><p class="small muted" style="margin:8px 0 0">${i + 1 < L.qs.length ? "A következő kérdés akkor jön, ha mindketten válaszoltatok." : "Az eredmény akkor jön, ha mindketten válaszoltatok."}</p>`;
+    if (L.role === "host") liveMaybeNext(L);
+  }
+}
+function liveMaybeNext(L, force){
+  if (lv !== L || L.role !== "host" || L.nextT) return;
+  const i = L.i;
+  if (!(L.ans[i] && (L.oans[i] || force))) return;
+  clearInterval(L.timer);
+  L.nextT = setTimeout(() => {
+    L.nextT = null;
+    if (lv !== L || L.i !== i) return;
+    if (i + 1 >= L.qs.length) { L.ch.send({t:"q", i: L.qs.length}); liveOver(L, false); }
+    else liveAsk(L, i + 1);
+  }, LIVE_REVEAL);
+}
+function liveOver(L, left){
+  if (lv !== L || L.over) return;
+  L.over = true; clearInterval(L.timer); clearTimeout(L.nextT);
+  const n = L.qs ? L.qs.length : 0;
+  const win = L.my > L.op, draw = L.my === L.op;
+  const pts = left ? 0 : win ? 20 : draw ? 5 : 0;
+  const title = left ? `${esc(L.opp.name)} kilépett` : win ? `Nyertél ${esc(L.opp.name)} ellen!` : draw ? "Döntetlen" : `Most ${esc(L.opp.name)} nyert`;
+  const box = liveBox(`
+    <div class="stack" style="margin:auto 0;text-align:center;align-items:center">
+      <span class="eyebrow">Élő párbaj vége · ${n} kérdés</span>
+      <h2 style="font-size:32px">${title}</h2>
+      <div class="vs" style="width:100%"><div class="me"><div class="sc num">${L.my}</div><div class="small">Te</div></div><div class="muted" style="font-weight:700">VS</div><div><div class="sc num">${L.op}</div><div class="small">${esc(L.opp.name)}</div></div></div>
+      <p class="muted" style="margin:0">${left ? "A párbaj félbemaradt, ezért most nem jár pont." : pts ? "+" + pts + " pont a heti ligádba." : "Pont most nem jár, de a kérdések visszajönnek a feedben."}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="btn primary" id="lvAgain">Új élő párbaj</button><button class="btn" id="back">Vissza</button></div>
+    </div>`);
+  try { L.ch && L.ch.close(); } catch(e) {}
+  lv = null;
+  if (pts) addPoints(pts); else { markActive(); save(true); }
+  $("lvAgain").onclick = () => { box.hidden = true; hostLive(); };
+  $("back").onclick = () => { box.hidden = true; renderArena(); };
+}
 $("joinForm").addEventListener("submit", async e => {
   e.preventDefault();
   const code = $("joinCode").value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
   const note = $("friendNote"); note.hidden = false;
   if (code.length !== 5) { note.textContent = "A kód 5 karakterből áll."; return; }
   if (!dbRef || !myId) { note.textContent = "A kihívást a megosztott linken megnyitva tudod elfogadni."; return; }
+  if (liveRef) {
+    note.textContent = "Csatlakozás a párbajhoz…";
+    const joined = await joinLive(code);
+    if (joined) { note.hidden = true; $("joinCode").value = ""; return; }
+  }
   note.textContent = "Kihívás betöltése…";
   let data = null;
   try { const snap = await dbRef.doc("challenges/" + code).get(); data = snap.exists ? snap.data() : null; } catch(err) {}
@@ -1387,6 +1540,7 @@ async function boot(){
   if (S.interests === null) showOnb();
   let db = null, user = null;
   try { [db, user, dlRef, pushRef] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("downloads"), claude.use("push")]); } catch(e){}
+  try { liveRef = await claude.use("live"); } catch(e){ liveRef = null; }
   if (pushRef && !$("v-profil").hidden) renderReminder();
   if (!db || !user) return;
   try {
