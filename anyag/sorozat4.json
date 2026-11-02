@@ -1,0 +1,94 @@
+{
+  "style": "Vertical 9:16 illustration, bold flat cartoon style with thick black outlines, vivid magenta, teal and yellow palette, high contrast retro comic look with halftone dots, quirky characters with big round eyes, natural skin tones, no text, no letters, no numbers, no logos",
+  "videos": [
+    {
+      "id": "halogatas",
+      "title": "Halogatás",
+      "topic": "Idő és fókusz",
+      "tags": "#halogatás #fókusz",
+      "hang": "gemini_fenrir",
+      "scenes": [
+        {
+          "text": "Megint halogatsz, és azt hiszed, lusta vagy? A kutatások szerint nem ez a gond.",
+          "prompt": "A quirky young man lying on a bed scrolling his phone, an open empty notebook and a pen next to him, guilty side glance at the notebook, evening room light"
+        },
+        {
+          "text": "Egy kanadai kutató több száz vizsgálat eredményét nézte át a halogatásról.",
+          "prompt": "A quirky researcher with round glasses sitting at a desk buried under tall stacks of papers and folders, pointing at a big chart on the wall"
+        },
+        {
+          "text": "A legerősebb okok: ha a feladat kellemetlen, ha nem hiszed, hogy menni fog, és ha könnyen elcsábulsz.",
+          "prompt": "Three panels side by side: a grumpy face looking at a pile of dirty dishes, a person shrinking in front of a giant mountain of homework, a person being pulled away from a desk by a glowing phone"
+        },
+        {
+          "text": "A halogatás valójában menekülés egy rossz érzés elől. Pár percre jobb lesz, de a holnapi éned fizeti meg.",
+          "prompt": "A quirky person running away from a small dark storm cloud toward a bright couch, while a tired future version of the same person stands behind carrying a huge heavy backpack"
+        },
+        {
+          "text": "Ezért nem több akaraterő kell. Azt kell elérni, hogy a kezdés ne legyen rossz érzés.",
+          "prompt": "A quirky person gently shrinking a big dark storm cloud into a tiny harmless puff with a magic wand, relieved expression"
+        },
+        {
+          "text": "A tipp: mondd azt magadnak, hogy csak két percig csinálod. Az elkezdés a legnehezebb rész.",
+          "prompt": "A cheerful quirky young man sitting at a desk opening a notebook, a big friendly kitchen timer beside him, sunlight coming through the window"
+        }
+      ],
+      "poll": {
+        "q": "Mi a halogatás egyik legerősebb oka a kutatások szerint?",
+        "o": [
+          "A lustaság",
+          "Ha a feladat kellemetlen",
+          "A rossz időbeosztás"
+        ],
+        "a": 1,
+        "why": "A kutatások szerint a kellemetlen feladatot halogatjuk a legjobban. A halogatás inkább a rossz érzés elkerülése, mint lustaság."
+      },
+      "check": {
+        "q": "Mit javít meg rövid távon a halogatás?",
+        "o": [
+          "A teljesítményt",
+          "A rossz hangulatot",
+          "A határidőt"
+        ],
+        "a": 1,
+        "why": "A halogatás pár percre elmulasztja a rossz érzést, de a feladat megmarad, és később nehezebb lesz."
+      },
+      "qvar": [
+        {
+          "q": "Ki fizeti meg végül a halogatás árát?",
+          "o": [
+            "A főnököd",
+            "A jövőbeli önmagad",
+            "Senki"
+          ],
+          "a": 1,
+          "why": "A rossz érzés most elmúlik, de a következményeket később te viseled."
+        },
+        {
+          "q": "Mi segít a legjobban, ha nem tudsz nekiállni valaminek?",
+          "o": [
+            "Egy apró, könnyű első lépés",
+            "Megvárni, amíg kedved lesz hozzá",
+            "Még több feladatot vállalni"
+          ],
+          "a": 0,
+          "why": "Ha kicsi az első lépés, kisebb a rossz érzés, és könnyebb elkezdeni."
+        }
+      ],
+      "deeper": [
+        "Piers Steel (2007) metaanalízise 691 összefüggést összesített. A halogatás legerősebb előrejelzői a feladat kellemetlensége, a gyenge önbizalom az adott feladatban, az impulzivitás és a figyelem könnyű elterelődése voltak. A perfekcionizmus a várakozással ellentétben nem bizonyult fő oknak.",
+        "Sirois és Pychyl (2013) szerint a halogatás a hangulat rövid távú javításáról szól: a kellemetlen feladat elkerülése azonnal megkönnyebbülést hoz, a következményeket pedig a jövőbeli énünk viseli.",
+        "Korlátok: a vizsgálatok nagy része kérdőíves és egyetemistákon készült, ezért az okokat és következményeket nem mindig lehet szétválasztani. A „két perc” szabály gyakorlati tanács, amely a kutatásokból következik, nem egy külön kísérlet eredménye."
+      ],
+      "source": {
+        "label": "Steel, P. (2007): The nature of procrastination. Psychological Bulletin, 133(1); Sirois, F. és Pychyl, T. (2013): Procrastination and the priority of short-term mood regulation. Social and Personality Psychology Compass",
+        "url": "https://prism.ucalgary.ca/handle/1880/47914"
+      },
+      "habit": {
+        "text": "Ma egy halogatott feladatot két percig csinálok, aztán eldöntöm, folytatom-e.",
+        "time": "17:00",
+        "days": 1
+      }
+    }
+  ]
+}
