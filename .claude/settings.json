@@ -9,5 +9,9 @@
   },
   "enabledPlugins": {
     "ecc@ecc": true
+  },
+  "env": {
+    "ECC_HOOK_PROFILE": "minimal",
+    "ECC_DISABLED_HOOKS": "pre:edit-write:gateguard-fact-force,pre:mcp-health-check,post:mcp-health-check,pre:observe,pre:observe:continuous-learning,stop:evaluate-session,pre:governance-capture,post:skill:track,stop:cost-tracker,stop:desktop-notify,stop:format-typecheck,pre:write:doc-file-warning,pre:edit-write:suggest-compact,session-start:plan-canvas-sessions,stop:plan-canvas-pending,pre:hookify-runtime,prompt:hookify-runtime,stop:hookify-runtime"
   }
 }
