@@ -26,6 +26,8 @@ def main():
         r = subprocess.run([sys.executable, os.path.join(ROOT, "tools", "make_explainer.py"), sf],
                            capture_output=True, text=True)
         print(v["id"], "OK" if r.returncode == 0 else "HIBA " + r.stderr[-300:])
+        if r.returncode == 0:   # adatcsökkentés: 540p, 280 kbit/s + WebP poszter (2026-11-03)
+            subprocess.run([sys.executable, os.path.join(ROOT, "tools", "kisebb.py"), sp["out"]])
 
 
 if __name__ == "__main__":

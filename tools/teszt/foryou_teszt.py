@@ -144,6 +144,24 @@ async def main():
         txt = await pg.locator("#dataBox").inner_text()
         check("neumann.peter1231@gmail.com" in txt or "Biztosan" in txt, "Minden adatom törlése: megerősítés vagy útmutató")
 
+        # 7b) adatcsökkentés: adattakarékos kapcsoló, verziózott és kicsinyített média
+        lsw = pg.locator("#liteSw")
+        was = await lsw.get_attribute("aria-checked")
+        await lsw.click(); await pg.wait_for_timeout(200)
+        check(await lsw.get_attribute("aria-checked") != was, "Adattakarékos mód kapcsolható")
+        check("nem töltjük le előre" in await pg.locator("#liteNote").inner_text() or was == "true", "Adattakarékos mód: magyarázat látszik")
+        await lsw.click()
+        media = await pg.evaluate("""async()=>{const t=await (await fetch('/app.js')).text();
+            const m=[...t.matchAll(/media\\/[A-Za-z0-9_./-]+?\\.(mp4|webp|jpg)(\\?v=[0-9a-f]{8})?/g)];
+            return {n:m.length, ver:m.filter(x=>x[2]).length, jpg:m.filter(x=>x[1]==='jpg').length}}""")
+        check(media["n"] > 0 and media["ver"] == media["n"], f"minden médialink verziózott ({media['ver']}/{media['n']})")
+        check(media["jpg"] == 0, f"a poszterek WebP-ben ({media['jpg']} JPG maradt)")
+        sizes = await pg.evaluate("""async()=>{const t=await (await fetch('/app.js')).text();
+            const u=[...new Set([...t.matchAll(/media\\/[A-Za-z0-9_./-]+?\\.mp4\\?v=[0-9a-f]{8}/g)].map(x=>x[0]))];
+            let s=0; for (const x of u) { const r=await fetch('/'+x,{method:'HEAD'}); s+=+r.headers.get('content-length')||0; }
+            return {n:u.length, avg:Math.round(s/Math.max(1,u.length)/1024)}}""")
+        check(sizes["avg"] < 2600, f"videók átlagmérete {sizes['avg']} KB ({sizes['n']} videó, cél < 2,6 MB)")
+
         # 8) személyre szabás hatása: új böngésző, csak Pénzügyek-et lájkol, a többit átlapozza
         ctx2 = await b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, locale="hu-HU")
         p2 = await ctx2.new_page()

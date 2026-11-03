@@ -408,6 +408,11 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
         <div class="trow" style="border-top:0;padding-top:4px"><span class="tn" style="font-weight:600">Személyre szabás a nézésed alapján</span><button class="sw" role="switch" id="trackSw" aria-label="Személyre szabás a nézésed alapján"></button></div>
       </div>
       <div class="card stack" style="gap:10px">
+        <div class="eyebrow">Mobilnet</div>
+        <div class="trow" style="border-top:0;padding-top:0"><span class="tn" style="font-weight:600">Adattakarékos mód</span><button class="sw" role="switch" id="liteSw" aria-label="Adattakarékos mód"></button></div>
+        <p class="small muted" style="margin:0" id="liteNote"></p>
+      </div>
+      <div class="card stack" style="gap:10px">
         <div class="eyebrow">Adataim</div>
         <p class="small muted" style="margin:0">Videónként ezt rögzítjük: mennyi ideig nézted, végignézted-e, átlapoztad-e, újranézted-e, lájkoltad, mentetted, szavaztál-e. Csak a te feededhez használjuk, senki más nem látja. A 90 napnál régebbi jelek maguktól törlődnek. <a href="adatvedelem.html" target="_blank" rel="noopener">Adatvédelmi tájékoztató</a></p>
         <div class="datarow" id="dataBox"></div>
@@ -830,7 +835,7 @@ function save(soon){
   S.at = Date.now(); lsSet();
   if (!docRef) return;
   clearTimeout(dbTimer);
-  dbTimer = setTimeout(async () => { try { await docRef.set({s: JSON.stringify(S), at: S.at}); setSync("Mentve a fiókodba"); } catch(e){ setSync("Mentés ebben a böngészőben"); } }, soon ? 600 : 8000);
+  dbTimer = setTimeout(async () => { try { await docRef.set({s: JSON.stringify(S), at: S.at}); setSync("Mentve a fiókodba"); } catch(e){ setSync("Mentés ebben a böngészőben"); } }, soon ? 600 : 30000);   // adatcsökkentés: a háttérmentés legfeljebb fél percenként
 }
 function setSync(t){ const el = $("syncState"); if (el) el.textContent = t; }
 function normalize(o){ const f = fresh(); for (const k in f) if (o[k] === undefined) o[k] = f[k]; if (o.week.id !== isoWeek(new Date())) o.week = {id:isoWeek(new Date()), pts:0}; pruneSig(o); return o; }
@@ -1103,7 +1108,18 @@ function unlockSound(){
   });
 }
 ["touchend", "click", "keydown"].forEach(ev => document.addEventListener(ev, unlockSound, {capture: true, passive: true}));
-/* A következő videót a szabad lejátszóba töltjük, a következő elem helyére, láthatatlanul. */
+/* Adattakarékos mód (2026-11-03): magától bekapcsol, ha a telefonon be van állítva az adatforgalom-csökkentés
+   (navigator.connection.saveData), és a Profilban kézzel is állítható. Ilyenkor nincs előtöltés. */
+const lite = () => S.lite === true || (S.lite == null && !!(navigator.connection && navigator.connection.saveData));
+function applyLite(){ players.forEach(v => { v.preload = lite() ? "metadata" : "auto"; }); }
+/* A következő videót a szabad lejátszóba töltjük, a következő elem helyére, láthatatlanul.
+   Csak akkor, ha a nézőt 3 mp után is érdekli a mostani videó: aki gyorsan lapoz, annak nem töltünk fölöslegesen. */
+let prefetchT = null;
+function schedulePrefetch(el, idx){
+  clearTimeout(prefetchT);
+  if (lite()) return;
+  prefetchT = setTimeout(() => { if (active === el) prefetchNext(idx); }, 3000);
+}
 function prefetchNext(fromIdx){
   for (let i = fromIdx + 1; i < Math.min(items.length, fromIdx + 4); i++) {
     const it = items[i]; const p = it && it.kind === "post" && POST[it.id];
@@ -1422,7 +1438,7 @@ function activate(el){
   if (idx >= items.length - 2) appendItems(3);
   if (!it || it.kind !== "post") return;
   const p = POST[it.id];
-  setTimeout(() => { if (active === el) prefetchNext(idx); }, 0);
+  schedulePrefetch(el, idx);
   S.tick++;
   if (!S.seen[p.id]) { S.seen[p.id] = true; S.sched[p.id] = {n:0, due:S.tick + 5, at:Date.now() + 15 * 60e3}; }   // első rákérdezés legkorábban 15 perc múlva
   S.seenAt[p.id] = Date.now();
@@ -1490,7 +1506,7 @@ setInterval(() => {
   S.goal.sec++;
   if (!S.goal.done && S.goal.sec >= 600) { S.goal.done = true; addPoints(10, false); toast("Napi cél kész: +10 pont"); }
   if (S.goal.sec % 60 === 0) updateHeader();
-  if (S.watchSec % 15 === 0) save();
+  if (S.watchSec % 60 === 0) save();
 }, 1000);
 document.addEventListener("visibilitychange", () => { if (document.hidden) { save(true); stopAll(); } else if (active && !$("v-feed").hidden) { const a = active; active = null; activate(a); } });
 
@@ -1998,7 +2014,7 @@ function renderProfile(){
   $("kWeek").textContent = S.week.pts; $("kTotal").textContent = S.total; $("kStreak").textContent = streak();
   $("kAcc").textContent = S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "–";
   $("kAns").textContent = S.answered; $("kWatch").textContent = Math.floor(S.watchSec / 60) + " perc";
-  renderHabits(); renderReminder(); renderProfChips(); renderTopicCtl(); renderSaved(); renderInterest(); renderData();
+  renderHabits(); renderReminder(); renderProfChips(); renderTopicCtl(); renderSaved(); renderInterest(); renderData(); renderLite();
   const dl = Object.keys(S.disliked || {}).filter(id => POST[id]);
   $("dislikeCard").hidden = !dl.length;
   $("dislikeList").innerHTML = dl.map(id => `<div class="dl-row"><span>${esc(POST[id].title)}</span><button class="linkbtn" data-undis="${esc(id)}">Visszahozom</button></div>`).join("");
@@ -2097,6 +2113,16 @@ $("trackSw").addEventListener("click", () => {
   save(true); affCache = null; renderInterest();
   toast(S.track ? "Személyre szabás bekapcsolva" : "Személyre szabás kikapcsolva");
 });
+/* Adattakarékos mód kapcsoló */
+function renderLite(){
+  const on = lite(), auto = S.lite == null && on;
+  $("liteSw").setAttribute("aria-checked", on);
+  $("liteNote").textContent = on
+    ? "Bekapcsolva" + (auto ? " (a telefonod adatforgalom-csökkentése miatt)" : "") + ": a következő videót nem töltjük le előre, csak amikor odalapozol. Kicsit később indulhat."
+    : "Kikapcsolva: a következő videót előre letöltjük, ha a mostanit már pár másodperce nézed, így azonnal indul. Egy videó kb. 1–2 MB.";
+}
+$("liteSw").addEventListener("click", () => { S.lite = !lite(); save(true); applyLite(); renderLite(); toast(S.lite ? "Adattakarékos mód bekapcsolva" : "Adattakarékos mód kikapcsolva"); });
+
 /* Adataim: profil törlése, letöltés, minden adat törlése */
 let accountRef = null;
 function renderData(){
@@ -2208,7 +2234,7 @@ window.addEventListener("hashchange", route);
 async function boot(){
   const local = lsGet(); if (local) S = normalize(local);
   soundOn = true;
-  updateHeader(); buildFeed(); route();
+  applyLite(); updateHeader(); buildFeed(); route();
   if (S.interests === null) showOnb();
   let db = null, user = null;
   try { [db, user, dlRef, pushRef] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("downloads"), claude.use("push")]); } catch(e){}
@@ -2223,7 +2249,7 @@ async function boot(){
     const snap = await docRef.get();
     if (snap.exists) {
       const d = snap.data();
-      if (d && d.s && (!local || (d.at || 0) > (local.at || 0))) { S = normalize(JSON.parse(d.s)); lsSet(); updateHeader(); if (S.interests !== null && !$("onb").hidden) { $("onb").hidden = true; buildFeed(); route(); } else if (feed.scrollTop < 10) { buildFeed(); route(); } }
+      if (d && d.s && (!local || (d.at || 0) > (local.at || 0))) { S = normalize(JSON.parse(d.s)); lsSet(); applyLite(); updateHeader(); if (S.interests !== null && !$("onb").hidden) { $("onb").hidden = true; buildFeed(); route(); } else if (feed.scrollTop < 10) { buildFeed(); route(); } }
     } else save(true);
     setSync("Mentve a fiókodba"); syncLeague();
     try { const kod = new URLSearchParams(location.search).get("kod"); if (kod && /^[A-Za-z0-9]{5}$/.test(kod)) { $("joinCode").value = kod.toUpperCase(); history.replaceState(null, "", location.pathname + "#arena"); route(); const n = $("friendNote"); n.hidden = false; n.textContent = "Kihívást kaptál! Nyomd meg az „Elfogadom” gombot."; } } catch(err) {}
