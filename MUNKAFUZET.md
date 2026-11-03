@@ -1,9 +1,9 @@
 # Hogyankell – munkafüzet (átadás új beszélgetéshez)
 
-Utolsó frissítés: 2026-10-31 (este, 3. sorozat után). Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
+Utolsó frissítés: 2026-11-03 (For You feed, „Tudtad?” fun factek, témaszűrés, érdeklődési profil, Adataim). Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
 
 ## Mi ez?
-A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magyarázóvideók gyakorlati élettudásról (meggyőzés, pszichológia, pénzügyek, idő és fókusz, kommunikáció, biztonság, alvás), szavazással, ellenőrző kérdésekkel, „Mélyebben” résszel (forrás), szokásvállalással, Arénával (párbaj, liga), kommentekkel.
+A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magyarázóvideók gyakorlati élettudásról (meggyőzés, pszichológia, pénzügyek, idő és fókusz, kommunikáció, biztonság, alvás), szavazással, ellenőrző kérdésekkel, „Mélyebben” résszel (forrás), szokásvállalással, Arénával (párbaj, liga), kommentekkel. 2026-11-03 óta: **„Tudtad?”** rövid fun factek, **For You** („Neked”) feed érdeklődési profillal, témák be/ki és „Csak ezt” mód, Adataim (GDPR).
 
 ## Hol van minden?
 - **Élő app (zárt, meghívásos):** https://rough-sound-2c04.neumann-peter1231.workers.dev
@@ -22,7 +22,11 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `tools/posztok.py` – a sorozat-JSON alapján beszúrja a posztokat az appba (szavazás, ellenőrző kérdés, Mélyebben, forrás, szokás).
 - `tools/szoveghang.py` – felolvasás a szöveges (nem videós) posztokhoz.
 - `tools/teszt/` – bot-teszt: `bash tools/teszt/futtat.sh` helyben futtatja az éles app-kódot 5 véletlen panel-personával és egy két böngészős élő párbajjal (JS-hibák, videók, témaszűrés, kommentek, párbaj).
+- `tools/funfact.py` – a „Tudtad?” posztokat írja be az appba (`anyag/funfact*.json` → a `/* FUNFACT:BEGIN */ … /* FUNFACT:END */` blokk). Ha van `media/<id>.mp4`, videós posztot ír, különben szöveges posztot; bármikor újrafuttatható.
+- `tools/teszt/foryou_teszt.py` – szabályellenőrzés (a `futtat.sh` futtatja): „Tudtad?” aránya 18–30%, kikapcsolt téma nem jön elő, „Csak ezt” mód, mentés, érdeklődési profil, mérés ki/be, profil törlése, letöltés. Hibánál kilépési kód 1.
+- `supabase/5_adataim.sql` – `delete_my_data()`: a Profil → Adataim → „Minden adatom törlése” gomb ezt hívja (fiók + minden adat törlése).
 - `tools/kepek.py` – jelenetképek a Gemini API-ból (prompt + a sorozat `style` mezője) → `anyag/<id>/01.png…`; a meglévőket kihagyja.
+- `anyag/funfact1.json` – az első 6 „Tudtad?” forgatókönyve (4 jelenet, `line` = szöveges változat sora, `lesson` = tanulság).
 - `anyag/sorozat1.json`, `anyag/sorozat2.json` – a forgatókönyvek (jelenetszöveg + képleírás + kérdések + forrás).
 - `.secrets.env` – API-kulcsok, **gitből kizárva, nincs a GitHubon**. Új munkakörnyezetben Péternek újra meg kell adnia (ElevenLabs `sk_…` kulcs, Gemini kulcs).
 
@@ -32,6 +36,11 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 3. `python3 tools/kepek.py anyag/sorozatN.json` (automatikus; utána kontaktlappal átnézni: nincs-e szöveg, valódi személy, márka a képen).
 4. `python3 tools/osszerak.py anyag/sorozatN.json` → `python3 tools/posztok.py anyag/sorozatN.json` → ORDER-listába nem kötelező felvenni (a feed amúgy is keveri).
 5. `python3 build.py`, commit, push, ellenőrzés élesben.
+
+## „Tudtad?” (fun fact) gyártása
+1. Forgatókönyv `anyag/funfactN.json`-ba: **4 jelenet, 15–30 mp**, lazább hang, de **ellenőrzött tény megnevezett forrással**; az utolsó jelenet „A tanulság: …” (egy mondat, a `lesson` mezőben is). Mélyebben részben a korlátok és amit NEM tudtunk ellenőrizni (pl. a NASA-szundi „34%/54%”-a kimaradt). 2 kérdésváltozat (`qvar`) kötelező.
+2. Azonnal kitehető szövegesként: `python3 tools/funfact.py anyag/funfact1.json [anyag/funfact2.json …]` → `python3 build.py`.
+3. Videó: `python3 tools/hang.py anyag/funfactN.json` → `python3 tools/kepek.py anyag/funfactN.json` → `python3 tools/osszerak.py anyag/funfactN.json` → **újra** `python3 tools/funfact.py anyag/funfact1.json …` (ekkor a szöveges poszt videóra vált; az összes funfact-JSON-t add meg, a blokk teljesen újraíródik). A `posztok.py`-t fun facthez NEM kell futtatni.
 
 ## Péter döntései (ezekhez tartsd magad)
 - Mindig **magyarul** válaszolj.
@@ -43,18 +52,30 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - **Kommentek** a Mentés helyén. **Nem tetszik** gomb (Profilban visszahozható).
 - **Feed keverve** minden megnyitáskor (nem látott elöl, témák váltakoznak).
 - **Címek = a videó lényege** (pl. „Horgonyhatás”, „Szűkösség elve”).
+- **„Tudtad?” (2026-11-03):** a fun fact neve az appban „Tudtad?”, saját témaként kapcsolható. A For You feedben minden 4. vagy 5. helyen jön (ha nincs kikapcsolva). Mindig forrás + egy mondatos tanulság.
+- **For You feed (2026-11-03):** felváltja a „választott témák mindig elöl” szabályt. Pontozás (nincs gépi tanulás): témánkénti érdeklődési pont = végignézés +2, újranézés +2, lájk +3, mentés +3, szavazás +1, átugrás −2, „Nem tetszik” −4, 30 napos felezés; a kedvenc (onboarding) témák +3 induló pont. Poszt pontja: 0,6×érdeklődés + új poszt bónusz (0,5) / látott poszt büntetés + témaváltás + kis véletlen. A nem „Tudtad?” helyek 25%-a felfedezés (legkevésbé ismert téma, „Új téma neked” címke), kb. 10% ismétlés (3+ napja látott, félbehagyott). Az ellenőrző kártyák ütemezése változatlan.
+- **Témaszűrés (2026-11-03):** Profil → „Témák a feedben”: téma be/ki (legalább egy marad), „Csak ezt” (a feed tetején „Csak: X ✕”). A kikapcsolt téma a feedből, az ismétlő kártyákból és a párbaj „Vegyes” módjából is kimarad.
+- **Mérés és GDPR (2026-11-03):** videónként nézési idő, végignézés (≥90% vagy újraindulás), átugrás (3 mp alatt vagy 30% alatt, ha nem lájkolta/mentette), újranézés, lájk, mentés, szavazás – a saját `docs` sorban (`S.sig`), nincs új tábla. Alapból bekapcsolva, a Profilban kikapcsolható (tiltakozás, GDPR 21. cikk), az érdeklődési profil törölhető, az adatok letölthetők (JSON), „Minden adatom törlése” (`5_adataim.sql`). A 90 napnál régebbi jelek automatikusan törlődnek. Az `adatvedelem.html` ezt mind leírja.
+- **Mentés gomb (2026-11-03):** a Mélyebb panelben („Mentés későbbre”), a mentettek a Profil → Mentett videók listában.
+- **Hidegindítás (2026-11-03):** az első belépéskor legalább 3 témát kell választani (vagy „Mindegy, mutass mindent”).
 - **Munkamódszer:** a 26 fős AI-tesztelőpanel (6 + 20 célcsoport-persona) szavaz minden javaslatra; ebben a sorrendben haladunk. Új javaslatot mindig az egész panellel kell szavaztatni. (Ez szimuláció, nem valódi emberek – ezt mindig jelezni kell.)
 - Teljesen automatikus gyártást szeretne (API), nem gépéhez kötött megoldást.
 - Minden válasz végén **„Péter teendői”** lista: amit Claude nem tehet meg (fizetés, éles adatbázis-módosítás Run gombja, letöltés).
 
 ## A panel szavazási sorrendje (a következő teendők alapja)
+**2026-11-03-i szavazás (SZIMULÁCIÓ, nem valódi emberek), 26 fő:** fun fact reelek 23 igen · minden 4–5. helyen 18 (5 fő sűrűbbet, 3 ritkábbat kért) · téma kikapcsolása 24 · „csak ez a téma” mód 20 · nézési jelek mérése 19 (Tamás, Judit, Erzsi, dr. Kovács Anna csak átlátható és kikapcsolható méréssel) · For You rangsor 21 · profil törlése, adatok letöltése 25 · a fun fact magyar neve („Tudtad?”) 16. Mind megvalósítva.
+
 1. ✅ Pénzügyek téma (6 videó kész) · 2. ✅ +pont konfettivel · 3. **Csalások felismerése** (következő sorozat) · 4. ✅ Rövidebb videók · 5. ✅ „Így védd magad” rész · 6. Néma mód a Profilban (Péter eddig a mindig szóló hangot kérte – egyeztetni) · 7. ✅ részben Tévhit-formátum · 8. ✅ Sorozatszámláló · 9. Egyszerűbb szavak · 10. Munkahely (interjú, tárgyalás, munkajog) · 11. Egészség és alvás · 12. ✅ Rezgés · 13. Önbizalom és első benyomás · 14. Kapcsolatok · 15. Barát meghívása a ligába · 16. Pörgő pontszám · 17. Nagyobb betűs mód · 18. Gyerek és család · 19. Kommentmoderálás · 20. Viselkedési közgazdaságtan · 21. „Megelőzted X-et” · 22. Csak hang mód · 23. Egyszerű mód · 24. Borravaló-pszichológia
 
 ## Tartalom most (élesben)
 - 23 AI-videó: Horgonyhatás, Szűkösség elve, Láb az ajtóban, Társas bizonyíték, Pratfall-hatás, Azonosítható áldozat hatás, Választási bénulás, Rím mint érv, A visszakérdezés ereje, Tekintély elve, Előfeszítés, Kamatos kamat, A fizetés fájdalma, A minimum törlesztés horgonya, Fizesd ki először magad, Infláció, Mentális könyvelés; 3. sorozat (a könyv „Védekezz” részeiből): Elsüllyedt költség, Csalimadár, Veszteségkerülés, Keretezés, Holdudvarhatás, Csúcs-vég szabály. **Új videó előtt ezt a listát ellenőrizni, téma nem ismétlődhet.**
+- 6 „Tudtad?” fun fact (2026-11-03), egyelőre **szöveges posztként** (videó még nincs, nem volt API-kulcs): Felejtési görbe, Ajtóhatás, A pilóták szundija, Villám kétszer is, A nyelvtérkép tévhite, A sugárzó banán. Tervezett hangok: Charon, Kore, Aoede, Orus, Fenrir, Charon. Ezek a témák sem ismétlődhetnek.
 - 8 podcastrészlet-videó + 7 felolvasott szöveges poszt. Rejtve (duplikátum): p3, p4, p5, m1, m4 (Csalimadár-hatás szöveges poszt, a videó mellett).
 
 ## Nyitott pontok
+- **`supabase/5_adataim.sql` lefuttatása** (Péter, Run gomb) – addig a „Minden adatom törlése” gomb hibát jelez (a többi Adataim-funkció működik).
+- **A 6 „Tudtad?” videó legyártása** – kell a `.secrets.env` (Gemini-kulcs); kb. 24 kép ≈ 1,6 $ a kb. 2,5 $-os egyenlegből, hang Gemini TTS. Utána `tools/funfact.py` újrafuttatása (lásd fent).
+- Egyszer, a teljes tesztsor végén (gépterhelés alatt) a `foryou_teszt.py` egy „Cannot read properties of null (reading 'classList')” JS-hibát látott, 5 újrafuttatásnál nem jött elő, a forrása nem derült ki – figyelni.
 - ✅ **Kommentek Supabase-szabálya:** `supabase/4_kommentek.sql` lefutott (2026-10-31), Péter próbakommentet írt.
 - ✅ **Teljesen automatikus képek:** 5 $ előre feltöltve (2026-10-31), a 3. sorozat (36 kép) után kb. 2,5 $ maradt. A Google Cloud 300 $-os próbakerete a Gemini API-ra NEM vonatkozik. Auto-reload kikapcsolva.
 - **Meghívottak:** Mira (mira.hasznosi@gmail.com) meghívó-SQL-je beírva, Péter Run gombjára vár (2026-10-31).
@@ -89,6 +110,9 @@ Eredmények: átlag 7,2 (1. csapat) és 7,0 (2. csapat); legjobban a munkájukho
 - Az app `ORDER` és `HIDE` listája: a HIDE-ban lévő posztok nem jelennek meg; ami nincs az ORDER-ben, az is megjelenik (a feed keverve van).
 - A szöveges posztok hangja: `VOICE` objektum az appban (a `media/hang/hang.json`-ből), újragenerálás: `tools/szoveghang.py`.
 - `SOON_TOPICS` = a „hamarosan” témák (jelenleg Ügyintézés, Gyerek és család).
+- For You a kódban: `pickForYou()` (rangsor, „Tudtad?”-hely, felfedezés, ismétlés), `affinity()` (témánkénti pont), `beginView/viewProgress/endView` (mérés), állapot: `S.sig` (videónkénti jelek), `S.off` (kikapcsolt témák), `S.track` (mérés be/ki), `S.saved`. A „Csak ezt” mód a régi `filter` változó. Az 0,4 mp alatti „villanás” (görgetés közben) nem számít nézésnek.
+- A teszt-backend (`tools/teszt/teszt_backend.js`) letöltése csak csonk, és nincs `account` képessége (ott a „Minden adatom törlése” az e-mailes útmutatót mutatja).
+- A teszthez Python-Playwright kell (`pip install playwright`), a böngésző a `/usr/bin/google-chrome`.
 
 ## Fiókok, költségek
 - GitHub: neumannpeter1231-lang · Cloudflare: Worker „rough-sound-2c04” · Supabase: free tier · Google Cloud: „Hogyankell” projekt (OAuth + Gemini kulcs) · ElevenLabs: Starter.
