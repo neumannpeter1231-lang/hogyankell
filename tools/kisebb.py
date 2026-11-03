@@ -49,7 +49,7 @@ def poster(jpg):
 
 
 def main():
-    vids = sys.argv[1:] or sorted(glob.glob(os.path.join(ROOT, "media", "*.mp4")) + glob.glob(os.path.join(ROOT, "media", "clips", "*.mp4")))
+    vids = [os.path.abspath(v) for v in sys.argv[1:]] or sorted(glob.glob(os.path.join(ROOT, "media", "*.mp4")) + glob.glob(os.path.join(ROOT, "media", "clips", "*.mp4")))
     for v in vids:
         print(os.path.relpath(v, ROOT), video(v), flush=True)
         jpg = v[:-4] + ".jpg"
