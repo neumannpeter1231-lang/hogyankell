@@ -3,8 +3,9 @@
 
 Használat: python3 tools/posztok.py anyag/sorozat1.json
 Csak azokat szúrja be, amelyekhez már van media/<id>.mp4, és még nincsenek bent.
+A forgatókönyv "qvar" mezőjét (párbaj-kérdésváltozatok) a QVAR-ba is beírja (2026-11-03), ha még nincs bent.
 """
-import json, os, sys
+import json, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = os.path.join(ROOT, "prototipus", "hogyankell.html")
@@ -34,8 +35,19 @@ def main():
         h = v["habit"]
         s = s.replace(hanchor, hanchor + f'  {pid}:{{text:{js(h["text"])}, time:{js(h["time"])}, days:{h["days"]}}},\n', 1)
         added.append(pid)
+    # kérdésváltozatok a QVAR-ba (az app egyetlen sorban tárolja: const QVAR = {...};)
+    m = re.search(r"^const QVAR = (\{.*?\});$", s, re.M)
+    qv = json.loads(m.group(1)) if m else None
+    qadded = []
+    if qv is not None:
+        for v in spec["videos"]:
+            pid = "v_" + v["id"]
+            if v.get("qvar") and pid not in qv and f'id:"{pid}"' in s:
+                qv[pid] = v["qvar"]; qadded.append(pid)
+        if qadded:
+            s = s[:m.start(1)] + json.dumps(qv, ensure_ascii=False, separators=(",", ":")) + s[m.end(1):]
     open(APP, "w", encoding="utf-8").write(s)
-    print("beszúrva:", added)
+    print("beszúrva:", added, "| kérdésváltozat:", qadded)
 
 
 if __name__ == "__main__":

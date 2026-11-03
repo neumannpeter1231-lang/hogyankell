@@ -1,0 +1,127 @@
+# Hogyankell gyártósor a felhőben (2026-11-03): forgatókönyvből kész videó + PR, egy gombnyomásra.
+# Indítás: GitHub → Actions → „Gyártás” → Run workflow. Alapból csak BECSLÉS fut (nem költ pénzt).
+# Kulcsok: Settings → Secrets and variables → Actions: GEMINI_API_KEY (kötelező az éles módhoz),
+#          ELEVENLABS_API_KEY (csak ha a forgatókönyv ElevenLabs-hangot kér: gabor, vera_*).
+# A PR-nyitáshoz: Settings → Actions → General → „Allow GitHub Actions to create and approve pull requests”.
+name: Gyártás
+
+on:
+  workflow_dispatch:
+    inputs:
+      forgatokonyv:
+        description: "Forgatókönyv (pl. anyag/funfact2.json)"
+        required: true
+        default: "anyag/funfact1.json"
+      videok:
+        description: "Csak ezek az id-k, szóközzel elválasztva (üresen: minden még kész videó nélküli)"
+        required: false
+        default: ""
+      mod:
+        description: "becsles = csak költségbecslés · proba = API nélkül, helyettesítő anyaggal (0 $) · eles = valódi gyártás"
+        type: choice
+        options: [becsles, proba, eles]
+        default: becsles
+      max_kep:
+        description: "Költségfék: legfeljebb ennyi kép (kb. 0,067 $/kép)"
+        required: false
+        default: "30"
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: gyartas
+  cancel-in-progress: false
+
+jobs:
+  gyartas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Eszközök (ffmpeg, Inter betű, Pillow)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-inter fonts-dejavu-core >/dev/null
+          pip install -q pillow
+          fc-list | grep -q "Inter Display" || { echo "::error::Nincs „Inter Display” betű – a feliratok rossz betűvel készülnének."; exit 1; }
+
+      - name: Kulcsok (.secrets.env, a gitbe nem kerül)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          : > .secrets.env
+          [ -n "$GEMINI_API_KEY" ] && echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .secrets.env
+          [ -n "$ELEVENLABS_API_KEY" ] && echo "ELEVENLABS_API_KEY=$ELEVENLABS_API_KEY" >> .secrets.env
+          chmod 600 .secrets.env
+
+      - name: Gyártás (tools/gyartas.py)
+        env:
+          FORGATOKONYV: ${{ inputs.forgatokonyv }}
+          VIDEOK: ${{ inputs.videok }}
+          MOD: ${{ inputs.mod }}
+          MAX_KEP: ${{ inputs.max_kep }}
+        run: |
+          case "$MOD" in becsles) KAPCS="--becsles";; proba) KAPCS="--proba";; eles) KAPCS="";; *) echo "::error::ismeretlen mód: $MOD"; exit 1;; esac
+          case "$FORGATOKONYV" in anyag/*.json) ;; *) echo "::error::A forgatókönyv az anyag/ mappában legyen (.json)"; exit 1;; esac
+          set -f   # a videó-id-k ne bővüljenek fájlnevekre
+          # shellcheck disable=SC2086
+          python3 tools/gyartas.py "$FORGATOKONYV" $VIDEOK $KAPCS --max-kep "$MAX_KEP" --kimenet "$RUNNER_TEMP/osszefoglalo.md" | tee "$RUNNER_TEMP/gyartas.log"
+          exit ${PIPESTATUS[0]}
+
+      - name: Becslés az összefoglalóba
+        if: inputs.mod == 'becsles'
+        run: |
+          { echo "### Költségbecslés (nem gyártott semmit)"; echo '```'; cat "$RUNNER_TEMP/gyartas.log"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Ág, commit, PR, teszt
+        if: inputs.mod != 'becsles'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORGATOKONYV: ${{ inputs.forgatokonyv }}
+          MOD: ${{ inputs.mod }}
+        run: |
+          rm -f .secrets.env
+          NEV=$(basename "$FORGATOKONYV" .json)
+          AG="gyartas/${NEV}-${GITHUB_RUN_NUMBER}$([ "$MOD" = proba ] && echo -proba)"
+          git config user.name "hogyankell-gyartosor"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$AG"
+          git add media anyag prototipus site
+          git commit -q -m "Gyártás ($MOD): $FORGATOKONYV – run $GITHUB_RUN_NUMBER"
+          mkdir -p "$RUNNER_TEMP/melleklet"
+          git diff --name-only --diff-filter=AM HEAD~1 -- 'media/*.mp4' 'anyag/kontaktlap/*.jpg' | xargs -r -I{} cp {} "$RUNNER_TEMP/melleklet/"
+          git push -q origin "$AG"
+          BODY="$RUNNER_TEMP/pr.md"
+          cp "$RUNNER_TEMP/osszefoglalo.md" "$BODY"
+          { echo; echo "**Kontaktlapok** (a privát repóban bejelentkezve látszanak):";
+            for f in anyag/kontaktlap/*.jpg; do
+              git diff --quiet HEAD~1 -- "$f" 2>/dev/null && continue
+              echo "![${f##*/}](https://github.com/${GITHUB_REPOSITORY}/blob/${AG}/${f}?raw=true)"
+            done
+            echo; echo "A videók letölthetők: Actions → ez a futás → „gyartott-videok” melléklet.";
+            echo; echo "_A gyártósor (.github/workflows/gyartas.yml) nyitotta, run ${GITHUB_RUN_NUMBER}._"; } >> "$BODY"
+          CIM="Gyártás: $NEV"; [ "$MOD" = proba ] && CIM="[PRÓBA – NE OLVASZD BE] $CIM"
+          if gh pr create --base main --head "$AG" --title "$CIM" --body-file "$BODY"; then
+            gh workflow run teszt.yml --ref "$AG" || echo "::warning::A Teszt munkafolyamatot nem sikerült elindítani."
+          else
+            echo "::warning::A PR-t nem sikerült megnyitni. Kapcsold be: Settings → Actions → General → Allow GitHub Actions to create and approve pull requests. Addig kézzel: https://github.com/${GITHUB_REPOSITORY}/compare/main...${AG}"
+          fi
+          { echo "### Gyártás kész ($MOD)"; echo "Ág: \`$AG\`"; cat "$RUNNER_TEMP/osszefoglalo.md"; } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Videók és kontaktlapok mellékletként
+        if: inputs.mod != 'becsles'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gyartott-videok
+          path: ${{ runner.temp }}/melleklet/
+          if-no-files-found: warn
+          retention-days: 14
