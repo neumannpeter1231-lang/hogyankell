@@ -1,6 +1,6 @@
 # Hogyankell – munkafüzet (átadás új beszélgetéshez)
 
-Utolsó frissítés: 2026-11-03 (For You feed, „Tudtad?” fun factek, témaszűrés, érdeklődési profil, Adataim; adatcsökkentés). Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
+Utolsó frissítés: 2026-11-03 (For You feed, „Tudtad?” fun factek, témaszűrés, érdeklődési profil, Adataim; adatcsökkentés; CI + forgatókönyv-ellenőrző). Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
 
 ## Mi ez?
 A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magyarázóvideók gyakorlati élettudásról (meggyőzés, pszichológia, pénzügyek, idő és fókusz, kommunikáció, biztonság, alvás), szavazással, ellenőrző kérdésekkel, „Mélyebben” résszel (forrás), szokásvállalással, Arénával (párbaj, liga), kommentekkel. 2026-11-03 óta: **„Tudtad?”** rövid fun factek, **For You** („Neked”) feed érdeklődési profillal, témák be/ki és „Csak ezt” mód, Adataim (GDPR).
@@ -25,6 +25,8 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `tools/kisebb.py` – adatcsökkentés: videók 540×960, 280 kbit/s (kétmenetes H.264), mono 64 kbit/s hang; poszterek 540 széles WebP. A már kicsi videókat kihagyja; az `osszerak.py` magától futtatja.
 - `tools/funfact.py` – a „Tudtad?” posztokat írja be az appba (`anyag/funfact*.json` → a `/* FUNFACT:BEGIN */ … /* FUNFACT:END */` blokk). Ha van `media/<id>.mp4`, videós posztot ír, különben szöveges posztot; bármikor újrafuttatható.
 - `tools/teszt/foryou_teszt.py` – szabályellenőrzés (a `futtat.sh` futtatja): „Tudtad?” aránya 18–30%, kikapcsolt téma nem jön elő, „Csak ezt” mód, mentés, érdeklődési profil, mérés ki/be, profil törlése, letöltés. Hibánál kilépési kód 1.
+- `tools/ellenoriz.py` – forgatókönyv-ellenőrző (2026-11-03): HIBA, ha a cím/téma már létezik, hiányzik a forrás, a szavazás, az ellenőrző kérdés, a Mélyebben, a 2 kérdésváltozat, a fun factnél a tanulság, vagy hibás a helyes válasz indexe; FIGYELEM a jelenetszámra, a becsült hosszra (14,5 karakter/mp) és az egymás utáni azonos hangra. Futtatás: `python3 tools/ellenoriz.py [anyag/x.json]`.
+- `.github/workflows/teszt.yml` – **CI** (GitHub Actions): minden PR-on és a `main` minden frissítésekor lefut az `ellenoriz.py`, a `build.py` + „friss-e a commitolt `site/`” ellenőrzés, a JS-szintaxis és a teljes `futtat.sh`. **Piros = ne olvaszd be.** Képernyőképek: Actions → a futás → „tesztkepek”.
 - `supabase/5_adataim.sql` – `delete_my_data()`: a Profil → Adataim → „Minden adatom törlése” gomb ezt hívja (fiók + minden adat törlése).
 - `tools/elocsend.py` – 0,4 mp csendet tesz a kész videók elejére (2026-11-03: görgetés után a női hangok első szótagja megakadt). Az új videók ezt már a `make_explainer.py`-ból automatikusan kapják.
 - `tools/kepek.py` – jelenetképek a Gemini API-ból (prompt + a sorozat `style` mezője) → `anyag/<id>/01.png…`; a meglévőket kihagyja.
@@ -34,6 +36,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 
 ## Új videósorozat menete
 1. Forgatókönyv `anyag/sorozatN.json`-ba: 6 jelenet, 25–35 mp, valódi kutatás + forrás, a végén „így véded magad” tipp, néhány „tévhit vs. valóság” formátumban. Számokat ellenőrizni / kiszámolni.
+   Utána mindig: `python3 tools/ellenoriz.py anyag/sorozatN.json` (0 hiba kell).
 2. `python3 tools/hang.py anyag/sorozatN.json`
 3. `python3 tools/kepek.py anyag/sorozatN.json` (automatikus; utána kontaktlappal átnézni: nincs-e szöveg, valódi személy, márka a képen).
 4. `python3 tools/osszerak.py anyag/sorozatN.json` → `python3 tools/posztok.py anyag/sorozatN.json` → ORDER-listába nem kötelező felvenni (a feed amúgy is keveri).
@@ -41,6 +44,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 
 ## „Tudtad?” (fun fact) gyártása
 1. Forgatókönyv `anyag/funfactN.json`-ba: **4 jelenet, 15–30 mp**, lazább hang, de **ellenőrzött tény megnevezett forrással**; az utolsó jelenet „A tanulság: …” (egy mondat, a `lesson` mezőben is). Mélyebben részben a korlátok és amit NEM tudtunk ellenőrizni (pl. a NASA-szundi „34%/54%”-a kimaradt). 2 kérdésváltozat (`qvar`) kötelező.
+   Utána mindig: `python3 tools/ellenoriz.py anyag/funfactN.json` (0 hiba kell).
 2. Azonnal kitehető szövegesként: `python3 tools/funfact.py anyag/funfact1.json [anyag/funfact2.json …]` → `python3 build.py`.
 3. Videó: `python3 tools/hang.py anyag/funfactN.json` → `python3 tools/kepek.py anyag/funfactN.json` → `python3 tools/osszerak.py anyag/funfactN.json` → **újra** `python3 tools/funfact.py anyag/funfact1.json …` (ekkor a szöveges poszt videóra vált; az összes funfact-JSON-t add meg, a blokk teljesen újraíródik). A `posztok.py`-t fun facthez NEM kell futtatni.
 
@@ -61,6 +65,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - **Adatcsökkentés (2026-11-03, Péter: mind a 6 pont, 540p):** videók 540p/280 kbit/s (kb. −50%), poszterek WebP (kb. −65%); a `build.py` minden médialinkhez a tartalomból számolt `?v=` kódot ad, a `_headers` a `/media/*`-ra 7 napos gyorsítótárat ír (a `media/hang/*.mp3` linkje nem verziózott, újragyártás után legfeljebb 7 napig a régi szólhat); a következő videó előtöltése csak 3 mp nézés után indul; **Adattakarékos mód** a Profil → Mobilnet kártyán (magától bekapcsol, ha a telefonon be van kapcsolva az adatforgalom-csökkentés; ilyenkor nincs előtöltés); a háttérmentés legfeljebb 30 mp-enként (akciók után továbbra is azonnal). **Mérve (2026-11-03):** 32 videó átlaga 3,7 MB → 1,9 MB (−50%), poszterek átlag 96 KB WebP, a kitett `site/media` 136 MB → 70 MB. Becslés: 10 perc nézés kb. 55–60 MB helyett kb. 25 MB, adattakarékos módban kb. 15 MB. Ha egy videót újragyártasz, az `osszerak.py` után már kicsi; régi, nagy videóra: `python3 tools/kisebb.py media/<id>.mp4`. Panel (SZIMULÁCIÓ): 540p 22, poszter 25, gyorsítótár 26, előtöltés 24, adattakarékos mód 21, ritkább mentés 25 igen a 26-ból.
 - **Mentés gomb (2026-11-03):** a Mélyebb panelben („Mentés későbbre”), a mentettek a Profil → Mentett videók listában.
 - **Hidegindítás (2026-11-03):** az első belépéskor legalább 3 témát kell választani (vagy „Mindegy, mutass mindent”).
+- **CI és munkamenetek (2026-11-03):** PR-t csak zöld CI mellett olvasztunk be. **Egyszerre egy Claude-munkamenet dolgozzon** a repón (2026-11-03-án két párhuzamos munkamenet ugyanazt az adatcsökkentést olvasztotta be, a PR #4-et ezért kellett lezárni). Panel (SZIMULÁCIÓ): CI 24, forgatókönyv-ellenőrző 25 (Tamás, Judit, dr. Kovács Anna: „a forrás legyen kötelező”), a hibajavítás 26 igen a 26-ból.
 - **Munkamódszer:** a 26 fős AI-tesztelőpanel (6 + 20 célcsoport-persona) szavaz minden javaslatra; ebben a sorrendben haladunk. Új javaslatot mindig az egész panellel kell szavaztatni. (Ez szimuláció, nem valódi emberek – ezt mindig jelezni kell.)
 - Teljesen automatikus gyártást szeretne (API), nem gépéhez kötött megoldást.
 - Minden válasz végén **„Péter teendői”** lista: amit Claude nem tehet meg (fizetés, éles adatbázis-módosítás Run gombja, letöltés).
@@ -76,9 +81,10 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - 8 podcastrészlet-videó + 7 felolvasott szöveges poszt. Rejtve (duplikátum): p3, p4, p5, m1, m4 (Csalimadár-hatás szöveges poszt, a videó mellett).
 
 ## Nyitott pontok
+- **Cloudflare ág-buildek** (Péter): a nem-`main` ágak „Workers Builds” jelzése azonnal piros (a build el sem indul). Cloudflare → Workers → rough-sound-2c04 → Settings → Builds: a nem éles ágak buildjét kikapcsolni, hogy a PR-okon csak a CI (Teszt) jelezzen.
 - **`supabase/5_adataim.sql` lefuttatása** (Péter, Run gomb) – addig a „Minden adatom törlése” gomb hibát jelez (a többi Adataim-funkció működik).
 - **A 6 „Tudtad?” videó legyártása** – kell a `.secrets.env` (Gemini-kulcs); kb. 24 kép ≈ 1,6 $ a kb. 2,5 $-os egyenlegből, hang Gemini TTS. Utána `tools/funfact.py` újrafuttatása (lásd fent).
-- Egyszer, a teljes tesztsor végén (gépterhelés alatt) a `foryou_teszt.py` egy „Cannot read properties of null (reading 'classList')” JS-hibát látott, 5 újrafuttatásnál nem jött elő, a forrása nem derült ki – figyelni.
+- ✅ **A „null.classList” JS-hiba megoldva (2026-11-03):** a feed újraépítése után az IntersectionObserver egy régi, már kivett elemet aktivált, aminek a sorszáma az új feed egy másik posztjára mutatott. Javítás: az `activate()` csak a feedben lévő elemet aktiválja.
 - ✅ **Kommentek Supabase-szabálya:** `supabase/4_kommentek.sql` lefutott (2026-10-31), Péter próbakommentet írt.
 - ✅ **Teljesen automatikus képek:** 5 $ előre feltöltve (2026-10-31), a 3. sorozat (36 kép) után kb. 2,5 $ maradt. A Google Cloud 300 $-os próbakerete a Gemini API-ra NEM vonatkozik. Auto-reload kikapcsolva.
 - **Meghívottak:** Mira (mira.hasznosi@gmail.com) meghívó-SQL-je beírva, Péter Run gombjára vár (2026-10-31).
@@ -115,7 +121,7 @@ Eredmények: átlag 7,2 (1. csapat) és 7,0 (2. csapat); legjobban a munkájukho
 - `SOON_TOPICS` = a „hamarosan” témák (jelenleg Ügyintézés, Gyerek és család).
 - For You a kódban: `pickForYou()` (rangsor, „Tudtad?”-hely, felfedezés, ismétlés), `affinity()` (témánkénti pont), `beginView/viewProgress/endView` (mérés), állapot: `S.sig` (videónkénti jelek), `S.off` (kikapcsolt témák), `S.track` (mérés be/ki), `S.saved`. A „Csak ezt” mód a régi `filter` változó. Az 0,4 mp alatti „villanás” (görgetés közben) nem számít nézésnek.
 - A teszt-backend (`tools/teszt/teszt_backend.js`) letöltése csak csonk, és nincs `account` képessége (ott a „Minden adatom törlése” az e-mailes útmutatót mutatja).
-- A teszthez Python-Playwright kell (`pip install playwright`), a böngésző a `/usr/bin/google-chrome`.
+- A teszthez Python-Playwright kell (`pip install playwright`), a böngésző alapból a `/usr/bin/google-chrome`; `CHROME_PATH=""` mellett a Playwright saját Chromiuma (így fut a CI-ben). A `futtat.sh` indulás előtt leállítja a beragadt 8765-ös teszt-szervert (az a régi buildet szolgálta volna ki), és hiba esetén 1-gyel lép ki (a botok JS-kivételnél, az élő párbaj eltérő köröknél is).
 
 ## Fiókok, költségek
 - GitHub: neumannpeter1231-lang · Cloudflare: Worker „rough-sound-2c04” · Supabase: free tier · Google Cloud: „Hogyankell” projekt (OAuth + Gemini kulcs) · ElevenLabs: Starter.

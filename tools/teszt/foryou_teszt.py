@@ -3,8 +3,10 @@
 A futtat.sh indítja (a helyi szerver a 8765-ös porton fut). Nem persona-szimuláció, hanem
 szabályellenőrzés: hiba esetén a kilépési kód 1.
 """
-import asyncio, sys
+import os, asyncio, sys
 from playwright.async_api import async_playwright
+# böngésző: alapból a gépre telepített Chrome; CI-ben CHROME_PATH="" → a Playwright saját Chromiuma
+CHROME = os.environ.get("CHROME_PATH", "/usr/bin/google-chrome") or None
 
 BASE = "http://127.0.0.1:8765/"
 FUN = "Tudtad?"
@@ -45,7 +47,7 @@ async def goto_tab(pg, hash_):
 
 async def main():
     async with async_playwright() as pw:
-        b = await pw.chromium.launch(executable_path="/usr/bin/google-chrome",
+        b = await pw.chromium.launch(executable_path=CHROME,
                                      args=["--autoplay-policy=no-user-gesture-required", "--mute-audio"])
         ctx = await b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, locale="hu-HU")
         pg = await ctx.new_page()
