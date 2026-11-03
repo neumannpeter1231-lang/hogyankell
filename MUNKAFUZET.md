@@ -1,6 +1,6 @@
 # Hogyankell – munkafüzet (átadás új beszélgetéshez)
 
-Utolsó frissítés: 2026-11-03 (For You feed, „Tudtad?” fun factek, témaszűrés, érdeklődési profil, Adataim; adatcsökkentés; CI + forgatókönyv-ellenőrző). Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
+Utolsó frissítés: 2026-11-03 (For You feed, „Tudtad?” fun factek, témaszűrés, érdeklődési profil, Adataim; adatcsökkentés; CI + forgatókönyv-ellenőrző; felhős gyártósor). Ezt a fájlt az új Claude-beszélgetés elején kell elolvasni. Minden itt van, ami a folytatáshoz kell.
 
 ## Mi ez?
 A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magyarázóvideók gyakorlati élettudásról (meggyőzés, pszichológia, pénzügyek, idő és fókusz, kommunikáció, biztonság, alvás), szavazással, ellenőrző kérdésekkel, „Mélyebben” résszel (forrás), szokásvállalással, Arénával (párbaj, liga), kommentekkel. 2026-11-03 óta: **„Tudtad?”** rövid fun factek, **For You** („Neked”) feed érdeklődési profillal, témák be/ki és „Csak ezt” mód, Adataim (GDPR).
@@ -27,6 +27,9 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `tools/teszt/foryou_teszt.py` – szabályellenőrzés (a `futtat.sh` futtatja): „Tudtad?” aránya 18–30%, kikapcsolt téma nem jön elő, „Csak ezt” mód, mentés, érdeklődési profil, mérés ki/be, profil törlése, letöltés. Hibánál kilépési kód 1.
 - `tools/ellenoriz.py` – forgatókönyv-ellenőrző (2026-11-03): HIBA, ha a cím/téma már létezik, hiányzik a forrás, a szavazás, az ellenőrző kérdés, a Mélyebben, a 2 kérdésváltozat, a fun factnél a tanulság, vagy hibás a helyes válasz indexe; FIGYELEM a jelenetszámra, a becsült hosszra (14,5 karakter/mp) és az egymás utáni azonos hangra. Futtatás: `python3 tools/ellenoriz.py [anyag/x.json]`.
 - `.github/workflows/teszt.yml` – **CI** (GitHub Actions): minden PR-on és a `main` minden frissítésekor lefut az `ellenoriz.py`, a `build.py` + „friss-e a commitolt `site/`” ellenőrzés, a JS-szintaxis és a teljes `futtat.sh`. **Piros = ne olvaszd be.** Képernyőképek: Actions → a futás → „tesztkepek”.
+- `.github/workflows/gyartas.yml` – **felhős gyártósor** (2026-11-03): GitHub → Actions → „Gyártás” → Run workflow. Mezők: forgatókönyv (`anyag/…json`), videó-id-k (üresen: minden még kész videó nélküli), mód (`becsles` = csak költség, alapból · `proba` = API nélkül, 0 $ · `eles`), képkeret (alapból 30). Az éles mód a `GEMINI_API_KEY` (és ElevenLabs-hangnál az `ELEVENLABS_API_KEY`) GitHub Secretet használja, a végén `gyartas/…` ágat és PR-t nyit kontaktlappal, és elindítja rajta a Teszt CI-t. A videók letölthetők a futás „gyartott-videok” mellékletéből.
+- `tools/gyartas.py` – a gyártósor vezérlője (helyben is): `python3 tools/gyartas.py anyag/x.json [id …] [--becsles|--proba] [--max-kep N]`. Csak a még `media/<id>.mp4` nélküli videókat gyártja; leáll, ha nincs „hang” mező, hiányzik a kulcs, vagy a képszám túllépi a keretet. Lépések: ellenoriz → hang + kepek (vagy proba_anyag) → osszerak (+kisebb) → funfact/posztok → kontaktlap (`anyag/kontaktlap/<id>.jpg`) → build → ellenoriz.
+- `tools/proba_anyag.py` – helyettesítő képek + sípszó-hang + align.json API nélkül (a gyártósor próbájához; próbavideót élesbe nem olvasztunk be).
 - `supabase/5_adataim.sql` – `delete_my_data()`: a Profil → Adataim → „Minden adatom törlése” gomb ezt hívja (fiók + minden adat törlése).
 - `tools/elocsend.py` – 0,4 mp csendet tesz a kész videók elejére (2026-11-03: görgetés után a női hangok első szótagja megakadt). Az új videók ezt már a `make_explainer.py`-ból automatikusan kapják.
 - `tools/kepek.py` – jelenetképek a Gemini API-ból (prompt + a sorozat `style` mezője) → `anyag/<id>/01.png…`; a meglévőket kihagyja.
@@ -35,11 +38,13 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `.secrets.env` – API-kulcsok, **gitből kizárva, nincs a GitHubon**. Új munkakörnyezetben Péternek újra meg kell adnia (ElevenLabs `sk_…` kulcs, Gemini kulcs).
 
 ## Új videósorozat menete
+**Ajánlott (2026-11-03-tól): a felhős gyártósor.** A forgatókönyv (1. lépés) commitolása után GitHub → Actions → „Gyártás” → előbb `becsles`, aztán `eles` → a megnyílt PR-ban a kontaktlap és a videó átnézése → zöld Teszt után beolvasztás. A lenti kézi lépések helyben ugyanezt csinálják (egyben: `python3 tools/gyartas.py anyag/sorozatN.json`).
+
 1. Forgatókönyv `anyag/sorozatN.json`-ba: 6 jelenet, 25–35 mp, valódi kutatás + forrás, a végén „így véded magad” tipp, néhány „tévhit vs. valóság” formátumban. Számokat ellenőrizni / kiszámolni.
    Utána mindig: `python3 tools/ellenoriz.py anyag/sorozatN.json` (0 hiba kell).
 2. `python3 tools/hang.py anyag/sorozatN.json`
 3. `python3 tools/kepek.py anyag/sorozatN.json` (automatikus; utána kontaktlappal átnézni: nincs-e szöveg, valódi személy, márka a képen).
-4. `python3 tools/osszerak.py anyag/sorozatN.json` → `python3 tools/posztok.py anyag/sorozatN.json` → ORDER-listába nem kötelező felvenni (a feed amúgy is keveri).
+4. `python3 tools/osszerak.py anyag/sorozatN.json` → `python3 tools/posztok.py anyag/sorozatN.json` (a `qvar` kérdésváltozatokat is beírja a `QVAR`-ba, 2026-11-03) → ORDER-listába nem kötelező felvenni (a feed amúgy is keveri).
 5. `python3 build.py`, commit, push, ellenőrzés élesben.
 
 ## „Tudtad?” (fun fact) gyártása
@@ -66,6 +71,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - **Mentés gomb (2026-11-03):** a Mélyebb panelben („Mentés későbbre”), a mentettek a Profil → Mentett videók listában.
 - **Hidegindítás (2026-11-03):** az első belépéskor legalább 3 témát kell választani (vagy „Mindegy, mutass mindent”).
 - **CI és munkamenetek (2026-11-03):** PR-t csak zöld CI mellett olvasztunk be. **Egyszerre egy Claude-munkamenet dolgozzon** a repón (2026-11-03-án két párhuzamos munkamenet ugyanazt az adatcsökkentést olvasztotta be, a PR #4-et ezért kellett lezárni). Panel (SZIMULÁCIÓ): CI 24, forgatókönyv-ellenőrző 25 (Tamás, Judit, dr. Kovács Anna: „a forrás legyen kötelező”), a hibajavítás 26 igen a 26-ból.
+- **Felhős gyártósor (2026-11-03):** a gyártás a GitHubon fut (nem géphez kötött), alapból csak becslés, képkeret 30 kép/futás. A kész videó PR-ként jön, Péter a kontaktlapon és a videón ellenőrzi (nincs szöveg, valódi személy, márka a képen), csak utána beolvasztás. Panel (SZIMULÁCIÓ): felhős gyártósor 24, ingyenes próba mód 25, költségfék és becslés 26 igen a 26-ból (Judit: „előre lássam, mennyibe kerül”; Tamás: „ember nézze át, mielőtt kimegy”).
 - **Munkamódszer:** a 26 fős AI-tesztelőpanel (6 + 20 célcsoport-persona) szavaz minden javaslatra; ebben a sorrendben haladunk. Új javaslatot mindig az egész panellel kell szavaztatni. (Ez szimuláció, nem valódi emberek – ezt mindig jelezni kell.)
 - Teljesen automatikus gyártást szeretne (API), nem gépéhez kötött megoldást.
 - Minden válasz végén **„Péter teendői”** lista: amit Claude nem tehet meg (fizetés, éles adatbázis-módosítás Run gombja, letöltés).
@@ -83,14 +89,14 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 ## Nyitott pontok
 - **Cloudflare ág-buildek** (Péter): a nem-`main` ágak „Workers Builds” jelzése azonnal piros (a build el sem indul). Cloudflare → Workers → rough-sound-2c04 → Settings → Builds: a nem éles ágak buildjét kikapcsolni, hogy a PR-okon csak a CI (Teszt) jelezzen.
 - **`supabase/5_adataim.sql` lefuttatása** (Péter, Run gomb) – addig a „Minden adatom törlése” gomb hibát jelez (a többi Adataim-funkció működik).
-- **A 6 „Tudtad?” videó legyártása** – kell a `.secrets.env` (Gemini-kulcs); kb. 24 kép ≈ 1,6 $ a kb. 2,5 $-os egyenlegből, hang Gemini TTS. Utána `tools/funfact.py` újrafuttatása (lásd fent).
+- **A 6 „Tudtad?” videó legyártása** – a felhős gyártósorral: (1) Péter a GitHub → Settings → Secrets and variables → Actions alá beteszi a `GEMINI_API_KEY`-t; (2) Settings → Actions → General → „Allow GitHub Actions to create and approve pull requests” bekapcsolása; (3) Actions → Gyártás → `anyag/funfact1.json`, mód `eles`. Becslés: 24 kép ≈ 1,6 $ + TTS ≈ 0,2 $, vagyis kb. 1,8 $ a kb. 2,5 $-os egyenlegből.
 - ✅ **A „null.classList” JS-hiba megoldva (2026-11-03):** a feed újraépítése után az IntersectionObserver egy régi, már kivett elemet aktivált, aminek a sorszáma az új feed egy másik posztjára mutatott. Javítás: az `activate()` csak a feedben lévő elemet aktiválja.
 - ✅ **Kommentek Supabase-szabálya:** `supabase/4_kommentek.sql` lefutott (2026-10-31), Péter próbakommentet írt.
 - ✅ **Teljesen automatikus képek:** 5 $ előre feltöltve (2026-10-31), a 3. sorozat (36 kép) után kb. 2,5 $ maradt. A Google Cloud 300 $-os próbakerete a Gemini API-ra NEM vonatkozik. Auto-reload kikapcsolva.
 - **Meghívottak:** Mira (mira.hasznosi@gmail.com) meghívó-SQL-je beírva, Péter Run gombjára vár (2026-10-31).
 - **ElevenLabs keret:** a 3. sorozat után kb. 1 100 karakter maradt november 30-ig (kb. 2 rövid narráció); addig főleg Gemini-hangok.
 - **Valódi tesztelők:** 5–10 Gmail-cím kell az `invites` táblába; javasolt nézési statisztika (végignézés, elgörgetés, dislike) heti összefoglalóval.
-- Ötletek a jövőre: ütemezett heti videógyártás, ha a képek is automatikusak.
+- Ötletek a jövőre: ütemezett heti videógyártás – a gyártósor kész, a heti ütemezéshez már csak a forgatókönyvek automatikus előállítása hiányzik (Claude API-s vázlat + tényellenőrzés, a javaslatlista 3. pontja).
 
 ## A 26 fős AI-tesztelőpanel (ugyanezekkel kell folytatni)
 Első csapat (6): Lili 19 egyetemista, sokat TikTokozik · Bence 24 junior értékesítő · Kata 31 kisgyerekes anyuka · Tamás 45 kisvállalkozó, szkeptikus · Dóri 22 pszichológia szakos · Máté 20 gamer.
