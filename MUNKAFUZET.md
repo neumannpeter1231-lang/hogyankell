@@ -22,6 +22,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `tools/posztok.py` – a sorozat-JSON alapján beszúrja a posztokat az appba (szavazás, ellenőrző kérdés, Mélyebben, forrás, szokás).
 - `tools/szoveghang.py` – felolvasás a szöveges (nem videós) posztokhoz.
 - `tools/teszt/` – bot-teszt: `bash tools/teszt/futtat.sh` helyben futtatja az éles app-kódot 5 véletlen panel-personával és egy két böngészős élő párbajjal (JS-hibák, videók, témaszűrés, kommentek, párbaj).
+- `tools/elocsend.py` – 0,4 mp csendet tesz a kész videók elejére (2026-11-03: görgetés után a női hangok első szótagja megakadt). Az új videók ezt már a `make_explainer.py`-ból automatikusan kapják.
 - `tools/kepek.py` – jelenetképek a Gemini API-ból (prompt + a sorozat `style` mezője) → `anyag/<id>/01.png…`; a meglévőket kihagyja.
 - `anyag/sorozat1.json`, `anyag/sorozat2.json` – a forgatókönyvek (jelenetszöveg + képleírás + kérdések + forrás).
 - `.secrets.env` – API-kulcsok, **gitből kizárva, nincs a GitHubon**. Új munkakörnyezetben Péternek újra meg kell adnia (ElevenLabs `sk_…` kulcs, Gemini kulcs).
