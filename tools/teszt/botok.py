@@ -1,7 +1,9 @@
 """5 véletlenszerűen sorsolt AI-tesztelő (a 26 fős panelből) végigkattintja az appot egy valódi böngészőben.
 Szimuláció: a viselkedést a persona leírásából becsült valószínűségek vezérlik, nem valódi emberek."""
-import asyncio, json, random, sys, time
+import os, asyncio, json, random, sys, time
 from playwright.async_api import async_playwright
+# böngésző: alapból a gépre telepített Chrome; CI-ben CHROME_PATH="" → a Playwright saját Chromiuma
+CHROME = os.environ.get("CHROME_PATH", "/usr/bin/google-chrome") or None
 
 BASE = "http://127.0.0.1:8765/"
 # név: (leírás, türelem mp/poszt, like, dislike, komment, mélyebb, szavazás, helyes válasz esélye, szokás, témák, komment-szöveg)
@@ -39,7 +41,7 @@ async def bot(pw, name, posts_to_watch, outdir):
     desc, (tmin, tmax), pl, pd, pc, pdeep, ppoll, pacc, phab, topics, ctext = PANEL[name]
     r = random.Random()
     log = {"name": name, "desc": desc, "errors": [], "seen": [], "actions": [], "video_issues": [], "layout": []}
-    b = await pw.chromium.launch(executable_path="/usr/bin/google-chrome",
+    b = await pw.chromium.launch(executable_path=CHROME,
                                  args=["--autoplay-policy=no-user-gesture-required", "--mute-audio"])
     ctx = await b.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True, device_scale_factor=2,
                               locale="hu-HU")
@@ -154,5 +156,10 @@ async def main():
         print(" videóhiba:", L["video_issues"] or "nincs", " elrendezés:", L["layout"] or "rendben")
         print(" tettek:", "; ".join(L["actions"]))
         print(" pont:", L["points_text"])
+    # CI: oldalhiba (JS-kivétel) esetén hibakóddal lépünk ki; a hálózati sorok csak tájékoztatók
+    js = [f"{L['name']}: {e}" for L in logs for e in L["errors"] if e.startswith("JS:")]
+    if js:
+        print("\nHIBA – JS-kivétel a persona-botoknál:\n " + "\n ".join(js[:10]))
+        sys.exit(1)
 
 asyncio.run(main())

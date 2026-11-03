@@ -1,5 +1,7 @@
 import asyncio, json, os, sys
 from playwright.async_api import async_playwright
+# böngésző: alapból a gépre telepített Chrome; CI-ben CHROME_PATH="" → a Playwright saját Chromiuma
+CHROME = os.environ.get("CHROME_PATH", "/usr/bin/google-chrome") or None
 BASE="http://127.0.0.1:8765/"
 rooms={}  # code -> {uid: (page, name)}
 log=[]
@@ -36,7 +38,7 @@ async def txt(pg, sel):
 async def main():
     res={}
     async with async_playwright() as p:
-        b=await p.chromium.launch(executable_path="/usr/bin/google-chrome",args=["--mute-audio"])
+        b=await p.chromium.launch(executable_path=CHROME,args=["--mute-audio"])
         host,he=await newpage(b,"Peter"); guest,ge=await newpage(b,"Mira")
         # 1) házigazda: kód, és NEM indul el, amíg a másik nincs bent
         await host.locator("#friendDuel").click(); await host.wait_for_timeout(1500)
@@ -92,4 +94,9 @@ async def main():
         res["JS-hibák"]=he+ge
         await b.close()
     print(json.dumps(res,ensure_ascii=False,indent=1))
+    # CI: hibakód, ha JS-hiba volt, vagy a két fél nem ugyanazt látta
+    bad = [k for k in res.get("körök", []) if not k.get("azonos")]
+    if res.get("JS-hibák") or bad:
+        print("HIBA – élő párbaj:", "JS-hiba" if res.get("JS-hibák") else "", f"{len(bad)} eltérő kör" if bad else "")
+        sys.exit(1)
 asyncio.run(main())

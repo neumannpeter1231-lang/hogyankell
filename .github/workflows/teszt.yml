@@ -1,0 +1,71 @@
+# Hogyankell CI (2026-11-03): minden PR-on és a main minden frissítésekor lefut.
+# Piros = ne olvaszd be. Részletek és képernyőképek: Actions fül → a futás → „tesztkepek” melléklet.
+name: Teszt
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: teszt-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  teszt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Függőségek (Playwright + Chromium, Pillow)
+        run: |
+          pip install playwright==1.64.0 pillow
+          python -m playwright install --with-deps chromium
+
+      - name: Forgatókönyvek ellenőrzése (tools/ellenoriz.py)
+        run: python3 tools/ellenoriz.py
+
+      - name: A commitolt site/ friss-e (a Cloudflare ezt teszi ki)
+        run: |
+          cp site/app.js /tmp/app_commitolt.js
+          python3 build.py
+          if ! cmp -s site/app.js /tmp/app_commitolt.js; then
+            echo "::error::A site/app.js nem friss: az app változott, de a build.py nem futott le a commit előtt. Futtasd: python3 build.py, és commitold a site/ mappát."
+            exit 1
+          fi
+          for f in backend.js sw.js _headers adatvedelem.html manifest.webmanifest; do
+            git diff --quiet -- "site/$f" || { echo "::error::A site/$f nem friss (futtasd a build.py-t)."; exit 1; }
+          done
+
+      - name: JS-szintaxis
+        run: |
+          node -e "for (const f of ['site/app.js','site/backend.js','site/sw.js']) new Function(require('fs').readFileSync(f,'utf8'))"
+
+      - name: Bot-teszt (persona-botok, élő párbaj, For You / témaszűrés / Adataim)
+        env:
+          CHROME_PATH: ""
+        run: bash tools/teszt/futtat.sh 2>&1 | tee teszt.log; exit ${PIPESTATUS[0]}
+
+      - name: Képernyőképek és napló mentése
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tesztkepek
+          path: |
+            teszt.log
+            /tmp/tmp.*/out/
+          if-no-files-found: ignore
+          retention-days: 7

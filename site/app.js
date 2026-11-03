@@ -993,7 +993,9 @@ function openHabitSheet(p, h){
 let raf = null, tvState = null;
 function stopAll(){ endView(); cancelAnimationFrame(raf); raf = null; tvState = null; players.forEach(v => v.pause()); narr.pause(); }
 function activate(el){
-  if (active === el || !$("onb").hidden) return;
+  /* A feed újraépítése után az IntersectionObserver még jelezhet egy régi, már kivett elemről; annak sorszáma
+     az új feed egy másik posztjára mutatna (ebből lett a „null.classList” hiba, 2026-11-03), ezért kihagyjuk. */
+  if (active === el || !$("onb").hidden || el.parentNode !== feed) return;
   stopAll(); active = el; paused = false; feed.querySelectorAll(".is-paused").forEach(x => x.classList.remove("is-paused")); setSoundButtons();
   const idx = Number(el.dataset.idx), it = items[idx];
   if (idx >= items.length - 2) appendItems(3);
@@ -1021,6 +1023,7 @@ function activate(el){
     loop();
   } else {
     const lineEl = el.querySelector(".line");
+    if (!lineEl) return;
     let durs = p.lines.map(l => Math.max(2.4, plain(l).length / 14));
     let total = durs.reduce((a, b) => a + b, 0) + 1.2;
     /* ha van felolvasás: a sorok a hanghoz igazodnak */
