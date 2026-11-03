@@ -12,6 +12,35 @@
 
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});
 
+  /* Frissítés-jelző: ha a szerveren újabb verzió van, felül megjelenik egy „Frissítés" gomb.
+     Megnyitáskor, előtérbe kerüléskor és 3 percenként ellenőriz. */
+  (function updateWatch() {
+    const mine = String(C.version || "");
+    if (!mine || /__VERSION__/.test(mine)) return;
+    let shown = false;
+    function banner() {
+      if (shown) return; shown = true;
+      const b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", "Új verzió érhető el, frissítés");
+      b.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top,0px));z-index:200;border:0;border-radius:999px;padding:10px 18px;font:700 15px/1.2 system-ui,sans-serif;background:var(--yel,#F2C230);color:var(--yel-ink,#14120A);box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer";
+      b.textContent = "Új verzió – koppints a frissítéshez";
+      b.onclick = () => { b.textContent = "Frissítés…"; location.reload(); };
+      document.body.appendChild(b);
+    }
+    async function check() {
+      if (shown || document.hidden) return;
+      try {
+        const r = await fetch("/config.js?t=" + Date.now(), { cache: "no-store" });
+        const m = (await r.text()).match(/version:\s*"([^"]+)"/);
+        if (m && m[1] && m[1] !== mine) banner();
+      } catch (_) {}
+    }
+    document.addEventListener("visibilitychange", check);
+    setInterval(check, 180000);
+    setTimeout(check, 4000);
+  })();
+
   if (!C.supabaseUrl || !C.supabaseKey || /IDE_/.test(C.supabaseUrl + C.supabaseKey) || !window.supabase) {
     show(`${LOGO}<h1>Még nincs beállítva</h1><p>A config.js fájlban hiányzik a Supabase címe vagy kulcsa, vagy nem töltött be a Supabase. Nézd át az útmutató 4. lépését.</p>`);
     return;
