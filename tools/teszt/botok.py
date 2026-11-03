@@ -52,6 +52,9 @@ async def bot(pw, name, posts_to_watch, outdir):
     await pg.wait_for_timeout(1500)
     # 1) témaválasztó
     if topics:
+        # legalább 3 téma kell (2026-11-03): a persona témái + véletlen kiegészítés, gyakran a „Tudtad?”
+        extra = [t for t in ["Tudtad?", "Pszichológia", "Idő és fókusz", "Kommunikáció", "Pénzügyek"] if t not in topics]
+        topics = topics + extra[:max(0, 3 - len(topics))]
         for tp in topics:
             btn = pg.locator(f'button[data-t="{tp}"]')
             if await btn.count(): await btn.first.click()

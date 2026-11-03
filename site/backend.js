@@ -231,9 +231,22 @@
     };
   }
 
+  /* Adataim: a felhasználó minden adatának és fiókjának törlése (supabase/5_adataim.sql). */
+  function makeAccount() {
+    return {
+      async deleteAll() {
+        const { error } = await sb.rpc("delete_my_data");
+        if (error) throw error;
+        try { localStorage.removeItem("hogyankell-v1"); } catch (e) {}
+        try { await sb.auth.signOut(); } catch (e) {}
+        return true;
+      }
+    };
+  }
+
   function launch(u) {
     window.HOGYANKELL_URL = location.origin + "/";
-    const caps = { db: makeDb(), user: makeUser(u), downloads, push: makePush(u), live: makeLive(u) };
+    const caps = { db: makeDb(), user: makeUser(u), downloads, push: makePush(u), live: makeLive(u), account: makeAccount() };
     window.claude = { use: async name => caps[name] || null };
     gate.hidden = true; gate.innerHTML = ""; document.body.classList.remove("locked");
     const s = document.createElement("script");
