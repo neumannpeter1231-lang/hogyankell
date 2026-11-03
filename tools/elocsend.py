@@ -31,9 +31,11 @@ def fix(path):
     subprocess.run(["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-i", path,
                     "-vf", f"tpad=start_duration={LEAD}:start_mode=clone",
                     "-af", f"adelay={int(LEAD * 1000)}:all=1",
-                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "28", "-profile:v", "main",
+                    # a kisebb.py beállításai (540p, 280 kbit/s, mono 64 kbit/s), hogy a méret ne nőjön
+                    "-c:v", "libx264", "-preset", "veryfast", "-profile:v", "main",
+                    "-b:v", "280k", "-maxrate", "350k", "-bufsize", "700k",
                     "-pix_fmt", "yuv420p", "-movflags", "+faststart",
-                    "-c:a", "aac", "-b:a", "96k", tmp], check=True)
+                    "-c:a", "aac", "-b:a", "64k", "-ac", "1", tmp], check=True)
     shutil.move(tmp, path)
     print("javítva:", os.path.basename(path))
 

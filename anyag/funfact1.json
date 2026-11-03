@@ -1,0 +1,504 @@
+{
+  "style": "Vertical 9:16 illustration, bold flat cartoon style with thick black outlines, vivid magenta, teal and yellow palette, high contrast retro comic look with halftone dots, quirky characters with big round eyes, natural skin tones, no text, no letters, no numbers, no logos",
+  "megjegyzes": "Tudtad? (fun fact) sorozat: 4 jelenet, 15-30 mp, a végén egy mondatos tanulság. A 'line' mező a szöveges (videó előtti) változat sora, *csillaggal* kiemelve; a 'text' a felolvasott szöveg. Amíg nincs media/<id>.mp4, az app szöveges posztként mutatja (tools/funfact.py).",
+  "videos": [
+    {
+      "id": "felejtes",
+      "title": "Felejtési görbe",
+      "topic": "Tudtad?",
+      "tags": "#emlékezet #tanulás",
+      "icon": "brain",
+      "hang": "gemini_charon",
+      "lesson": "Amit megtanultál, ismételd át másnap, aztán pár nap múlva újra.",
+      "scenes": [
+        {
+          "text": "Tudtad, hogy egy német kutató saját magán mérte meg, milyen gyorsan felejtünk?",
+          "line": "Egy kutató *saját magán* mérte meg, milyen gyorsan felejtünk.",
+          "prompt": "A quirky 19th century scientist with a big beard sitting at a wooden desk covered in small paper cards, holding a pocket watch, candle light"
+        },
+        {
+          "text": "Hermann Ebbinghaus értelmetlen szótagokat magolt be, aztán mérte, mennyi idő alatt tanulja meg őket újra.",
+          "line": "Értelmetlen szótagokat magolt be, és mérte, mennyi idő alatt tanulja meg *újra*.",
+          "prompt": "The same quirky bearded scientist frowning at a long row of blank cards pinned on a wall, scratching his head, a sand timer next to him"
+        },
+        {
+          "text": "Már egy nap után a tudás jó része elszállt. 2015-ben holland kutatók megismételték, és nagyon hasonló eredményt kaptak.",
+          "line": "Egy nap után a tudás *jó része elszállt*. 2015-ben megismételték: ugyanez jött ki.",
+          "prompt": "Colorful paper birds flying away out of an open window from a messy desk, a modern quirky young researcher with a laptop watching them in surprise"
+        },
+        {
+          "text": "A tanulság: amit megtanultál, ismételd át másnap, aztán pár nap múlva újra. Így sokkal tovább megmarad.",
+          "line": "A tanulság: ismételd át *másnap*, aztán *pár nap múlva* újra.",
+          "prompt": "A cheerful quirky student holding a small stack of flash cards next to a wall calendar with a few days circled, morning sunlight"
+        }
+      ],
+      "poll": {
+        "q": "Mit mért Ebbinghaus a kísérletében?",
+        "o": [
+          "Mennyi idő alatt tanulja meg újra az elfelejtett szótagokat",
+          "Hány szót tud egyszerre megjegyezni",
+          "Hogy alvás közben is tanul-e"
+        ],
+        "a": 0,
+        "why": "Megtanult egy listát, és később mérte, mennyi idő kell, hogy újra tudja. Minél többet felejtett, annál tovább tartott."
+      },
+      "check": {
+        "q": "Mi lassítja a felejtést a legjobban?",
+        "o": [
+          "Ha egyszer nagyon alaposan megtanulod",
+          "Ha időközönként átismétled",
+          "Ha hangosan olvasod"
+        ],
+        "a": 1,
+        "why": "A szétosztott ismétlés az egyik legjobban igazolt tanulási módszer: minden ismétlés után lassabban felejtünk."
+      },
+      "qvar": [
+        {
+          "q": "Kik ismételték meg Ebbinghaus kísérletét 2015-ben?",
+          "o": [
+            "Holland kutatók",
+            "Ezer amerikai diák egy tévéműsorban",
+            "Senki, sosem ismételték meg"
+          ],
+          "a": 0,
+          "why": "Jaap Murre és Joeri Dros (Amszterdami Egyetem) 2015-ben megismételte, és nagyon hasonló görbét kapott."
+        },
+        {
+          "q": "Mikor érdemes először átismételni, amit tanultál?",
+          "o": [
+            "Egy hónap múlva",
+            "Már másnap",
+            "Csak a vizsga előtt"
+          ],
+          "a": 1,
+          "why": "Az első nap után felejtünk a legtöbbet, ezért a korai ismétlés éri a legtöbbet."
+        }
+      ],
+      "deeper": [
+        "Hermann Ebbinghaus 1885-ben, „Az emlékezetről” című könyvében írta le a felejtési görbét. Saját magát vizsgálta: értelmetlen szótagokból álló listákat tanult meg, majd különböző idő elteltével mérte, mennyivel gyorsabban tanulja meg őket újra (megtakarításos módszer).",
+        "Murre és Dros 2015-ben megismételte a kísérletet: egy résztvevő kb. 70 órán át tanult listákat, és 20 perc és 31 nap közötti szünetek után tanulta újra őket. A görbe nagyon hasonló lett Ebbinghauséhoz; a 24 órás pontnál kis ugrás látszott, amit a szerzők valószínűleg az alvás hatásának tartanak.",
+        "Az ismétlés ütemezésének hatását sok kutatás igazolja: Cepeda és munkatársai 2006-os összefoglaló elemzése szerint a szétosztott ismétlés jobb, mint az egyszeri, tömbösített tanulás. Ezért kérdez rá az app is 1, 3, 7 és 14 nap múlva.",
+        "Korlátok: mindkét kísérletet egyetlen ember végezte, értelmetlen szótagokkal. Az értelmes, összefüggő tudást lassabban felejtjük, ezért a pontos számok a hétköznapi tanulásra nem vihetők át egy az egyben."
+      ],
+      "source": {
+        "label": "Murre & Dros (2015): Replication and Analysis of Ebbinghaus' Forgetting Curve, PLOS ONE",
+        "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0120644"
+      }
+    },
+    {
+      "id": "ajtohatas",
+      "title": "Ajtóhatás",
+      "topic": "Tudtad?",
+      "tags": "#emlékezet #hétköznapok",
+      "icon": "eye",
+      "hang": "gemini_kore",
+      "lesson": "Ha elfelejtetted, miért indultál, menj vissza oda, ahol eszedbe jutott.",
+      "scenes": [
+        {
+          "text": "Bementél a konyhába, és fogalmad sincs, miért? Lehet, hogy az ajtó a hibás.",
+          "line": "Bementél a konyhába, és nem tudod, miért? Lehet, hogy *az ajtó* a hibás.",
+          "prompt": "A quirky woman standing in the middle of a kitchen with a confused face, finger on her chin, an open door behind her"
+        },
+        {
+          "text": "Amerikai kutatók 2011-ben azt találták: aki átment egy ajtón, többet felejtett, mint aki ugyanannyit sétált egy szobán belül.",
+          "line": "Egy kísérletben aki *átment egy ajtón*, többet felejtett, mint aki a szobában maradt.",
+          "prompt": "Split scene: on the left a quirky man walking through a doorway with question marks shapes floating behind him, on the right another man walking in a single room calmly holding a box"
+        },
+        {
+          "text": "Az agy az ajtót egy új jelenet kezdeteként kezeli, és az előző jelenet emlékét kicsit hátrébb teszi.",
+          "line": "Az agy az ajtót *új jelenetnek* veszi, és az előzőt hátrébb teszi.",
+          "prompt": "A cartoon brain character closing a filing drawer full of small pictures while opening a new empty drawer, playful style"
+        },
+        {
+          "text": "A tanulság: ha elfelejtetted, miért jöttél, menj vissza oda, ahol eszedbe jutott. Vagy mondd ki hangosan, mielőtt elindulsz.",
+          "line": "A tanulság: menj vissza *oda, ahol eszedbe jutott*, vagy mondd ki hangosan indulás előtt.",
+          "prompt": "The same quirky woman walking back to a living room sofa and smiling with a lightbulb-shaped glow above her head"
+        }
+      ],
+      "poll": {
+        "q": "Mi történt a kísérletben azokkal, akik átmentek egy ajtón?",
+        "o": [
+          "Többet felejtettek",
+          "Jobban emlékeztek",
+          "Nem volt különbség"
+        ],
+        "a": 0,
+        "why": "Radvansky és kollégái kísérleteiben az ajtón átmenők többet hibáztak, amikor arra kellett emlékezniük, mit hoztak magukkal."
+      },
+      "check": {
+        "q": "Mit tegyél, ha elfelejtetted, miért mentél be egy szobába?",
+        "o": [
+          "Maradj, és várd meg, hogy eszedbe jusson",
+          "Menj vissza oda, ahol eszedbe jutott",
+          "Kezdj bele valami másba"
+        ],
+        "a": 1,
+        "why": "Ugyanabban a környezetben könnyebb felidézni, ami ott jutott eszünkbe."
+      },
+      "qvar": [
+        {
+          "q": "Minek tekinti az agy az ajtón való átlépést a kutatók szerint?",
+          "o": [
+            "Egy új jelenet kezdetének",
+            "Veszélyhelyzetnek",
+            "Pihenőnek"
+          ],
+          "a": 0,
+          "why": "Az eseményhatár-elmélet szerint az ajtó új „jelenetet” nyit az emlékezetben."
+        },
+        {
+          "q": "Mi segít, hogy ne felejtsd el, miért indultál el?",
+          "o": [
+            "Ha gyorsabban mész",
+            "Ha indulás előtt hangosan kimondod",
+            "Ha becsukod magad mögött az ajtót"
+          ],
+          "a": 1,
+          "why": "A kimondott cél jobban megmarad, mert nem csak egy futó gondolat."
+        }
+      ],
+      "deeper": [
+        "Radvansky, Krawietz és Tamplin (2011) kísérleteiben a résztvevők virtuális, majd valódi szobák között vittek tárgyakat. Akik ajtón mentek át, többet hibáztak, amikor meg kellett mondani, mi van náluk, mint akik ugyanakkora utat egy szobán belül tettek meg.",
+        "A magyarázat az eseményhatár-elmélet: az agy a tapasztalatot „jelenetekre” bontja, és az ajtó új jelenetet nyit. Az előző jelenet emléke ettől nehezebben hozzáférhető.",
+        "Hogy miért segít visszamenni: Godden és Baddeley 1975-ös búvárkísérletében a szavakat jobban felidézték abban a környezetben, ahol megtanulták őket (víz alatt vagy a parton). Ez a kontextusfüggő emlékezés.",
+        "Korlátok: egy 2021-es megismétlési kísérletsorozat (BMC Psychology) nem talált jelentős ajtóhatást, csak bizonyos feladatoknál. A hatás valószínűleg gyenge és helyzetfüggő: érdekes jelenség, de nem minden felejtés oka."
+      ],
+      "source": {
+        "label": "Radvansky, Krawietz & Tamplin (2011), Quarterly Journal of Experimental Psychology (összefoglaló: BPS Research Digest)",
+        "url": "https://www.bps.org.uk/research-digest/how-walking-through-doorway-increases-forgetting"
+      }
+    },
+    {
+      "id": "szundi",
+      "title": "A pilóták szundija",
+      "topic": "Tudtad?",
+      "tags": "#alvás #fáradtság",
+      "icon": "moon",
+      "hang": "gemini_aoede",
+      "lesson": "Ha nagyon fáradt vagy, egy fél óránál rövidebb szundi többet ér, mint egy hosszú.",
+      "scenes": [
+        {
+          "text": "Tudtad, hogy a NASA azt kutatta, alhatnak-e a pilóták a pilótafülkében?",
+          "line": "A NASA kutatta, hogy *alhatnak-e* a pilóták a pilótafülkében.",
+          "prompt": "A quirky airline pilot yawning widely in a cockpit at night, stars visible through the windshield, a coffee cup on the panel"
+        },
+        {
+          "text": "Hosszú éjszakai járatokon az egyik csoport 40 perc pihenőt kapott, a másik nem. Közben mindig a társuk vezetett.",
+          "line": "Éjszakai járatokon az egyik csoport *40 perc pihenőt* kapott, a másik nem.",
+          "prompt": "Two quirky pilots in a cockpit, one awake and alert at the controls, the other one peacefully sleeping in the seat with a small pillow"
+        },
+        {
+          "text": "A pihenő pilóták átlag 26 percet aludtak, és utána éberebbek voltak, mint a pihenő nélküli kollégáik.",
+          "line": "Átlag *26 percet* aludtak, és utána *éberebbek* voltak.",
+          "prompt": "The same pilot now wide awake with bright eyes and a confident smile, giving a thumbs up, sunrise over the clouds outside the cockpit"
+        },
+        {
+          "text": "A tanulság: ha nagyon fáradt vagy, egy fél óránál rövidebb szundi segít. Egy hosszabb után kábább lehetsz.",
+          "line": "A tanulság: ha fáradt vagy, *fél óránál rövidebb* szundi segít.",
+          "prompt": "A quirky office worker napping on a couch with a small alarm clock beside, cozy afternoon light"
+        }
+      ],
+      "poll": {
+        "q": "Mennyit aludtak átlagosan a pilóták a pihenő alatt a NASA-kísérletben?",
+        "o": [
+          "Kb. 10 percet",
+          "Kb. 26 percet",
+          "Kb. 2 órát"
+        ],
+        "a": 1,
+        "why": "A 40 perces pihenőből átlag 25,8 percet aludtak, és kevesebb mint 6 perc alatt elaludtak."
+      },
+      "check": {
+        "q": "Milyen hosszú legyen a gyors szundi, hogy ne legyél utána kába?",
+        "o": [
+          "Fél óránál rövidebb",
+          "Legalább másfél óra",
+          "Mindegy"
+        ],
+        "a": 0,
+        "why": "Hosszabb alvásnál mélyebb szakaszba kerülsz, és ébredés után egy ideig kába lehetsz."
+      },
+      "qvar": [
+        {
+          "q": "Mi lett a pihenőt kapott pilótákkal a NASA-kísérletben?",
+          "o": [
+            "Éberebbek lettek",
+            "Lassabban reagáltak",
+            "Elaludtak leszálláskor"
+          ],
+          "a": 0,
+          "why": "A repülés végén jobban teljesítettek a figyelmi teszteken, mint a pihenő nélküliek."
+        },
+        {
+          "q": "Mi a gond a túl hosszú délutáni alvással?",
+          "o": [
+            "Ébredés után kába lehetsz tőle",
+            "Mindig megfájdul tőle a fejed",
+            "Semmi gond nincs vele"
+          ],
+          "a": 0,
+          "why": "A mély alvásból felébredve egy ideig lassabb a gondolkodás (alvási tehetetlenség)."
+        }
+      ],
+      "deeper": [
+        "A NASA kutatói (Rosekind és munkatársai, 1994) hosszú, csendes-óceáni éjszakai járatokon vizsgálták a tervezett pilótafülkei pihenőt. A pihenőcsoport tagjai egyenként 40 percet pihenhettek, amíg a társuk vezetett; a lehetőségek 93%-ában elaludtak, átlag 5,6 perc alatt, és átlag 25,8 percet aludtak.",
+        "A repülés végén a pihenőt kapott pilóták jobban teljesítettek a reakcióidő-teszteken, és ritkábban jelentkezett náluk a rövid, akaratlan elalvás jele, mint a pihenő nélküli csoportban.",
+        "A neten sokszor idézett „34%-kal jobb teljesítmény, 54%-kal nagyobb éberség” számokat az eredeti jelentésből nem tudtuk ellenőrizni, ezért nem használjuk őket.",
+        "Korlátok: kis létszámú, pilótákon végzett vizsgálat, éjszakai munkában. A rövid szundi nem pótolja az éjszakai alvást; aki rendszeresen nagyon fáradt, annak az alvásával kell kezdenie valamit."
+      ],
+      "source": {
+        "label": "Rosekind és mtsai (1994): Crew Factors in Flight Operations IX, NASA Technical Memorandum 108839",
+        "url": "https://ntrs.nasa.gov/citations/19950006379"
+      }
+    },
+    {
+      "id": "villam",
+      "title": "Villám kétszer is",
+      "topic": "Tudtad?",
+      "tags": "#biztonság #időjárás",
+      "icon": "pulse",
+      "hang": "gemini_orus",
+      "lesson": "Zivatarban ne állj fa alá vagy nyílt terepre, hanem menj be egy épületbe vagy zárt autóba.",
+      "scenes": [
+        {
+          "text": "Azt mondják, a villám nem csap kétszer ugyanoda. Ez nem igaz.",
+          "line": "„A villám nem csap kétszer ugyanoda.” *Ez nem igaz.*",
+          "prompt": "A dark stormy city skyline at night with a bright lightning bolt hitting the top of a very tall skyscraper, dramatic purple and teal sky"
+        },
+        {
+          "text": "A New York-i Empire State Buildingbe a NOAA-ra hivatkozó források szerint évente átlagosan húsz-huszonötször csap bele.",
+          "line": "A New York-i Empire State Buildingbe évente *20–25-ször* csap bele.",
+          "prompt": "The same tall skyscraper being hit by several lightning bolts at once, a quirky weather scientist on a nearby rooftop counting on fingers with an umbrella"
+        },
+        {
+          "text": "A villám a magas, kiálló pontokat keresi. Ami egyszer jó célpont volt, legközelebb is az lesz.",
+          "line": "A villám a *magas, kiálló* pontokat keresi. Ami egyszer célpont volt, az marad.",
+          "prompt": "A lonely tall tree on a hill in a thunderstorm with a lightning bolt, small houses far in the valley, rain"
+        },
+        {
+          "text": "A tanulság: zivatarban ne állj fa alá vagy nyílt terepre. Menj be egy épületbe vagy egy zárt autóba.",
+          "line": "A tanulság: zivatarban *ne fa alá*, hanem épületbe vagy zárt autóba menj.",
+          "prompt": "A quirky family sitting safely inside a cozy house watching the storm through a window, warm lamp light inside"
+        }
+      ],
+      "poll": {
+        "q": "Kb. hányszor csap évente villám az Empire State Buildingbe?",
+        "o": [
+          "Soha, mert már egyszer becsapott",
+          "Évente kb. 20–25-ször",
+          "Tízévente egyszer"
+        ],
+        "a": 1,
+        "why": "Az amerikai időjárási szolgálat (NOAA) adataira hivatkozó források szerint átlagosan évente kb. 23–25-ször."
+      },
+      "check": {
+        "q": "Hol vagy a legnagyobb biztonságban zivatar idején?",
+        "o": [
+          "Egy magányos fa alatt",
+          "Egy épületben vagy zárt autóban",
+          "Egy nyílt mező közepén"
+        ],
+        "a": 1,
+        "why": "Az épület és a zárt fémkarosszériás autó elvezeti a villámot; a magányos fa és a nyílt terep a legveszélyesebb."
+      },
+      "qvar": [
+        {
+          "q": "Miért csap a villám újra és újra ugyanoda?",
+          "o": [
+            "Mert a magas, kiálló pontokat keresi",
+            "Mert ott megmarad az elektromosság",
+            "Csak véletlen"
+          ],
+          "a": 0,
+          "why": "A magas, hegyes, magányos tárgyak a legjobb célpontok, ezért ugyanazok ismételten."
+        },
+        {
+          "q": "Igaz-e, hogy a villám nem csap kétszer ugyanoda?",
+          "o": [
+            "Igen, ez fizikai törvény",
+            "Nem, gyakran ugyanoda csap",
+            "Csak a hegyekben igaz"
+          ],
+          "a": 1,
+          "why": "Ez tévhit: a magas épületeket évente többször is eltalálja."
+        }
+      ],
+      "deeper": [
+        "Az amerikai meteorológiai szolgálat (NOAA National Weather Service) villámtévhiteket gyűjtő oldala szerint a villám gyakran csap ugyanoda, főleg magas, hegyes, magányos tárgyakba. Az Empire State Buildingről a NOAA-ra hivatkozó források évi átlag 23–25 becsapást írnak; a pontos szám évről évre változik.",
+        "A zárt, fémkarosszériás autó azért véd, mert a fémváz körbevezeti az áramot – nem a gumikerekek miatt. A kabrió vagy a motor nem véd.",
+        "A szolgálat jelmondata: „When thunder roars, go indoors” – ha mennydörgést hallasz, már elég közel vagy ahhoz, hogy villám érjen. Az utolsó dörgés után érdemes még fél órát várni a szabadba menéssel.",
+        "Korlátok: a becsapások száma évről évre változik, ezért átlagról beszélünk."
+      ],
+      "source": {
+        "label": "NOAA National Weather Service: Lightning Myths (az Empire State Building-adat a NOAA-ra hivatkozó másodlagos forrásokból)",
+        "url": "https://www.weather.gov/safety/lightning-myths"
+      }
+    },
+    {
+      "id": "nyelvterkep",
+      "title": "A nyelvtérkép tévhite",
+      "topic": "Tudtad?",
+      "tags": "#tévhit #ízek",
+      "icon": "search",
+      "hang": "gemini_fenrir",
+      "lesson": "Attól, hogy valami tankönyvben van, még lehet téves: nézd meg, honnan jön.",
+      "scenes": [
+        {
+          "text": "Emlékszel a nyelvtérképre a tankönyvből? Elöl édes, hátul keserű, oldalt sós és savanyú.",
+          "line": "Emlékszel a *nyelvtérképre*? Elöl édes, hátul keserű, oldalt sós és savanyú.",
+          "prompt": "A quirky schoolboy in a classroom staring at a big colorful diagram of a tongue on the blackboard, the diagram has colored zones but no text"
+        },
+        {
+          "text": "Ez a térkép egy 1901-es német mérés félreértéséből lett. A különbségek apróak voltak, egy későbbi ábrán mégis külön zónák lettek belőlük.",
+          "line": "Egy 1901-es mérés *félreértéséből* lett: apró különbségekből zónák.",
+          "prompt": "An old dusty book open on a desk with a hand-drawn graph, a magnifying glass, and a quirky librarian looking surprised"
+        },
+        {
+          "text": "Ma tudjuk: a nyelv minden ízlelőbimbós része érzi mind az öt alapízt, az umamit is.",
+          "line": "Ma tudjuk: a nyelv *minden része* érzi mind az öt alapízt.",
+          "prompt": "A happy quirky girl tasting a lemon, a strawberry and a bowl of soup at once, sparkles around her tongue"
+        },
+        {
+          "text": "A tanulság: attól, hogy valami tankönyvben van, még lehet téves. Érdemes megnézni, honnan jön az állítás.",
+          "line": "A tanulság: a tankönyv is tévedhet. *Nézd meg, honnan jön.*",
+          "prompt": "A quirky student with a magnifying glass looking at a stack of books, curious smile, warm library light"
+        }
+      ],
+      "poll": {
+        "q": "Honnan ered a nyelvtérkép?",
+        "o": [
+          "Egy 1901-es mérés félreértéséből",
+          "Egy 2006-os génkutatásból",
+          "Az ókori görögöktől"
+        ],
+        "a": 0,
+        "why": "Hänig 1901-es méréseiben kis érzékenységkülönbségek jöttek ki, ezeket egy későbbi tankönyvi ábra alapján zónáknak hitték."
+      },
+      "check": {
+        "q": "Mit érdemes tenni egy meglepő, „mindenki tudja” állítással?",
+        "o": [
+          "Elhinni, ha tankönyvben láttad",
+          "Megnézni, honnan származik",
+          "Továbbküldeni a barátaidnak"
+        ],
+        "a": 1,
+        "why": "A nyelvtérkép évtizedekig a tankönyvekben volt, mégis téves. A forrás megnézése sok tévhitet kiszűr."
+      },
+      "qvar": [
+        {
+          "q": "A nyelved melyik részével érzed az édes ízt?",
+          "o": [
+            "Csak a hegyével",
+            "Minden ízlelőbimbós részével",
+            "Csak a hátsó részével"
+          ],
+          "a": 1,
+          "why": "Minden alapízt mindenhol érzünk, ahol ízlelőbimbó van."
+        },
+        {
+          "q": "Melyik alapíz hiányzott a régi nyelvtérképről?",
+          "o": [
+            "Az umami",
+            "A sós",
+            "Az édes"
+          ],
+          "a": 0,
+          "why": "Az umamit (a húsleves, a parmezán ízét) Hänig még nem vizsgálta."
+        }
+      ],
+      "deeper": [
+        "David Hänig 1901-ben a nyelv szélén mérte, hol milyen erős ízt kell adni, hogy valaki megérezze. Kis különbségeket talált. Edwin Boring 1942-es pszichológiatörténeti könyvében újrarajzolta az adatokat, és az ábrát később úgy olvasták, mintha a nyelv egyes részei csak egy-egy ízt éreznének.",
+        "Linda Bartoshuk ízkutató 1993-ban mutatott rá, hogyan lett a mérésből tankönyvi tévhit.",
+        "Chandrashekar és munkatársai 2006-ban a Nature-ben megjelent összefoglalójukban így írnak: a molekuláris és működési adatok szerint a közhiedelemmel ellentétben nincs nyelvtérkép.",
+        "Korlátok: kis érzékenységkülönbségek valóban vannak a nyelv részei között, de mind az öt alapíz (édes, sós, savanyú, keserű, umami) mindenhol érezhető, ahol ízlelőbimbó van."
+      ],
+      "source": {
+        "label": "Chandrashekar, Hoon, Ryba & Zuker (2006): The receptors and cells for mammalian taste, Nature",
+        "url": "https://www.nature.com/articles/nature05401"
+      }
+    },
+    {
+      "id": "banan",
+      "title": "A sugárzó banán",
+      "topic": "Tudtad?",
+      "tags": "#tudomány #tévhit",
+      "icon": "gift",
+      "hang": "gemini_charon",
+      "lesson": "Nem az számít, hogy valami „sugároz” vagy „vegyi anyag”, hanem hogy mennyi: a dózis teszi a mérget.",
+      "scenes": [
+        {
+          "text": "Tudtad, hogy a banán egy kicsit sugároz? Tényleg.",
+          "line": "Tudtad, hogy a banán *egy kicsit sugároz*? Tényleg.",
+          "prompt": "A cheerful cartoon banana with big round eyes glowing slightly with a soft yellow aura on a kitchen table, a quirky man staring at it in shock"
+        },
+        {
+          "text": "Sok káliumot tartalmaz, és a kálium egy kis része természetesen radioaktív. A testedben is van belőle.",
+          "line": "Sok *kálium* van benne, aminek egy kis része természetesen radioaktív.",
+          "prompt": "A quirky scientist in a lab coat holding a banana next to a cartoon human body outline with tiny glowing dots inside, playful"
+        },
+        {
+          "text": "Egy banán megevése kb. ezredannyi sugárzás, mint egy mellkasröntgen. A tested ráadásul a felesleges káliumot kiüríti.",
+          "line": "Egy banán kb. *ezredannyi*, mint egy mellkasröntgen.",
+          "prompt": "A balance scale with a huge pile of bananas on one side and a single hospital x-ray film on the other side, quirky nurse watching"
+        },
+        {
+          "text": "A tanulság: nem az számít, hogy valami sugároz vagy vegyi anyag, hanem hogy mennyi. A dózis teszi a mérget.",
+          "line": "A tanulság: nem az a kérdés, *mi* van benne, hanem *mennyi*.",
+          "prompt": "A quirky woman calmly eating a banana while reading a newspaper with a scary headline shape, relaxed smile, sunny kitchen"
+        }
+      ],
+      "poll": {
+        "q": "Miért sugároz egy kicsit a banán?",
+        "o": [
+          "Mert permetezik",
+          "Mert sok kálium van benne, aminek egy kis része radioaktív",
+          "Mert a napon érik"
+        ],
+        "a": 1,
+        "why": "A természetes kálium kb. 0,012%-a radioaktív kálium-40. Ez minden káliumban gazdag ételben és a testünkben is megvan."
+      },
+      "check": {
+        "q": "Mit kérdezz, ha azt hallod, hogy valami „mérgező anyagot tartalmaz”?",
+        "o": [
+          "Ki mondta?",
+          "Mennyit tartalmaz belőle?",
+          "Milyen színű?"
+        ],
+        "a": 1,
+        "why": "Szinte bármi lehet ártalmas nagy mennyiségben, és ártalmatlan kicsiben. A mennyiség a döntő."
+      },
+      "qvar": [
+        {
+          "q": "Kb. hány banán sugárzása ér fel egy mellkasröntgenével?",
+          "o": [
+            "Kb. 10",
+            "Kb. 1000",
+            "Kb. egymillió"
+          ],
+          "a": 1,
+          "why": "Egy banán kb. 0,1 mikrosievert, egy mellkasröntgen kb. 0,1 millisievert, ami ezerszer annyi."
+        },
+        {
+          "q": "Mit csinál a tested a sok banánnal bevitt felesleges káliummal?",
+          "o": [
+            "Elraktározza a csontokban",
+            "Kiüríti",
+            "Sugárzássá alakítja"
+          ],
+          "a": 1,
+          "why": "A szervezet állandó szinten tartja a káliumot, a fölösleget a vese kiüríti."
+        }
+      ],
+      "deeper": [
+        "A természetes kálium kb. 0,012%-a radioaktív kálium-40. Egy közepes banánban kb. fél gramm kálium van, ami kb. 15 becquerel aktivitás. Az amerikai környezetvédelmi hivatal (EPA) átváltási tényezőjével ez kb. 0,1 mikrosievert sugárterhelés – ezt hívják tréfásan „banánegyenértékű dózisnak”.",
+        "Összehasonlításként: egy mellkasröntgen kb. 0,1 millisievert, vagyis ezerszer annyi; a természetes háttérsugárzásból pedig évente néhány millisievert ér mindenkit.",
+        "„A dózis teszi a mérget” – ezt a gondolatot Paracelsus svájci orvosnak tulajdonítják a 16. századból.",
+        "Korlátok: mivel a test a káliumszintet állandóan tartja, egy banán megevése tartósan nem növeli a szervezet kálium-40 tartalmát. A „banándózis” ezért inkább szemléltető összehasonlítás, mint valódi többletterhelés."
+      ],
+      "source": {
+        "label": "US EPA: Radionuclide Basics – Potassium-40",
+        "url": "https://www.epa.gov/radiation/radionuclide-basics-potassium-40"
+      }
+    }
+  ]
+}

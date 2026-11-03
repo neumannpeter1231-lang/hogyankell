@@ -30,11 +30,12 @@ const I = {
   mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/></svg>',
   moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/><path d="M17 3v3M15.5 4.5h3"/></svg>',
   coin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M14.6 9.4c-.5-.9-1.4-1.4-2.6-1.4-1.5 0-2.6.8-2.6 2s1.1 1.7 2.6 2 2.6.8 2.6 2-1.1 2-2.6 2c-1.2 0-2.1-.5-2.6-1.4M12 6.5V8M12 16v1.5"/></svg>',
+  bulb:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>',
   doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg>',
   family:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="6" r="2.5"/><circle cx="16.5" cy="9" r="2"/><path d="M4 20v-5a4 4 0 0 1 8 0v5M13.5 20v-3.5a3 3 0 0 1 6 0V20"/></svg>',
   play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l13 8-13 8z"/></svg>'
 };
-const TOPIC_ICON = {"Meggyőzés":"chat","Pszichológia":"brain","Biztonság otthon":"ladder","Idő és fókusz":"clock","Kommunikáció":"mic","Alvás és egészség":"moon","Pénzügyek":"coin","Ügyintézés":"doc","Gyerek és család":"family"};
+const TOPIC_ICON = {"Tudtad?":"bulb","Meggyőzés":"chat","Pszichológia":"brain","Biztonság otthon":"ladder","Idő és fókusz":"clock","Kommunikáció":"mic","Alvás és egészség":"moon","Pénzügyek":"coin","Ügyintézés":"doc","Gyerek és család":"family"};
 const SOON_TOPICS = ["Ügyintézés", "Gyerek és család"];
 const APP_URL = window.HOGYANKELL_URL || "https://claude.ai/artifact/4qefATfjxKR3ozy4WgKdpf";
 const HABIT = {
@@ -81,146 +82,158 @@ const HABIT = {
 };
 
 /* ---------------- tartalom ---------------- */
+/* FUNFACT:BEGIN */
+/* Ezt a részt a tools/funfact.py írja, kézzel ne szerkeszd. */
+const FUN_POSTS = [
+ {"id": "f_felejtes", "topic": "Tudtad?", "fun": true, "title": "Felejtési görbe", "tags": "#emlékezet #tanulás", "lesson": "Amit megtanultál, ismételd át másnap, aztán pár nap múlva újra.", "type": "text", "icon": "brain", "lines": ["Egy kutató *saját magán* mérte meg, milyen gyorsan felejtünk.", "Értelmetlen szótagokat magolt be, és mérte, mennyi idő alatt tanulja meg *újra*.", "Egy nap után a tudás *jó része elszállt*. 2015-ben megismételték: ugyanez jött ki.", "A tanulság: ismételd át *másnap*, aztán *pár nap múlva* újra."], "poll": {"q": "Mit mért Ebbinghaus a kísérletében?", "o": ["Mennyi idő alatt tanulja meg újra az elfelejtett szótagokat", "Hány szót tud egyszerre megjegyezni", "Hogy alvás közben is tanul-e"], "a": 0, "why": "Megtanult egy listát, és később mérte, mennyi idő kell, hogy újra tudja. Minél többet felejtett, annál tovább tartott."}, "check": {"q": "Mi lassítja a felejtést a legjobban?", "o": ["Ha egyszer nagyon alaposan megtanulod", "Ha időközönként átismétled", "Ha hangosan olvasod"], "a": 1, "why": "A szétosztott ismétlés az egyik legjobban igazolt tanulási módszer: minden ismétlés után lassabban felejtünk."}, "deeper": ["Hermann Ebbinghaus 1885-ben, „Az emlékezetről” című könyvében írta le a felejtési görbét. Saját magát vizsgálta: értelmetlen szótagokból álló listákat tanult meg, majd különböző idő elteltével mérte, mennyivel gyorsabban tanulja meg őket újra (megtakarításos módszer).", "Murre és Dros 2015-ben megismételte a kísérletet: egy résztvevő kb. 70 órán át tanult listákat, és 20 perc és 31 nap közötti szünetek után tanulta újra őket. A görbe nagyon hasonló lett Ebbinghauséhoz; a 24 órás pontnál kis ugrás látszott, amit a szerzők valószínűleg az alvás hatásának tartanak.", "Az ismétlés ütemezésének hatását sok kutatás igazolja: Cepeda és munkatársai 2006-os összefoglaló elemzése szerint a szétosztott ismétlés jobb, mint az egyszeri, tömbösített tanulás. Ezért kérdez rá az app is 1, 3, 7 és 14 nap múlva.", "Korlátok: mindkét kísérletet egyetlen ember végezte, értelmetlen szótagokkal. Az értelmes, összefüggő tudást lassabban felejtjük, ezért a pontos számok a hétköznapi tanulásra nem vihetők át egy az egyben."], "source": {"label": "Murre & Dros (2015): Replication and Analysis of Ebbinghaus' Forgetting Curve, PLOS ONE", "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0120644"}},
+ {"id": "f_ajtohatas", "topic": "Tudtad?", "fun": true, "title": "Ajtóhatás", "tags": "#emlékezet #hétköznapok", "lesson": "Ha elfelejtetted, miért indultál, menj vissza oda, ahol eszedbe jutott.", "type": "text", "icon": "eye", "lines": ["Bementél a konyhába, és nem tudod, miért? Lehet, hogy *az ajtó* a hibás.", "Egy kísérletben aki *átment egy ajtón*, többet felejtett, mint aki a szobában maradt.", "Az agy az ajtót *új jelenetnek* veszi, és az előzőt hátrébb teszi.", "A tanulság: menj vissza *oda, ahol eszedbe jutott*, vagy mondd ki hangosan indulás előtt."], "poll": {"q": "Mi történt a kísérletben azokkal, akik átmentek egy ajtón?", "o": ["Többet felejtettek", "Jobban emlékeztek", "Nem volt különbség"], "a": 0, "why": "Radvansky és kollégái kísérleteiben az ajtón átmenők többet hibáztak, amikor arra kellett emlékezniük, mit hoztak magukkal."}, "check": {"q": "Mit tegyél, ha elfelejtetted, miért mentél be egy szobába?", "o": ["Maradj, és várd meg, hogy eszedbe jusson", "Menj vissza oda, ahol eszedbe jutott", "Kezdj bele valami másba"], "a": 1, "why": "Ugyanabban a környezetben könnyebb felidézni, ami ott jutott eszünkbe."}, "deeper": ["Radvansky, Krawietz és Tamplin (2011) kísérleteiben a résztvevők virtuális, majd valódi szobák között vittek tárgyakat. Akik ajtón mentek át, többet hibáztak, amikor meg kellett mondani, mi van náluk, mint akik ugyanakkora utat egy szobán belül tettek meg.", "A magyarázat az eseményhatár-elmélet: az agy a tapasztalatot „jelenetekre” bontja, és az ajtó új jelenetet nyit. Az előző jelenet emléke ettől nehezebben hozzáférhető.", "Hogy miért segít visszamenni: Godden és Baddeley 1975-ös búvárkísérletében a szavakat jobban felidézték abban a környezetben, ahol megtanulták őket (víz alatt vagy a parton). Ez a kontextusfüggő emlékezés.", "Korlátok: egy 2021-es megismétlési kísérletsorozat (BMC Psychology) nem talált jelentős ajtóhatást, csak bizonyos feladatoknál. A hatás valószínűleg gyenge és helyzetfüggő: érdekes jelenség, de nem minden felejtés oka."], "source": {"label": "Radvansky, Krawietz & Tamplin (2011), Quarterly Journal of Experimental Psychology (összefoglaló: BPS Research Digest)", "url": "https://www.bps.org.uk/research-digest/how-walking-through-doorway-increases-forgetting"}},
+ {"id": "f_szundi", "topic": "Tudtad?", "fun": true, "title": "A pilóták szundija", "tags": "#alvás #fáradtság", "lesson": "Ha nagyon fáradt vagy, egy fél óránál rövidebb szundi többet ér, mint egy hosszú.", "type": "text", "icon": "moon", "lines": ["A NASA kutatta, hogy *alhatnak-e* a pilóták a pilótafülkében.", "Éjszakai járatokon az egyik csoport *40 perc pihenőt* kapott, a másik nem.", "Átlag *26 percet* aludtak, és utána *éberebbek* voltak.", "A tanulság: ha fáradt vagy, *fél óránál rövidebb* szundi segít."], "poll": {"q": "Mennyit aludtak átlagosan a pilóták a pihenő alatt a NASA-kísérletben?", "o": ["Kb. 10 percet", "Kb. 26 percet", "Kb. 2 órát"], "a": 1, "why": "A 40 perces pihenőből átlag 25,8 percet aludtak, és kevesebb mint 6 perc alatt elaludtak."}, "check": {"q": "Milyen hosszú legyen a gyors szundi, hogy ne legyél utána kába?", "o": ["Fél óránál rövidebb", "Legalább másfél óra", "Mindegy"], "a": 0, "why": "Hosszabb alvásnál mélyebb szakaszba kerülsz, és ébredés után egy ideig kába lehetsz."}, "deeper": ["A NASA kutatói (Rosekind és munkatársai, 1994) hosszú, csendes-óceáni éjszakai járatokon vizsgálták a tervezett pilótafülkei pihenőt. A pihenőcsoport tagjai egyenként 40 percet pihenhettek, amíg a társuk vezetett; a lehetőségek 93%-ában elaludtak, átlag 5,6 perc alatt, és átlag 25,8 percet aludtak.", "A repülés végén a pihenőt kapott pilóták jobban teljesítettek a reakcióidő-teszteken, és ritkábban jelentkezett náluk a rövid, akaratlan elalvás jele, mint a pihenő nélküli csoportban.", "A neten sokszor idézett „34%-kal jobb teljesítmény, 54%-kal nagyobb éberség” számokat az eredeti jelentésből nem tudtuk ellenőrizni, ezért nem használjuk őket.", "Korlátok: kis létszámú, pilótákon végzett vizsgálat, éjszakai munkában. A rövid szundi nem pótolja az éjszakai alvást; aki rendszeresen nagyon fáradt, annak az alvásával kell kezdenie valamit."], "source": {"label": "Rosekind és mtsai (1994): Crew Factors in Flight Operations IX, NASA Technical Memorandum 108839", "url": "https://ntrs.nasa.gov/citations/19950006379"}},
+ {"id": "f_villam", "topic": "Tudtad?", "fun": true, "title": "Villám kétszer is", "tags": "#biztonság #időjárás", "lesson": "Zivatarban ne állj fa alá vagy nyílt terepre, hanem menj be egy épületbe vagy zárt autóba.", "type": "text", "icon": "pulse", "lines": ["„A villám nem csap kétszer ugyanoda.” *Ez nem igaz.*", "A New York-i Empire State Buildingbe évente *20–25-ször* csap bele.", "A villám a *magas, kiálló* pontokat keresi. Ami egyszer célpont volt, az marad.", "A tanulság: zivatarban *ne fa alá*, hanem épületbe vagy zárt autóba menj."], "poll": {"q": "Kb. hányszor csap évente villám az Empire State Buildingbe?", "o": ["Soha, mert már egyszer becsapott", "Évente kb. 20–25-ször", "Tízévente egyszer"], "a": 1, "why": "Az amerikai időjárási szolgálat (NOAA) adataira hivatkozó források szerint átlagosan évente kb. 23–25-ször."}, "check": {"q": "Hol vagy a legnagyobb biztonságban zivatar idején?", "o": ["Egy magányos fa alatt", "Egy épületben vagy zárt autóban", "Egy nyílt mező közepén"], "a": 1, "why": "Az épület és a zárt fémkarosszériás autó elvezeti a villámot; a magányos fa és a nyílt terep a legveszélyesebb."}, "deeper": ["Az amerikai meteorológiai szolgálat (NOAA National Weather Service) villámtévhiteket gyűjtő oldala szerint a villám gyakran csap ugyanoda, főleg magas, hegyes, magányos tárgyakba. Az Empire State Buildingről a NOAA-ra hivatkozó források évi átlag 23–25 becsapást írnak; a pontos szám évről évre változik.", "A zárt, fémkarosszériás autó azért véd, mert a fémváz körbevezeti az áramot – nem a gumikerekek miatt. A kabrió vagy a motor nem véd.", "A szolgálat jelmondata: „When thunder roars, go indoors” – ha mennydörgést hallasz, már elég közel vagy ahhoz, hogy villám érjen. Az utolsó dörgés után érdemes még fél órát várni a szabadba menéssel.", "Korlátok: a becsapások száma évről évre változik, ezért átlagról beszélünk."], "source": {"label": "NOAA National Weather Service: Lightning Myths (az Empire State Building-adat a NOAA-ra hivatkozó másodlagos forrásokból)", "url": "https://www.weather.gov/safety/lightning-myths"}},
+ {"id": "f_nyelvterkep", "topic": "Tudtad?", "fun": true, "title": "A nyelvtérkép tévhite", "tags": "#tévhit #ízek", "lesson": "Attól, hogy valami tankönyvben van, még lehet téves: nézd meg, honnan jön.", "type": "text", "icon": "search", "lines": ["Emlékszel a *nyelvtérképre*? Elöl édes, hátul keserű, oldalt sós és savanyú.", "Egy 1901-es mérés *félreértéséből* lett: apró különbségekből zónák.", "Ma tudjuk: a nyelv *minden része* érzi mind az öt alapízt.", "A tanulság: a tankönyv is tévedhet. *Nézd meg, honnan jön.*"], "poll": {"q": "Honnan ered a nyelvtérkép?", "o": ["Egy 1901-es mérés félreértéséből", "Egy 2006-os génkutatásból", "Az ókori görögöktől"], "a": 0, "why": "Hänig 1901-es méréseiben kis érzékenységkülönbségek jöttek ki, ezeket egy későbbi tankönyvi ábra alapján zónáknak hitték."}, "check": {"q": "Mit érdemes tenni egy meglepő, „mindenki tudja” állítással?", "o": ["Elhinni, ha tankönyvben láttad", "Megnézni, honnan származik", "Továbbküldeni a barátaidnak"], "a": 1, "why": "A nyelvtérkép évtizedekig a tankönyvekben volt, mégis téves. A forrás megnézése sok tévhitet kiszűr."}, "deeper": ["David Hänig 1901-ben a nyelv szélén mérte, hol milyen erős ízt kell adni, hogy valaki megérezze. Kis különbségeket talált. Edwin Boring 1942-es pszichológiatörténeti könyvében újrarajzolta az adatokat, és az ábrát később úgy olvasták, mintha a nyelv egyes részei csak egy-egy ízt éreznének.", "Linda Bartoshuk ízkutató 1993-ban mutatott rá, hogyan lett a mérésből tankönyvi tévhit.", "Chandrashekar és munkatársai 2006-ban a Nature-ben megjelent összefoglalójukban így írnak: a molekuláris és működési adatok szerint a közhiedelemmel ellentétben nincs nyelvtérkép.", "Korlátok: kis érzékenységkülönbségek valóban vannak a nyelv részei között, de mind az öt alapíz (édes, sós, savanyú, keserű, umami) mindenhol érezhető, ahol ízlelőbimbó van."], "source": {"label": "Chandrashekar, Hoon, Ryba & Zuker (2006): The receptors and cells for mammalian taste, Nature", "url": "https://www.nature.com/articles/nature05401"}},
+ {"id": "f_banan", "topic": "Tudtad?", "fun": true, "title": "A sugárzó banán", "tags": "#tudomány #tévhit", "lesson": "Nem az számít, hogy valami „sugároz” vagy „vegyi anyag”, hanem hogy mennyi: a dózis teszi a mérget.", "type": "text", "icon": "gift", "lines": ["Tudtad, hogy a banán *egy kicsit sugároz*? Tényleg.", "Sok *kálium* van benne, aminek egy kis része természetesen radioaktív.", "Egy banán kb. *ezredannyi*, mint egy mellkasröntgen.", "A tanulság: nem az a kérdés, *mi* van benne, hanem *mennyi*."], "poll": {"q": "Miért sugároz egy kicsit a banán?", "o": ["Mert permetezik", "Mert sok kálium van benne, aminek egy kis része radioaktív", "Mert a napon érik"], "a": 1, "why": "A természetes kálium kb. 0,012%-a radioaktív kálium-40. Ez minden káliumban gazdag ételben és a testünkben is megvan."}, "check": {"q": "Mit kérdezz, ha azt hallod, hogy valami „mérgező anyagot tartalmaz”?", "o": ["Ki mondta?", "Mennyit tartalmaz belőle?", "Milyen színű?"], "a": 1, "why": "Szinte bármi lehet ártalmas nagy mennyiségben, és ártalmatlan kicsiben. A mennyiség a döntő."}, "deeper": ["A természetes kálium kb. 0,012%-a radioaktív kálium-40. Egy közepes banánban kb. fél gramm kálium van, ami kb. 15 becquerel aktivitás. Az amerikai környezetvédelmi hivatal (EPA) átváltási tényezőjével ez kb. 0,1 mikrosievert sugárterhelés – ezt hívják tréfásan „banánegyenértékű dózisnak”.", "Összehasonlításként: egy mellkasröntgen kb. 0,1 millisievert, vagyis ezerszer annyi; a természetes háttérsugárzásból pedig évente néhány millisievert ér mindenkit.", "„A dózis teszi a mérget” – ezt a gondolatot Paracelsus svájci orvosnak tulajdonítják a 16. századból.", "Korlátok: mivel a test a káliumszintet állandóan tartja, egy banán megevése tartósan nem növeli a szervezet kálium-40 tartalmát. A „banándózis” ezért inkább szemléltető összehasonlítás, mint valódi többletterhelés."], "source": {"label": "US EPA: Radionuclide Basics – Potassium-40", "url": "https://www.epa.gov/radiation/radionuclide-basics-potassium-40"}}
+];
+const FUN_QVAR = {"f_felejtes": [{"q": "Kik ismételték meg Ebbinghaus kísérletét 2015-ben?", "o": ["Holland kutatók", "Ezer amerikai diák egy tévéműsorban", "Senki, sosem ismételték meg"], "a": 0, "why": "Jaap Murre és Joeri Dros (Amszterdami Egyetem) 2015-ben megismételte, és nagyon hasonló görbét kapott."}, {"q": "Mikor érdemes először átismételni, amit tanultál?", "o": ["Egy hónap múlva", "Már másnap", "Csak a vizsga előtt"], "a": 1, "why": "Az első nap után felejtünk a legtöbbet, ezért a korai ismétlés éri a legtöbbet."}], "f_ajtohatas": [{"q": "Minek tekinti az agy az ajtón való átlépést a kutatók szerint?", "o": ["Egy új jelenet kezdetének", "Veszélyhelyzetnek", "Pihenőnek"], "a": 0, "why": "Az eseményhatár-elmélet szerint az ajtó új „jelenetet” nyit az emlékezetben."}, {"q": "Mi segít, hogy ne felejtsd el, miért indultál el?", "o": ["Ha gyorsabban mész", "Ha indulás előtt hangosan kimondod", "Ha becsukod magad mögött az ajtót"], "a": 1, "why": "A kimondott cél jobban megmarad, mert nem csak egy futó gondolat."}], "f_szundi": [{"q": "Mi lett a pihenőt kapott pilótákkal a NASA-kísérletben?", "o": ["Éberebbek lettek", "Lassabban reagáltak", "Elaludtak leszálláskor"], "a": 0, "why": "A repülés végén jobban teljesítettek a figyelmi teszteken, mint a pihenő nélküliek."}, {"q": "Mi a gond a túl hosszú délutáni alvással?", "o": ["Ébredés után kába lehetsz tőle", "Mindig megfájdul tőle a fejed", "Semmi gond nincs vele"], "a": 0, "why": "A mély alvásból felébredve egy ideig lassabb a gondolkodás (alvási tehetetlenség)."}], "f_villam": [{"q": "Miért csap a villám újra és újra ugyanoda?", "o": ["Mert a magas, kiálló pontokat keresi", "Mert ott megmarad az elektromosság", "Csak véletlen"], "a": 0, "why": "A magas, hegyes, magányos tárgyak a legjobb célpontok, ezért ugyanazok ismételten."}, {"q": "Igaz-e, hogy a villám nem csap kétszer ugyanoda?", "o": ["Igen, ez fizikai törvény", "Nem, gyakran ugyanoda csap", "Csak a hegyekben igaz"], "a": 1, "why": "Ez tévhit: a magas épületeket évente többször is eltalálja."}], "f_nyelvterkep": [{"q": "A nyelved melyik részével érzed az édes ízt?", "o": ["Csak a hegyével", "Minden ízlelőbimbós részével", "Csak a hátsó részével"], "a": 1, "why": "Minden alapízt mindenhol érzünk, ahol ízlelőbimbó van."}, {"q": "Melyik alapíz hiányzott a régi nyelvtérképről?", "o": ["Az umami", "A sós", "Az édes"], "a": 0, "why": "Az umamit (a húsleves, a parmezán ízét) Hänig még nem vizsgálta."}], "f_banan": [{"q": "Kb. hány banán sugárzása ér fel egy mellkasröntgenével?", "o": ["Kb. 10", "Kb. 1000", "Kb. egymillió"], "a": 1, "why": "Egy banán kb. 0,1 mikrosievert, egy mellkasröntgen kb. 0,1 millisievert, ami ezerszer annyi."}, {"q": "Mit csinál a tested a sok banánnal bevitt felesleges káliummal?", "o": ["Elraktározza a csontokban", "Kiüríti", "Sugárzássá alakítja"], "a": 1, "why": "A szervezet állandó szinten tartja a káliumot, a fölösleget a vese kiüríti."}]};
+/* FUNFACT:END */
 const POSTS = [
- {id:"m7", topic:"Meggyőzés", type:"video", src:"media/horgony.mp4", poster:"media/horgony.jpg",
+ {id:"m7", topic:"Meggyőzés", type:"video", src:"media/horgony.mp4?v=a9305f27", poster:"media/horgony.webp?v=5cfca45a",
   title:"Horgonyhatás", tags:"#alku #bértárgyalás",
   poll:{q:"Mi változott a kísérletben a két csoport között?", o:["A ház állapota","Csak a kínálati ár a tájékoztatóban","Az ügynökök tapasztalata"], a:1, why:"Ugyanazt a házat látták, csak a kiírt ár volt más."},
   check:{q:"Mit kérdezz magadtól, ha valaki horgonyt dob eléd?", o:["Mennyivel tudom lejjebb alkudni?","Mennyit érne ez nekem, ha a számot nem hallottam volna?","Mennyit kérnek érte máshol?"], a:1, why:"Így a saját értékítéletedből indulsz, nem a feldobott számból."},
   deeper:["Northcraft és Neale 1987-es kísérletében ingatlanügynökök ugyanazt a házat becsülték fel; csak a tájékoztatóban szereplő kínálati ár különbözött. Az alacsony árat látók kb. 114 ezer, a magasat látók kb. 129 ezer dollárra becsültek.","A horgonyhatást Tversky és Kahneman írta le 1974-ben: még egy nyilvánvalóan véletlen szám is elhúzza a becsléseket.","Alkuban ezért gyakran előny, ha te mondod ki az első, jól megalapozott számot."],
   source:{label:"Northcraft & Neale (1987), Organizational Behavior and Human Decision Processes", url:""}},
- {id:"v_szukosseg", topic:"Meggyőzés", type:"video", src:"media/szukosseg.mp4", poster:"media/szukosseg.jpg",
+ {id:"v_szukosseg", topic:"Meggyőzés", type:"video", src:"media/szukosseg.mp4?v=034a8bfe", poster:"media/szukosseg.webp?v=d3d51eb0",
   title:"Szűkösség elve", tags:"#szűkösség #vásárlás",
   poll:{q:"Melyik sütit értékelték jobbnak?", o:["A tele üvegből valót", "A majdnem üres üvegből valót", "Egyformának ítélték"], a:1, why:"Ugyanaz a süti volt, csak a ritkasága miatt tűnt jobbnak."},
   check:{q:"Mit kérdezz magadtól, ha egy ajánlat sürget?", o:["Mennyi még a készlet?", "A dolgot akarom, vagy csak nem akarok lemaradni?", "Hol olcsóbb?"], a:1, why:"Így szétválasztod a terméket a sürgetés érzésétől."},
   deeper:["Worchel, Lee és Adewole 1975-ös kísérletében a két darab sütit tartalmazó üvegből vett sütit jobbnak ítélték, mint a tízdarabosból vettet.", "Még értékesebbnek látták, ha a készlet a szemük előtt fogyott el, és ha a hiányt mások nagy kereslete okozta.", "A hamis szűkösség („már csak 2 darab!”, ha nem igaz) manipuláció, és sok helyen fogyasztóvédelmi szabályba ütközik."],
   source:{label:"Worchel, Lee és Adewole (1975), Journal of Personality and Social Psychology", url:""}},
- {id:"v_laboajto", topic:"Meggyőzés", type:"video", src:"media/laboajto.mp4", poster:"media/laboajto.jpg",
+ {id:"v_laboajto", topic:"Meggyőzés", type:"video", src:"media/laboajto.mp4?v=51d45ab0", poster:"media/laboajto.webp?v=fd71bc9a",
   title:"Láb az ajtóban", tags:"#következetesség #kérés",
   poll:{q:"Kik mondtak nagyobb arányban igent a nagy táblára?", o:["Akiket csak a táblára kértek", "Akik előtte egy kis matricát kiraktak", "Ugyanannyian"], a:1, why:"Az első kis igen után a következetesség húzta őket a nagy igen felé."},
   check:{q:"Hogyan védekezz a láb az ajtóban ellen?", o:["Soha ne mondj igent semmire", "A nagy kérésről döntsd el újra, tiszta lappal", "Mindig alkudj"], a:1, why:"Az előző igen nem kötelez; a nagy kérést önmagában mérd le."},
   deeper:["Freedman és Fraser 1966-os kísérletében a kis kérés után a háztulajdonosok kb. 76 százaléka vállalta a nagy táblát, az előzmény nélküli csoportnál kb. 17 százalék.", "A magyarázat a következetesség: aki egyszer segítőkésznek mutatta magát, ehhez a képhez akar igazodni.", "A technika tisztességes, ha a második kérés is valóban jó a másiknak."],
   source:{label:"Freedman és Fraser (1966), Journal of Personality and Social Psychology", url:""}},
- {id:"v_torolkozo", topic:"Meggyőzés", type:"video", src:"media/torolkozo.mp4", poster:"media/torolkozo.jpg",
+ {id:"v_torolkozo", topic:"Meggyőzés", type:"video", src:"media/torolkozo.mp4?v=f632ff86", poster:"media/torolkozo.webp?v=808188c2",
   title:"Társas bizonyíték", tags:"#társasbizonyíték #szokások",
   poll:{q:"Melyik üzenet működött a legjobban?", o:["A környezetvédelmi", "„A vendégek többsége újrahasználja”", "„Az ebben a szobában lakók többsége így tett”"], a:2, why:"Minél hasonlóbbak hozzánk mások, annál jobban hat a példájuk."},
   check:{q:"Mi a társas bizonyíték lényege?", o:["A szakértőnek hiszünk", "Bizonytalanságban a hozzánk hasonlókat követjük", "A ritka dolog értékes"], a:1, why:"Ha nem tudjuk, mi a helyes, mások viselkedése a gyors mérce."},
   deeper:["Goldstein, Cialdini és Griskevicius 2008-as szállodai kísérletében a standard környezetvédelmi üzenetnél kb. 35, a „vendégek többsége” üzenetnél kb. 44, az „ebben a szobában lakók” üzenetnél kb. 49 százalék használta újra a törölközőt.", "A hatás attól erősebb, minél jobban azonosulunk azzal a csoporttal, akire hivatkoznak.", "A kitalált vélemény vagy hamis népszerűség gyártott jel, és manipuláció."],
   source:{label:"Goldstein, Cialdini és Griskevicius (2008), Journal of Consumer Research", url:""}},
- {id:"v_kavefolt", topic:"Meggyőzés", type:"video", src:"media/kavefolt.mp4", poster:"media/kavefolt.jpg",
+ {id:"v_kavefolt", topic:"Meggyőzés", type:"video", src:"media/kavefolt.mp4?v=a26c381a", poster:"media/kavefolt.webp?v=3904eff8",
   title:"Pratfall-hatás", tags:"#rokonszenv #hitelesség",
   poll:{q:"Kit tartottak a legszerethetőbbnek?", o:["A hibátlan zsenit", "A zsenit, aki leöntötte magát kávéval", "Az átlagos jelöltet"], a:1, why:"A nagyon jónál egy kis baki emberivé, rokonszenvessé tesz."},
   check:{q:"Kinek segít egy kis baki?", o:["Mindenkinek", "Annak, aki amúgy is kiválóan teljesít", "Annak, aki gyengén teljesít"], a:1, why:"Az átlagosnál a baki inkább ront a képen."},
   deeper:["Aronson, Willerman és Floyd 1966-os kísérlete (pratfall-hatás): a kiválóan teljesítő jelölt kávéöntés után rokonszenvesebb lett, az átlagos jelölt viszont veszített.", "A későbbi kutatások szerint a hatás erőssége függ a hallgató önértékelésétől és a helyzettől is.", "Kapcsolódó jelenség a „kétoldalú üzenet”: egy kisebb hátrány beismerése növeli az erős állítások hitelét."],
   source:{label:"Aronson, Willerman és Floyd (1966), Psychonomic Science", url:""}},
- {id:"v_rokia", topic:"Meggyőzés", type:"video", src:"media/rokia.mp4", poster:"media/rokia.jpg",
+ {id:"v_rokia", topic:"Meggyőzés", type:"video", src:"media/rokia.mp4?v=966899c0", poster:"media/rokia.webp?v=f029caf8",
   title:"Azonosítható áldozat hatás", tags:"#történetmesélés #adományozás",
   poll:{q:"Melyik levél hozott több adományt?", o:["A statisztikás", "A kislány története", "A kettő együtt"], a:1, why:"Egy konkrét emberrel együtt tudunk érezni, a számokkal kevésbé."},
   check:{q:"Mi történt, amikor a kislány mellé számokat is írtak?", o:["Nőtt az adomány", "Csökkent az adomány", "Nem változott"], a:1, why:"A számok „elemző módba” kapcsoltak, és ez gyengítette az együttérzést."},
   deeper:["Small, Loewenstein és Slovic 2007-es vizsgálatában Rokia története átlagosan kb. 2,4 dollárt, a statisztikai levél kb. 1,1 dollárt hozott (5 dollárból).", "A kettő együtt kb. 1,4 dollárt hozott: a számok csökkentették az egyéni történet hatását.", "A jelenség neve azonosítható áldozat hatás (identifiable victim effect)."],
   source:{label:"Small, Loewenstein és Slovic (2007), Organizational Behavior and Human Decision Processes", url:""}},
- {id:"v_lekvar", topic:"Pszichológia", type:"video", src:"media/lekvar.mp4", poster:"media/lekvar.jpg",
+ {id:"v_lekvar", topic:"Pszichológia", type:"video", src:"media/lekvar.mp4?v=77799ef2", poster:"media/lekvar.webp?v=dae10c32",
   title:"Választási bénulás", tags:"#döntés #vásárlás",
   poll:{q:"Melyik asztalnál vásároltak többen?", o:["A 24 féle lekvárosnál", "A 6 féle lekvárosnál", "Ugyanannyian"], a:1, why:"Kevesebb lehetőség közül könnyebb dönteni."},
   check:{q:"Mit tegyél, ha túl sok lehetőség között elakadsz?", o:["Nézz meg még többet", "Szűkíts le háromra, és azok közül dönts", "Halaszd el a döntést hetekre"], a:1, why:"A szűkebb választék csökkenti a döntési terhet."},
   deeper:["Iyengar és Lepper 2000-es kísérletében a 24 féle lekvárnál a betérők kb. 3 százaléka, a 6 félénél kb. 30 százaléka vásárolt, pedig a nagy asztal több embert vonzott.", "Későbbi összefoglalók szerint a hatás nem mindig jelentkezik: erősebb, ha nehéz összehasonlítani a lehetőségeket, és ha nincs előre kialakult preferenciánk.", "A jelenség neve választási túlterhelés vagy választási bénulás."],
   source:{label:"Iyengar és Lepper (2000), Journal of Personality and Social Psychology", url:""}},
- {id:"v_rim", topic:"Kommunikáció", type:"video", src:"media/rim.mp4", poster:"media/rim.jpg",
+ {id:"v_rim", topic:"Kommunikáció", type:"video", src:"media/rim.mp4?v=888042f8", poster:"media/rim.webp?v=7ad65d9c",
   title:"Rím mint érv", tags:"#retorika #nyelv",
   poll:{q:"Melyik változatot ítélték igazabbnak?", o:["A rímeset", "A rím nélkülit", "Egyformának"], a:0, why:"A könnyen feldolgozható mondat igaznak érződik."},
   check:{q:"Miért hat jobban a rím?", o:["Mert hosszabb", "Mert könnyebb feldolgozni, ezért hihetőbbnek érezzük", "Mert tudományosabb"], a:1, why:"Ez a feldolgozási könnyedség (fluency) hatása."},
   deeper:["McGlone és Tofighbakhsh 2000-es kísérletében a rímes közmondásokat pontosabbnak ítélték, mint az azonos jelentésű, rím nélküli változatokat.", "A magyarázat a feldolgozási könnyedség: amit könnyű feldolgozni, azt ismerősnek és igaznak érezzük.", "Hasonló hatás: az olvasható betűtípus és az egyszerű szavak is hihetőbbé teszik az állítást."],
   source:{label:"McGlone és Tofighbakhsh (2000), Psychological Science", url:""}},
- {id:"v_kerdezz", topic:"Kommunikáció", type:"video", src:"media/kerdezz.mp4", poster:"media/kerdezz.jpg",
+ {id:"v_kerdezz", topic:"Kommunikáció", type:"video", src:"media/kerdezz.mp4?v=bde4111e", poster:"media/kerdezz.webp?v=b560715d",
   title:"A visszakérdezés ereje", tags:"#beszélgetés #randi",
   poll:{q:"Kivel akartak többen újra találkozni?", o:["Aki sokat mesélt magáról", "Aki többet kérdezett", "Aki keveset beszélt"], a:1, why:"A kérdés figyelmet és érdeklődést jelez."},
   check:{q:"Milyen kérdés hat a legjobban?", o:["Az udvariassági kérdés", "A visszakérdezés arra, amit a másik mondott", "A személyes, tolakodó kérdés"], a:1, why:"A visszakérdezés mutatja, hogy valóban figyeltél."},
   deeper:["Huang, Yeomans, Brooks, Minson és Gino 2017-es vizsgálata szerint a több kérdést, főleg a visszakérdezéseket feltevő résztvevők rokonszenvesebbek voltak, és gyorsrandin több második randit kaptak.", "A kutatók szerint az emberek alábecsülik, mennyire növeli a kérdezés a rokonszenvet.", "A túl sok, kihallgatásszerű kérdés viszont visszaüthet."],
   source:{label:"Huang és mtsai (2017), Journal of Personality and Social Psychology; Harvard Working Knowledge", url:"https://www.library.hbs.edu/working-knowledge/asking-questions-can-get-you-a-better-job-or-a-second-date"}},
- {id:"v_egyenruha", topic:"Meggyőzés", type:"video", src:"media/egyenruha.mp4", poster:"media/egyenruha.jpg",
+ {id:"v_egyenruha", topic:"Meggyőzés", type:"video", src:"media/egyenruha.mp4?v=5b5a9f78", poster:"media/egyenruha.webp?v=70f191ee",
   title:"Tekintély elve", tags:"#tekintély #engedelmesség",
   poll:{q:"Kinek engedelmeskedtek többen?", o:["A hétköznapi ruhásnak", "Az egyenruhásnak", "Ugyanannyian"], a:1, why:"Az egyenruha a tekintély jele, és erre gyorsan reagálunk."},
   check:{q:"Mit kérdezz egy tekintélyesnek tűnő embertől magadban?", o:["Mennyi idős?", "Valóban szakértő ebben, és mit nyer, ha igazat adok neki?", "Hol vette a ruháját?"], a:1, why:"A jel nem azonos a valódi szakértelemmel."},
   deeper:["Bickman 1974-es vizsgálatában a biztonsági őrnek öltözött utasítónak sokkal többen engedelmeskedtek, mint a civil ruhásnak, pedig nem volt valódi hatalma.", "Lefkowitz, Blake és Mouton 1955-ös megfigyelése szerint a piros lámpán átmenő öltönyös férfit kb. három és félszer annyian követték.", "Az ilyen jelek (egyenruha, cím, drága autó) a valódi szakértelem nélkül is hatnak."],
   source:{label:"Bickman (1974), Journal of Applied Social Psychology; Lefkowitz, Blake és Mouton (1955)", url:""}},
- {id:"v_citrom", topic:"Pszichológia", type:"video", src:"media/citrom.mp4", poster:"media/citrom.jpg",
+ {id:"v_citrom", topic:"Pszichológia", type:"video", src:"media/citrom.mp4?v=0cbd20aa", poster:"media/citrom.webp?v=ce2a5410",
   title:"Előfeszítés", tags:"#környezet #szokások",
   poll:{q:"Mit csináltak többen a citrusillat után?", o:["Többet ettek", "Gyakrabban feltakarították a morzsát", "Hamarabb elmentek"], a:1, why:"Az illat előhívta a tisztaság gondolatát."},
   check:{q:"Mi az előfeszítés (priming)?", o:["Amikor valaki rábeszél", "Amikor egy apró jel előkészíti a gondolatainkat és tetteinket", "Egy illatfajta"], a:1, why:"A jel tudatosítás nélkül is hat a következő lépésekre."},
   deeper:["Holland, Hendriks és Aarts 2005-ös kísérletében a halvány citrusos tisztítószer-illatnak kitett résztvevők gyakrabban takarították el a morzsákat evés közben.", "A résztvevők nem voltak tudatában az illat hatásának.", "Az előfeszítéses kutatások egy részét később nem sikerült megismételni, ezért a hatások erősségét óvatosan kell kezelni; a környezet tudatos alakítása azonban jól bevált szokásstratégia."],
   source:{label:"Holland, Hendriks és Aarts (2005), Psychological Science", url:""}},
- {id:"v_kamatos", topic:"Pénzügyek", type:"video", src:"media/kamatos.mp4", poster:"media/kamatos.jpg",
+ {id:"v_kamatos", topic:"Pénzügyek", type:"video", src:"media/kamatos.mp4?v=4819b217", poster:"media/kamatos.webp?v=1ce496ef",
   title:"Kamatos kamat", tags:"#megtakarítás #tévhit",
   poll:{q:"Mondta Einstein, hogy a kamatos kamat a világ nyolcadik csodája?", o:["Igen, híres idézete", "Nincs rá bizonyíték", "Csak a könyveiben írta"], a:1, why:"Az idézetet nem sikerült hiteles forrásban megtalálni, valószínűleg ráfogták."},
   check:{q:"Mi számít a legtöbbet a kamatos kamatnál?", o:["Az, hogy mekkora összeggel kezded", "Az idő, vagyis hogy mikor kezded", "Hogy melyik bankban vagy"], a:1, why:"Minél hosszabb ideig dolgozik a pénz, annál inkább a kamat kamata hozza a növekedést."},
   deeper:["A számítás: havi 10 000 Ft befizetés, havonta jóváírt évi 7%-os hozammal, 30 év alatt kb. 12,2 millió Ft; befizetve 3,6 millió Ft.", "Ez szemléltetés: a valós hozam ingadozik, az inflációt és a költségeket is figyelembe kell venni, és a múltbeli hozam nem garantálja a jövőbelit.", "Az Einsteinnek tulajdonított mondásnak nincs hiteles forrása; az idézetkutatók szerint jóval halála után kezdett terjedni."],
   source:{label:"Saját számítás (havi kamatos kamat képlete); Quote Investigator az Einstein-idézetről", url:""}},
- {id:"v_kartya", topic:"Pénzügyek", type:"video", src:"media/kartya.mp4", poster:"media/kartya.jpg",
+ {id:"v_kartya", topic:"Pénzügyek", type:"video", src:"media/kartya.mp4?v=0a207ba9", poster:"media/kartya.webp?v=fbd80c45",
   title:"A fizetés fájdalma", tags:"#vásárlás #költés",
   poll:{q:"Mennyivel ajánlottak többet a kártyával fizetők?", o:["Kb. 10%-kal", "Majdnem kétszer annyit", "Ugyanannyit"], a:1, why:"A kártya csökkenti a fizetés „fájdalmát”, ezért többet adunk ki."},
   check:{q:"Miért költünk kártyával többet?", o:["Mert a kártyán több pénz van", "Mert nem érezzük a pénz fogyását", "Mert a kártya kedvezményt ad"], a:1, why:"A készpénz kiadását érezzük, a kártyás fizetés elvontabb."},
   deeper:["Prelec és Simester 2001-es MIT-kísérletében a hitelkártyás fizetést választó diákok átlagos licitje közel kétszerese volt a készpénzesekének ugyanazokra a jegyekre.", "A jelenséget a fizetés „fájdalmával” (pain of paying) magyarázzák: a készpénz kiadása kézzelfoghatóbb.", "A hatás nagysága helyzetenként eltér; a későbbi vizsgálatok vegyes eredményeket hoztak, de az irány többnyire ugyanaz."],
   source:{label:"Prelec és Simester (2001), Marketing Letters", url:""}},
- {id:"v_minimum", topic:"Pénzügyek", type:"video", src:"media/minimum.mp4", poster:"media/minimum.jpg",
+ {id:"v_minimum", topic:"Pénzügyek", type:"video", src:"media/minimum.mp4?v=193a50b4", poster:"media/minimum.webp?v=704fa224",
   title:"A minimum törlesztés horgonya", tags:"#hitel #horgony",
   poll:{q:"Mi történt, amikor a számlán ott volt a minimum összeg?", o:["Többet fizettek vissza", "Kevesebbet fizettek vissza", "Nem számított"], a:1, why:"A kis szám horgonyként lehúzta a befizetett összeget."},
   check:{q:"Mit tegyél, mielőtt megnézed a minimum törlesztést?", o:["Fizesd be a minimumot", "Döntsd el előre, mennyit tudsz befizetni", "Várj a határidő végéig"], a:1, why:"Így a saját döntésed a kiindulópont, nem a bank horgonya."},
   deeper:["Neil Stewart 2009-es kísérletében a minimum összeget nem látók átlagosan kb. 175 fontot (az egyenleg 40%-át), a minimumot látók kb. 99 fontot (23%) fizettek vissza, ha nem a teljes összeget fizették.", "A teljes összeget visszafizetők aránya a két csoportban ugyanannyi volt.", "A visszafizetetlen rész után kamat jár, ezért a horgony hosszú távon drága."],
   source:{label:"Stewart (2009), Psychological Science", url:"https://www.sciencedaily.com/releases/2008/10/081006130542.htm"}},
- {id:"v_elobbmagad", topic:"Pénzügyek", type:"video", src:"media/elobbmagad.mp4", poster:"media/elobbmagad.jpg",
+ {id:"v_elobbmagad", topic:"Pénzügyek", type:"video", src:"media/elobbmagad.mp4?v=3dae8f64", poster:"media/elobbmagad.webp?v=cbc5beb5",
   title:"Fizesd ki először magad", tags:"#megtakarítás #szokások",
   poll:{q:"Mennyire nőtt a résztvevők megtakarítási aránya?", o:["3,5%-ról kb. 6%-ra", "3,5%-ról közel 14%-ra", "Nem változott"], a:1, why:"Az automatikus, előre vállalt emelés négyszeresére növelte a megtakarítást."},
   check:{q:"Mi a „fizesd ki először magad” lényege?", o:["Előbb költesz, a maradékot félreteszed", "Fizetésnapon előbb automatikusan félreteszel", "Csak nagy fizetésből lehet spórolni"], a:1, why:"Az automatika kiváltja az akaraterőt."},
   deeper:["Thaler és Benartzi 2004-es „Save More Tomorrow” programjában a résztvevők átlagos megtakarítási aránya kb. 40 hónap alatt 3,5%-ról 13,6%-ra nőtt.", "A program három elvre épít: a jövőbeli vállalás könnyebb, a fizetésemelésből félretenni nem fáj, és a beállított automatikát ritkán változtatjuk meg.", "Thaler 2017-ben közgazdasági Nobel-emlékdíjat kapott, részben az ilyen viselkedési közgazdasági munkáiért."],
   source:{label:"Thaler és Benartzi (2004), Journal of Political Economy", url:""}},
- {id:"v_inflacio", topic:"Pénzügyek", type:"video", src:"media/inflacio.mp4", poster:"media/inflacio.jpg",
+ {id:"v_inflacio", topic:"Pénzügyek", type:"video", src:"media/inflacio.mp4?v=2513da96", poster:"media/inflacio.webp?v=83c760e5",
   title:"Infláció", tags:"#infláció #tévhit",
   poll:{q:"Mennyit ér 10 év múlva a pénz, ha évente 5% az infláció?", o:["Ugyanannyit", "Nagyjából 60%-át", "Nagyjából 95%-át"], a:1, why:"1 / 1,05 a tizediken ≈ 0,61, vagyis kb. 61%."},
   check:{q:"Mi a gond a fiókban tartott pénzzel?", o:["Elveszhet", "Az infláció csökkenti a vásárlóerejét", "Adót kell fizetni utána"], a:1, why:"A névérték marad, a vásárlóerő csökken."},
   deeper:["Számítás: 5%-os éves árszintnövekedés mellett 10 év után a pénz vásárlóereje 1 / 1,05^10 ≈ 0,614, vagyis kb. 61%.", "A vésztartalék (általában néhány havi kiadás) legyen gyorsan elérhető; erre a célra a biztonság fontosabb a hozamnál.", "Az inflációkövető megoldásokról (például inflációkövető állampapír) a pontos és aktuális feltételeket mindig a hivatalos forrásban érdemes ellenőrizni; ez nem befektetési tanács."],
   source:{label:"Saját számítás; az infláció fogalma: MNB", url:""}},
- {id:"v_taltpenz", topic:"Pénzügyek", type:"video", src:"media/taltpenz.mp4", poster:"media/taltpenz.jpg",
+ {id:"v_taltpenz", topic:"Pénzügyek", type:"video", src:"media/taltpenz.mp4?v=45909af1", poster:"media/taltpenz.webp?v=f0652848",
   title:"Mentális könyvelés", tags:"#mentáliskönyvelés #költés",
   poll:{q:"Mit csinálunk általában a talált pénzzel?", o:["Gondosan félretesszük", "Könnyebben elköltjük", "Ugyanúgy kezeljük, mint a fizetést"], a:1, why:"A mentális könyvelés miatt a „talált” pénzt kevésbé értékeljük."},
   check:{q:"Mi a mentális könyvelés?", o:["Egy könyvelőprogram", "Amikor fejben külön dobozokba tesszük a pénzt", "Amikor mindent leírunk"], a:1, why:"A pénz forrása szerint másképp költjük, pedig ugyanannyit ér."},
   deeper:["A mentális könyvelés fogalmát Richard Thaler írta le az 1980-as években (például Thaler, 1985; 1999).", "Ugyanaz az összeg másként viselkedik, ha bónusznak, visszatérítésnek vagy fizetésnek érezzük: a „váratlan” pénzt jellemzően könnyebben költjük el.", "A „dobozok” hasznosak is lehetnek, például ha egy külön számla védi a megtakarítást."],
   source:{label:"Thaler (1999), Mental Accounting Matters, Journal of Behavioral Decision Making", url:""}},
- {id:"v_sielosjegy", topic:"Pszichológia", type:"video", src:"media/sielosjegy.mp4", poster:"media/sielosjegy.jpg",
+ {id:"v_sielosjegy", topic:"Pszichológia", type:"video", src:"media/sielosjegy.mp4?v=d790ded4", poster:"media/sielosjegy.webp?v=1f8dff1b",
   title:"Elsüllyedt költség", tags:"#döntés #pénz",
   poll:{q:"Két síútra vettél jegyet ugyanarra a hétvégére. Melyikre mennél?", o:["A drágábbra, ha már annyit fizettem", "Az élvezetesebbre, akármennyibe került", "Egyikre sem"], a:1, why:"Mindkét jegy ára már elment. Csak az számít, melyik útnak örülnél jobban."},
   check:{q:"Mi az elsüllyedt költség csapdája?", o:["Túl sokat költünk az elején", "A már elköltött pénz miatt folytatunk valamit, ami nem éri meg", "Mindig a legolcsóbbat választjuk"], a:1, why:"Az elköltött pénz nem jön vissza, mégis hagyjuk, hogy a következő döntésünket irányítsa."},
   deeper:["Arkes és Blumer (1985) kísérletében egy 100 dolláros és egy 50 dolláros síútról volt szó; az olcsóbbat élvezetesebbnek írták le. A résztvevők kb. 54 százaléka mégis a drágábbat választotta.", "Ez kérdőíves, elképzelt helyzet volt. Valós helyzetekben a hatás erőssége változó, és néha más ok is áll a kitartás mögött (például a következetesség vagy az, hogy mások mit gondolnak).", "Tárgyaláson is működik: aki sok időt tett már bele, nehezebben száll ki. Ezzel ne élj vissza."],
   source:{label:"Arkes, H. R. és Blumer, C. (1985): The psychology of sunk cost. Organizational Behavior and Human Decision Processes", url:""}},
- {id:"v_csalimadar", topic:"Meggyőzés", type:"video", src:"media/csalimadar.mp4", poster:"media/csalimadar.jpg",
+ {id:"v_csalimadar", topic:"Meggyőzés", type:"video", src:"media/csalimadar.mp4?v=b6ac61b4", poster:"media/csalimadar.webp?v=def7cdbc",
   title:"Csalimadár", tags:"#vásárlás #árazás",
   poll:{q:"Kicsi popcorn 1000 Ft, közepes 1900 Ft, nagy 2000 Ft. Melyik a csali?", o:["A kicsi", "A közepes", "A nagy"], a:1, why:"A közepest szinte senki nem veszi meg, de mellette a nagy nagyon jó üzletnek tűnik."},
   check:{q:"Mi a csalimadár szerepe egy árlistán?", o:["Hogy azt vegyék meg a legtöbben", "Hogy egy másik ajánlat jobb üzletnek tűnjön mellette", "Hogy olcsóbbnak tűnjön az üzlet"], a:1, why:"A csalit nem eladásra szánják: az a dolga, hogy egy másik ajánlat vonzóbb legyen mellette."},
   deeper:["A példa Dan Ariely Kiszámíthatóan irracionális című könyvéből való: diákokkal kipróbálta az Economist ajánlatait. Három opciónál 84 százalék választotta a csomagot, a középső nélkül csak 32 százalék.", "A jelenséget Huber, Payne és Puto (1982) írta le először. Fontos korlát: Frederick, Lee és Baskin (2014) 38 vizsgálatban azt találta, hogy főleg számokkal leírt, mesterséges helyzetekben erős, valódi termékeknél gyakran eltűnik.", "Tisztességes használat: a csali is érje meg annak, aki azt választja."],
   source:{label:"Huber, Payne és Puto (1982), Journal of Consumer Research; Ariely, D. (2008): Kiszámíthatóan irracionális", url:""}},
- {id:"v_penzfeldobas", topic:"Meggyőzés", type:"video", src:"media/penzfeldobas.mp4", poster:"media/penzfeldobas.jpg",
+ {id:"v_penzfeldobas", topic:"Meggyőzés", type:"video", src:"media/penzfeldobas.mp4?v=34930ffe", poster:"media/penzfeldobas.webp?v=2c9d104e",
   title:"Veszteségkerülés", tags:"#döntés #reklám",
   poll:{q:"Fej: nyersz 10 000 Ft-ot. Írás: veszítesz 10 000 Ft-ot. Belemennél?", o:["Igen, belemennék", "Nem, inkább kihagynám", "Csak nagyobb nyereményért"], a:2, why:"A kísérletekben a legtöbben csak akkor fogadnak, ha a nyeremény kb. kétszerese a veszteségnek."},
   check:{q:"Mit jelent a veszteségkerülés?", o:["Hogy soha nem kockáztatunk", "Hogy a veszteség jobban fáj, mint amennyire ugyanakkora nyereség örömet okoz", "Hogy mindig a biztosat választjuk"], a:1, why:"Kahneman és Tversky szerint a veszteség fájdalma kb. kétszer erősebb, mint ugyanakkora nyereség öröme."},
   deeper:["Kahneman és Tversky kilátáselmélete (1979) írta le. Sok kísérletben az emberek egy 50:50 fogadást csak akkor fogadnak el, ha a nyeremény kb. a veszteség duplája.", "Korlát: Gal és Rucker (2018) szerint a hatás nem általános, kis összegeknél gyakran nem jelenik meg, és sok mögötte inkább tehetetlenség vagy megszokás.", "A lemaradás-keretezés („ezt fogod elveszíteni”) a könyv szerint a fiatalabbaknál különösen hat."],
   source:{label:"Kahneman, D. és Tversky, A. (1979): Prospect theory. Econometrica; Gal, D. és Rucker, D. (2018), Journal of Consumer Psychology", url:""}},
- {id:"v_daralthus", topic:"Meggyőzés", type:"video", src:"media/daralthus.mp4", poster:"media/daralthus.jpg",
+ {id:"v_daralthus", topic:"Meggyőzés", type:"video", src:"media/daralthus.mp4?v=e3b28eb9", poster:"media/daralthus.webp?v=d34246a6",
   title:"Keretezés", tags:"#vásárlás #tévhit",
   poll:{q:"„75% sovány” vagy „25% zsír”. Melyik a jobb hús?", o:["A 75% sovány", "A 25% zsíros", "Egyformák"], a:2, why:"Ugyanazt jelenti a kettő, csak más keretben mondják. Mégis a „sovány” címkét értékeljük jobbnak."},
   check:{q:"Mit érdemes tenni, ha egy ajánlat nagyon jól hangzik?", o:["Azonnal elfogadni", "Megfordítani a mondatot, és úgy is meghallgatni", "Megkérdezni, mennyibe kerül a drágább változat"], a:1, why:"A keretezés ellen a megfordítás véd: „90% túlélés” ugyanaz, mint „10% halálozás”."},
   deeper:["Levin és Gaeth (1988) kísérletében a „75% sovány” címkéjű darált húst jobbnak, kevésbé zsírosnak és jobb minőségűnek értékelték, mint a „25% zsír” címkéjűt. A különbség kóstolás után kisebb lett, de megmaradt.", "A híres „ázsiai betegség” feladatban (Tversky és Kahneman, 1981) a „200 embert megmentünk” változatot 72 százalék választotta, a pontosan ugyanazt jelentő „400 ember meghal” változatnál a többség a kockázatos programot választotta.", "Korlát: a hatás mérete kísérletenként eltér, és ha az emberek előre végiggondolják a számokat, kisebb."],
   source:{label:"Levin, I. P. és Gaeth, G. J. (1988), Journal of Consumer Research; Tversky, A. és Kahneman, D. (1981), Science", url:""}},
- {id:"v_holdudvar", topic:"Pszichológia", type:"video", src:"media/holdudvar.mp4", poster:"media/holdudvar.jpg",
+ {id:"v_holdudvar", topic:"Pszichológia", type:"video", src:"media/holdudvar.mp4?v=c6c60616", poster:"media/holdudvar.webp?v=e1bee26a",
   title:"Holdudvarhatás", tags:"#elsőbenyomás #ítélet",
   poll:{q:"Azonos bizonyítvány, két gyerek. Kitől várnak a tanárok többet?", o:["A szorgalmasabbnak látszótól", "A vonzóbbnak látszótól", "Egyformán várnak"], a:1, why:"Clifford és Walster (1973) szerint azonos bizonyítványnál is jobb jövőt vártak a vonzóbbnak látszó gyerektől."},
   check:{q:"Mi a holdudvarhatás?", o:["Amikor egy jó tulajdonság miatt a többit is jobbnak látjuk", "Amikor valakit csak a hibái alapján ítélünk meg", "Amikor mindenkit egyformának látunk"], a:0, why:"Egy kiemelkedő tulajdonság, például a vonzó külső, „rávetül” a többire."},
   deeper:["Edward Thorndike (1920) figyelte meg először katonatisztek értékelésénél, hogy egy jó tulajdonság a többi megítélésére is kihat.", "Dion, Berscheid és Walster (1972) „Ami szép, az jó” vizsgálatában a vonzóbbnak látott emberek fotói alapján a résztvevők kedvesebb, sikeresebb életet jósoltak.", "Korlát: a hatás erőssége helyzettől függ, és ha az emberek konkrét, mérhető szempontok szerint értékelnek, gyengül. Ezért segít a lista."],
   source:{label:"Thorndike (1920); Dion, Berscheid és Walster (1972), Journal of Personality and Social Psychology; Clifford és Walster (1973)", url:""}},
- {id:"v_hidegviz", topic:"Pszichológia", type:"video", src:"media/hidegviz.mp4", poster:"media/hidegviz.jpg",
+ {id:"v_hidegviz", topic:"Pszichológia", type:"video", src:"media/hidegviz.mp4?v=e53e2110", poster:"media/hidegviz.webp?v=fab60167",
   title:"Csúcs-vég szabály", tags:"#emlékezet #élmény",
   poll:{q:"Mire emlékszünk legjobban egy élményből?", o:["Az egészre, átlagosan", "A legerősebb pillanatra és a végére", "Csak az elejére"], a:1, why:"Kahneman kutatásai szerint az utólagos értékelést főleg a csúcs és a vég határozza meg, a hossza alig számít."},
   check:{q:"Melyik hideg vizes próbát ismételték volna meg többen?", o:["A rövidebbet", "A hosszabbat, aminek a vége enyhébb volt", "Egyiket sem"], a:1, why:"A hosszabb próba vége enyhébb volt, ezért utólag kevésbé rossznak emlékeztek rá."},
   deeper:["Kahneman, Fredrickson, Schreiber és Redelmeier (1993) kísérletében a résztvevők egyszer 60 másodpercig 14 fokos vízben tartották a kezüket, máskor 60 másodperc után még 30 másodpercig kicsit melegebb vízben. Kb. kétharmaduk a hosszabbat ismételte volna meg.", "Hasonló eredményt hozott egy orvosi vizsgálatokkal végzett kutatás is (Redelmeier, Katz és Kahneman, 2003).", "Korlát: a szabály nem minden élményre érvényes egyformán; hosszabb, összetett élményeknél más tényezők is számítanak."],
   source:{label:"Kahneman, D. és mtsai (1993): When more pain is preferred to less. Psychological Science", url:""}},
- {id:"p2", topic:"Pszichológia", type:"video", src:"media/hazugsag.mp4", poster:"media/hazugsag.jpg",
+ {id:"p2", topic:"Pszichológia", type:"video", src:"media/hazugsag.mp4?v=93899110", poster:"media/hazugsag.webp?v=97527912",
   title:"Poligráf-tévhit", tags:"#pszichológia #tévhitek",
   poll:{q:"Mit mér valójában a hazugságvizsgáló?", o:["Hogy igazat mondasz-e","A tested stresszreakcióit","Az agyhullámaidat"], a:1, why:"Légzést, izzadást és pulzust mér, vagyis a feszültséget."},
   check:{q:"A tűs példában miért jelzett a gép?", o:["Mert hazudott","Mert megijedt","Mert meleg volt a teremben"], a:1, why:"A félelemtől izzad a bőr, és a gép ezt méri. A hazugságot magát nem látja."},
@@ -303,49 +316,49 @@ const POSTS = [
   check:{q:"Mihez mérd a másik testbeszédét?", o:["A saját nyugodt alapállapotához","Egy testbeszéd-táblázathoz","A saját szokásaidhoz"], a:0, why:"Nem az abszolút jel számít, hanem az eltérés attól, ahogy nyugodtan viselkedik."},
   deeper:["A testbeszéd jelei többértelműek: ugyanaz a mozdulat fáradtságot, hidegérzetet vagy elutasítást is jelenthet.","Ezért érdemes a másik saját alapállapotához mérni a változást, és több csatorna (szavak, hang, test) egyezését keresni.","A szavakra érdemes a legjobban figyelni: kérj részleteket („Pontosan hogy történt?”), és döntést csak tényre alapozz."],
   source:{label:"Meggyőzéstechnika (saját könyv), 3. és 5. fejezet", url:""}}
- ,{id:"k_arany", topic:"Idő és fókusz", type:"video", src:"media/clips/k_arany.mp4", poster:"media/clips/k_arany.jpg",
+ ,{id:"k_arany", topic:"Idő és fókusz", type:"video", src:"media/clips/k_arany.mp4?v=f9901b12", poster:"media/clips/k_arany.webp?v=f8f93943",
   title:"Aranyóra", tags:"#produktivitás #fókusz",
   poll:{q:"Mit érdemes az aranyórádban csinálni?", o:["E-maileket megválaszolni","A legtöbb gondolkodást igénylő feladatot","Pihenni, hogy kitartson az energia"], a:1, why:"A csúcsidőt a nehéz, kreatív munkára érdemes tartogatni."},
   check:{q:"Hogyan találod meg az aranyórádat okoseszköz nélkül?", o:["Pár napig figyeled, mikor megy minden könnyen","Megnézed, hány e-mailt kapsz","Reggel 6-kor kezdesz mindent"], a:0, why:"Néhány nap önmegfigyelés is megmutatja, mikor vagy a csúcson."},
   deeper:["A napi teljesítőképesség hullámzik, és hogy mikor van a csúcs, emberenként eltér. Ebben a kronotípus is szerepet játszik (lásd a pacsirta–bagoly posztot).","Az aktív időszakra a kreatív, elmélyült munka, a gyengébb időszakra a rutinfeladatok (e-mail, számlázás) valók."],
   source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
- {id:"k_pomo", topic:"Idő és fókusz", type:"video", src:"media/clips/k_pomo.mp4", poster:"media/clips/k_pomo.jpg",
+ {id:"k_pomo", topic:"Idő és fókusz", type:"video", src:"media/clips/k_pomo.mp4?v=0e2a23c0", poster:"media/clips/k_pomo.webp?v=50e9c40b",
   title:"Pomodoro-technika", tags:"#pomodoro #időbeosztás",
   poll:{q:"Hány perc munka után jön a szünet a Pomodoro-módszerben?", o:["15 perc","25 perc","50 perc"], a:1, why:"25 perc munka, 5 perc szünet, négy kör után hosszabb pihenő."},
   check:{q:"Hogyan működik a Pomodoro-módszer?", o:["25 perc munka, 5 perc szünet","50 perc munka, 1 perc szünet","10 perc munka, 10 perc szünet"], a:0, why:"Négy ilyen kör után jön egy hosszabb, 15–30 perces pihenő."},
   deeper:["A beszélgetésben „három vagy öt kör” hangzik el; a módszer eredeti formája: 25 perc munka, 5 perc szünet, négy kör után 15–30 perc pihenő.","A neve a paradicsom alakú konyhai időzítőből jön (pomodoro = paradicsom olaszul)."],
   source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
- {id:"k_meet", topic:"Idő és fókusz", type:"video", src:"media/clips/k_meet.mp4", poster:"media/clips/k_meet.jpg",
+ {id:"k_meet", topic:"Idő és fókusz", type:"video", src:"media/clips/k_meet.mp4?v=6402d863", poster:"media/clips/k_meet.webp?v=6aa2f7ba",
   title:"Meetingcsapda", tags:"#munka #koncentráció",
   poll:{q:"Miért fárad el sok irodai dolgozó úgy, hogy keveset haladt?", o:["Túl sok meeting és kevés szünet","Túl kevés kávé","Túl rövid munkaidő"], a:0, why:"A meetingek elviszik a saját feladatokra szánt időt, a mozgás hiánya pedig fáraszt."},
   check:{q:"Mit érdemes időnként csinálni egész napos ülőmunka közben?", o:["Felállni, mozogni, levegőzni","Új meetinget szervezni","Gyorsabban dolgozni"], a:0, why:"Senki nem tud nyolc órán át egyformán koncentrálni, a rövid mozgás segít újraindulni."},
   deeper:["A több munkaóra nem jelent automatikusan több eredményt: a figyelem hullámzik, és szünet nélkül gyorsan fogy.","A rövid felállás és mozgás a beszélgetésben elhangzó tapasztalat; ugyanerre épül a Pomodoro-módszer is."],
   source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
- {id:"k_alvas", topic:"Alvás és egészség", type:"video", src:"media/clips/k_alvas.mp4", poster:"media/clips/k_alvas.jpg",
+ {id:"k_alvas", topic:"Alvás és egészség", type:"video", src:"media/clips/k_alvas.mp4?v=4fe87894", poster:"media/clips/k_alvas.webp?v=1a7d8976",
   title:"Alvás és teljesítmény", tags:"#alvás #rutin",
   poll:{q:"Mit tanult meg Krisztina az alvásról?", o:["Hogy időpocsékolás","Hogy a rendszeres alvás javítja a teljesítményt","Hogy elég 3-4 óra"], a:1, why:"Amióta tudatosan alszik, más a stressz-szintje és a produktivitása."},
   check:{q:"Kinek fontos a rendszeres lefekvési idő?", o:["Csak a babáknak","Felnőtteknek is","Csak sportolóknak"], a:1, why:"A szervezetnek felnőttként is ugyanúgy kell a rendszer, mint egy babának."},
   deeper:["Alvás közben regenerálódunk, és az agy a különböző alvási fázisokban fontos feldolgozó munkát végez, ezért ezt nem lehet tartósan kihagyni.","A rendszeres lefekvési és ébredési idő segít a belső órának, ami a nappali teljesítményre is hat."],
   source:{label:"Bazu podcast – Kende-Hoffer Krisztina", url:"https://www.youtube.com/watch?v=wh-L5aSwtfw"}},
- {id:"s_fu", topic:"Biztonság otthon", type:"video", src:"media/clips/s_fu.mp4", poster:"media/clips/s_fu.jpg",
+ {id:"s_fu", topic:"Biztonság otthon", type:"video", src:"media/clips/s_fu.mp4?v=69775126", poster:"media/clips/s_fu.webp?v=ccef2b5f",
   title:"Fűnyírókábel-baleset", tags:"#biztonság #kert",
   poll:{q:"Hol vezesd az elektromos fűnyíró kábelét?", o:["Magad előtt, hogy lásd","Magad mögött, a már levágott részen","Mindegy, ha új a kábel"], a:1, why:"Így a kés nem érheti el a kábelt."},
   check:{q:"Mi történhet, ha a fűnyíró kése elvágja a kábelt?", o:["Áramütést kaphatsz","Csak leáll a gép","Semmi, mert szigetelt"], a:0, why:"Ezért kell a kábelt a már levágott részen vezetni, és áramvédő relét használni."},
   deeper:["Az áramvédő (FI) relé a másodperc töredéke alatt lekapcsolja az áramot, ha az áram rossz úton folyik, például rajtad keresztül.","A kábel vezetése és az FI-relé használata az elektromos kerti gépek általános biztonsági ajánlása."],
   source:{label:"Bazu podcast – Dr. Szeles Géza", url:"https://www.youtube.com/watch?v=IY5zMkwOzUc"}},
- {id:"s_izzo", topic:"Biztonság otthon", type:"video", src:"media/clips/s_izzo.mp4", poster:"media/clips/s_izzo.jpg",
+ {id:"s_izzo", topic:"Biztonság otthon", type:"video", src:"media/clips/s_izzo.mp4?v=28ed756a", poster:"media/clips/s_izzo.webp?v=44c05ed4",
   title:"Létrabiztonság", tags:"#biztonság #háztartás",
   poll:{q:"Mivel érdemes izzót cserélni magasban?", o:["Asztalra tett székre állva","Stabil létrával","Sámlira állva"], a:1, why:"Az egymásra rakott bútorok könnyen felborulnak."},
   check:{q:"Melyik mondás illik a videóhoz?", o:["Kétszer mérj, egyszer vágj","Aki korán kel, aranyat lel","Lassan járj, tovább érsz"], a:0, why:"Mielőtt nekiállsz, gondold végig még egyszer, mi történhet."},
   deeper:["A balesetek jelentős része figyelmetlenségből, „végig nem gondolásból” lesz.","Ha egyedül dolgozol magasban, legyen nálad a telefon, hogy baj esetén segítséget hívhass."],
   source:{label:"Bazu podcast – Dr. Szeles Géza", url:"https://www.youtube.com/watch?v=IY5zMkwOzUc"}},
- {id:"a_szunet", topic:"Kommunikáció", type:"video", src:"media/clips/a_szunet.mp4", poster:"media/clips/a_szunet.jpg",
+ {id:"a_szunet", topic:"Kommunikáció", type:"video", src:"media/clips/a_szunet.mp4?v=b6ebc292", poster:"media/clips/a_szunet.webp?v=0ca9d336",
   title:"Kétmásodperces szünet", tags:"#beszéd #magabiztosság",
   poll:{q:"Mi a legegyszerűbb eszköz az őzés ellen?", o:["Gyorsabban beszélni","Rövid szünetet tartani","Előre betanulni a szöveget"], a:1, why:"A tudatos szünet kiváltja az ő-ket, és magabiztosabbnak hat."},
   check:{q:"Mit javasol a gyakorlat az őzés ellen?", o:["Vedd fel és hallgasd vissza magad","Beszélj hangosabban","Kerüld a hosszú mondatokat"], a:0, why:"Felvételről hallod meg igazán, hol őzöl, és így tudsz rajta változtatni."},
   deeper:["Az őzés gondolkodás közben természetes, nem kell teljesen kiirtani.","A tudatos szünet a beszédtréningek alapeszköze: a hallgató magabiztosságnak érzékeli, és közben feldolgozza, amit mondtál."],
   source:{label:"Bazu podcast – Róf Kis Ágnes, Beszéderő", url:"https://www.youtube.com/watch?v=wo3fXNYE6lw"}},
- {id:"a_tolt", topic:"Kommunikáció", type:"video", src:"media/clips/a_tolt.mp4", poster:"media/clips/a_tolt.jpg",
+ {id:"a_tolt", topic:"Kommunikáció", type:"video", src:"media/clips/a_tolt.mp4?v=e62b8129", poster:"media/clips/a_tolt.webp?v=7799373d",
   title:"Töltelékszavak", tags:"#beszéd #kommunikáció",
   poll:{q:"Miért őzünk beszéd közben?", o:["Mert gondolkodunk, és félünk a csendtől","Mert fáradtak vagyunk","Mert túl lassan beszélünk"], a:0, why:"A csendet kínosnak érezzük, ezért kitöltjük."},
   check:{q:"Mit ad a szünet a hallgatónak?", o:["Időt, hogy feldolgozza, amit mondtál","Unalmat","Alkalmat, hogy közbeszóljon"], a:0, why:"A szünet nem kínos: a másikban is „lecsorog”, miről volt szó."},
@@ -357,6 +370,7 @@ const ORDER = ["m7","v_kamatos","p2","v_kartya","v_szukosseg","v_minimum","k_ara
 /* ami nincs a listában, az a végére kerül (nem tűnik el); a HIDE-ban lévők (régi duplikátumok) nem jelennek meg */
 const HIDE = ["p3","p4","p5","m1","m4"];  // m4: duplikátum a v_csalimadar videó mellett (2026-11-01)
 for (let i = POSTS.length - 1; i >= 0; i--) if (HIDE.includes(POSTS[i].id)) POSTS.splice(i, 1);
+FUN_POSTS.forEach(p => POSTS.push(p));   // „Tudtad?” (fun fact) posztok – a tools/funfact.py írja őket (2026-11-03)
 const ordIdx = id => { const i = ORDER.indexOf(id); return i < 0 ? 1e6 : i; };
 POSTS.sort((a, b) => ordIdx(a.id) - ordIdx(b.id));
 /* Gábor hangja a szöveges posztokhoz: hangfájl + az egyes sorok kezdőideje (mp) */
@@ -365,13 +379,14 @@ POSTS.forEach(p => { p.habit = HABIT[p.id] || null; if (p.type === "text" && VOI
 const POST = Object.fromEntries(POSTS.map(p => [p.id, p]));
 /* Párbaj-kérdésváltozatok posztonként (2026-11-01): más megfogalmazás, más rossz válaszok, hogy ne lehessen betanulni. */
 const QVAR = {"p2":[{"q":"Miért jelezhet a poligráf annál is, aki igazat mond?","o":["Mert az ártatlan ember is lehet feszült","Mert túl gyorsan válaszol a kérdésekre","Mert elfelejti levenni az ujjáról az érzékelőt"],"a":0,"why":"A poligráf feszültséget mér, és az is feszült lehet, aki igazat mond."},{"q":"Mit mond a tudomány a szemmozgás és a hazugság kapcsolatáról?","o":["A balra nézés egyértelműen hazugságot jelent","A kutatások nem igazolták, hogy ebből felismerhető","Csak a pislogás gyorsasága árulja el a füllentést"],"a":1,"why":"A kutatások nem támasztották alá, hogy a szem mozgása elárulná a hazugságot."},{"q":"Hogyan tekinti a tudomány a poligráf eredményét?","o":["Tökéletesen tévedhetetlen módszernek","Teljesen használhatatlan játékszernek","Vitatott megbízhatóságúnak, ami nem bizonyíték"],"a":2,"why":"A poligráf megbízhatósága vitatott a tudományban, így önmagában nem bizonyíték."}],"v_szukosseg":[{"q":"Mikor látták a kísérletben még értékesebbnek a sütit?","o":["Ha szép és díszes dobozban kínálták","Ha a szemük előtt fogyott el a nagy kereslet miatt","Ha azt mondták nekik, hogy nagyon drága volt"],"a":1,"why":"Akkor tűnt a legértékesebbnek, ha előttük fogyott el mások miatt."},{"q":"Mit jelent a kereskedők által használt hamis szűkösség?","o":["Azt hazudják, hogy már alig maradt a termékből","Nagyon magasra emelik az akciós árakat","Elrejtik a boltban a legolcsóbb termékeket"],"a":0,"why":"Hamis szűkösség, ha úgy tesznek, mintha fogyna, pedig nem igaz."},{"q":"Melyik módszer ütközik fogyasztóvédelmi szabályokba?","o":["Ha a drágább termékeket teszik a felső polcra","Ha a boltban nem adnak ingyenes kóstolót","Ha valótlanul azt mondják, már csak 2 darab maradt"],"a":2,"why":"A nem valós hiány állítása tiltott manipulációnak számít."}],"k_arany":[{"q":"Mi igaz az emberek napi teljesítőképességére?","o":["Hullámzik a nap folyamán, és emberenként eltér","Mindenkinél pontosan ugyanabban az órában tetőzik","Reggeltől estig teljesen egyenletes szinten marad"],"a":0,"why":"A teljesítőképesség nem egyenletes, és a csúcsa egyénenként változó."},{"q":"Milyen feladatra a legjobb a nap gyengébb időszaka?","o":["Az elmélyült, kreatív gondolkodásra","A rutinfeladatokra, mint a számlázás","A legnagyobb figyelmet igénylő munkára"],"a":1,"why":"A gyengébb időszakokban a rutinfeladatokat érdemes intézni."},{"q":"Mi játszik szerepet a teljesítménycsúcs idejében?","o":["Kizárólag az elvégzendő teendők listája","A beérkező e-mailek és üzenetek száma","A kronotípus, például a pacsirta vagy bagoly lét"],"a":2,"why":"A napi csúcs időpontjában a kronotípus is szerepet játszik."}],"v_kerdezz":[{"q":"Hogyan érezheti magát a másik, ha túlzásba visszük a kérdezősködést?","o":["Úgy érezheti, mintha kihallgatnák","Biztosan még hamarabb megnyílik","Egyáltalán nem veszi észre a különbséget"],"a":0,"why":"A poszt szerint a túl sok kérdés kihallgatásszerű lehet, ami visszaüthet."},{"q":"Mit gondolnak az emberek a kérdezés rokonszenvre gyakorolt hatásáról?","o":["Jelentősen túlbecsülik a szerepét","Pontosan látják a valós hatását","Alábecsülik, mennyire növeli a rokonszenvet"],"a":2,"why":"A kutatók szerint a legtöbben alábecsülik a kérdések pozitív hatását."},{"q":"Milyen eredménnyel járt a több kérdés feltevése a gyorsrandikon?","o":["Nem hozott semmilyen érdemi változást","Több második randit kaptak a résztvevők","Kevesebb partner akart velük újratalálkozni"],"a":1,"why":"A vizsgálat kimutatta, hogy a többet kérdezők több második randit szereztek."}],"m2":[{"q":"Hogyan kérdeznek a jó orvosok és nyomozók a tanulság szerint?","o":["Nyitott, sugallat nélküli kérdésekkel","Mindig eldöntendő, zárt kérdésekkel","Erősen irányított, feszes kérdésekkel"],"a":0,"why":"A jó szakemberek nyitott és sugallatmentes kérdéseket használnak."},{"q":"Szerepelt valójában törött üveg a kísérletben bemutatott filmen?","o":["Igen, a kocsik ütközésekor széttört","Nem, a filmen egyáltalán nem volt üveg","Csak a háttérben volt látható üveg"],"a":1,"why":"A vetített felvételen valójában nem volt törött üveg."},{"q":"Mi történik az emlékeinkkel a felidézés során a kutatás szerint?","o":["Változatlan formában őrződnek meg","Véglegesen kitörlődnek a tudatból","Újraépülnek, és szavak is beépülhetnek"],"a":2,"why":"Az emlékek felidézéskor újraépülnek, és új szavak is beépülhetnek."}],"v_lekvar":[{"q":"Miben volt sikeresebb a 24 féle lekvárt bemutató asztal a kísérletben?","o":["Több embert vonzott oda","Nagyobb arányban vásároltak nála","Gyorsabb döntésre ösztönzött"],"a":0,"why":"A kutatás szerint a nagy asztal több embert vonzott, mégis kevesebben vásároltak ott."},{"q":"A kísérletben a 24 féle lekvárt nézők mekkora része vásárolt végül?","o":["Körülbelül 30 százaléka","Körülbelül 3 százaléka","Körülbelül 15 százaléka"],"a":1,"why":"A 24 féle lekvárnál a betérőknek csupán nagyjából 3 százaléka vásárolt."},{"q":"Mikor tapasztalható erősebben a választási túlterhelés?","o":["Ha pontosan tudjuk, mit keresünk","Ha nagyon kevés a látogató","Ha nehéz összehasonlítani a dolgokat"],"a":2,"why":"A jelenség erősebb, ha nehéz összehasonlítani a lehetőségeket, és nincs preferenciánk."}],"m7":[{"q":"Ingatlanügynökök ugyanazt a házat becsülték fel. Mi húzta el a becslésüket?","o":["A tájékoztatóban szereplő kínálati ár","A ház színe","A kert mérete"],"a":0,"why":"Csak a kínálati ár különbözött, mégis elhúzta a profik becslését is."},{"q":"Alkuban mikor lehet előny, ha te mondod ki az első számot?","o":["Soha, mindig várni kell","Ha jól megalapozott a szám","Csak ha nagyon alacsony"],"a":1,"why":"Az első szám horgony lesz, ezért egy megalapozott első ajánlat gyakran előny."}],"v_kamatos":[{"q":"Két barát havonta ugyanannyit tesz félre. Kinek lesz több pénze 30 év múlva?","o":["Aki tíz évvel később kezdte","Akinek drágább a telefonja","Aki hamarabb kezdte"],"a":2,"why":"A kamatos kamatnál az idő számít a legtöbbet: aki előbb kezd, annál tovább dolgozik a pénze."},{"q":"Mit jelent a kamatos kamat?","o":["A kamat után is kamat jár","A bank minden évben levon egy díjat","A kamat mindig ugyanannyi forint"],"a":0,"why":"A jóváírt kamat is kamatozik tovább, ezért gyorsul a növekedés."}],"v_kartya":[{"q":"Hogyan fizess, ha egy bulin nem akarsz túlköltekezni?","o":["Kártyával, mert gyorsabb","Készpénzzel, mert jobban érzed a kiadást","Mindegy, a kettő ugyanaz"],"a":1,"why":"A készpénz kiadása kézzelfoghatóbb, ezért jobban fékez."},{"q":"Mi a „fizetés fájdalma”?","o":["A rossz érzés, amikor pénzt adunk ki","A bankkártya éves díja","Amikor elutasítják a kártyát"],"a":0,"why":"Ez a kellemetlen érzés készpénznél erősebb, kártyánál gyengébb, ezért kártyával többet költünk."}],"v_minimum":[{"q":"A hitelkártya-számlán ott a minimum összeg. Mi a veszélye?","o":["Semmi, csak tájékoztatás","Horgony lesz, és kevesebbet fizetünk vissza","Emiatt nő a hitelkeret"],"a":1,"why":"A minimum összeg lehúzza a befizetést, a visszafizetetlen rész után pedig kamat jár."},{"q":"Miért drága hosszú távon, ha csak keveset törlesztünk?","o":["Mert a maradék után kamat jár","Mert büntetést kell fizetni","Mert a bank elveszi a kártyát"],"a":0,"why":"Ami nincs visszafizetve, az tovább kamatozik a bank javára."}],"v_elobbmagad":[{"q":"Fizetésnap van. Mi a „fizesd ki először magad” szerint a jó sorrend?","o":["Előbb a szórakozás, aztán a megtakarítás","Előbb automatikusan félreteszel, aztán költesz","Hónap végén félreteszed, ami marad"],"a":1,"why":"Ha előbb automatikusan félreteszel, nem kell minden hónapban újra dönteni."},{"q":"Miért segít, ha a fizetésemelésből teszel félre?","o":["Mert úgy nem fáj, nem a megszokott pénzből veszel el","Mert azt nem kell beosztani","Mert az adómentes"],"a":0,"why":"A még meg nem szokott pénzből félretenni nem fáj, ezért könnyebb kitartani."}],"v_inflacio":[{"q":"Ha minden évben drágulnak a dolgok, mi történik a fiókban tartott pénzzel?","o":["Egyre kevesebbet lehet venni rajta","Egyre többet ér","Pontosan ugyanannyit ér"],"a":0,"why":"Az infláció miatt ugyanazért az összegért egyre kevesebb jár."},{"q":"Mi a legfontosabb a vésztartaléknál?","o":["Hogy minél nagyobb hozamot hozzon","Hogy gyorsan elérhető és biztonságos legyen","Hogy senki ne tudjon róla"],"a":1,"why":"Vésztartaléknál a biztonság és a gyors elérés fontosabb a hozamnál."}],"s_fu":[{"q":"Mi az az FI-relé?","o":["Lekapcsolja az áramot, ha rossz úton folyik","Gyorsabbá teszi a fűnyírót","Egy hosszabbító kábel"],"a":0,"why":"Az áramvédő relé a másodperc töredéke alatt lekapcsol, ha az áram például rajtad keresztül folyik."},{"q":"Elektromos fűnyíróval nyírsz. Mi a legfontosabb a kábellel?","o":["Hogy minél rövidebb legyen","Hogy mindig a gép előtt legyen","Hogy ne kerülhessen a kés elé"],"a":2,"why":"Ha a kés elvágja a kábelt, áramütés érhet, ezért a kábel maradjon mögötted."}],"v_kavefolt":[{"q":"Egy nagyon profi előadó leönti magát kávéval. Mi történik?","o":["Senki nem bízik benne többé","Szimpatikusabb lesz","Semmi nem változik"],"a":1,"why":"A kiválóan teljesítőnek egy kis baki emberibbé teszi, és rokonszenvesebb lesz."},{"q":"Egy átlagos jelölt is leönti magát. Neki segít?","o":["Igen, ugyanúgy","Nem, neki inkább árt","Csak ha nevet rajta"],"a":1,"why":"A kísérletben az átlagos jelölt a baki után veszített a rokonszenvből."}],"v_taltpenz":[{"q":"Kapsz egy váratlan visszatérítést. Mire hajlamos az ember?","o":["Könnyebben elkölti, mint a fizetését","Rögtön befekteti","Egyáltalán nem nyúl hozzá"],"a":0,"why":"A „váratlan” pénzt fejben külön dobozba tesszük, és könnyebben elköltjük."},{"q":"Mikor hasznos a „fejben külön dobozok” szokás?","o":["Soha nem hasznos","Ha egy külön számla védi a megtakarítást","Ha minden pénzt egy helyen tartunk"],"a":1,"why":"Egy külön megtakarítási számla éppen ezt a dobozolást használja ki jó célra."}],"p1":[{"q":"Miért nem jó rögtön ébredés után a híreket olvasni?","o":["Mert a telefon még hideg","Mert a természetes ébredési stresszre még ráteszünk","Mert reggel lassú a net"],"a":1,"why":"Ébredéskor amúgy is megugrik a kortizol, a hírek ehhez még plusz stresszt adnak."},{"q":"Honnan származik a 45 perces telefonszabály?","o":["Egy tudományos határérték","Szász Máté saját szabálya, jó kiindulópont","Törvény írja elő"],"a":1,"why":"A 45 perc egy saját szabály, nem tudományos határérték, de jó kiindulópont."}],"v_egyenruha":[{"q":"Egy egyenruhás ember utasít az utcán. Mire érdemes gondolni?","o":["Az egyenruha még nem jelent valódi hatalmat vagy tudást","Mindig engedelmeskedni kell","Az egyenruha mindig hamis"],"a":0,"why":"Az egyenruha, cím vagy drága autó valódi szakértelem nélkül is hat ránk."},{"q":"Ki után mentek át többen a piros lámpán?","o":["Egy farmeros fiatal után","Egy öltönyös férfi után","Egy gyerek után"],"a":1,"why":"Az öltönyös férfit kb. három és félszer annyian követték."}],"a_szunet":[{"q":"Hogyan érzékeli a hallgató, ha előadás közben tudatosan szünetet tartasz?","o":["Magabiztosságnak","Bizonytalanságnak","Udvariatlanságnak"],"a":0,"why":"A tudatos szünetet a hallgató magabiztosságnak érzi, és közben feldolgozza, amit mondtál."},{"q":"Teljesen ki kell irtani az őzést?","o":["Igen, minden őzés hiba","Nem, gondolkodás közben természetes","Csak írásban számít"],"a":1,"why":"Az őzés természetes, a cél csak a csökkentése, például szünetekkel."}],"v_rokia":[{"q":"Adománygyűjtő levelet írsz. Mi hat jobban?","o":["Egy konkrét ember története","Sok szám és statisztika","Minél hosszabb szöveg"],"a":0,"why":"Egy azonosítható ember története jobban megérint, mint a számok."},{"q":"Mi az azonosítható áldozat hatás?","o":["Jobban segítünk egy konkrét embernek, mint egy statisztikának","Mindig a legtöbb áldozatnak segítünk","Csak ismerősöknek segítünk"],"a":0,"why":"Egyetlen, névvel és arccal bíró ember sorsa erősebben hat ránk, mint a nagy számok."}],"v_torolkozo":[{"q":"Mikor erősebb a társas bizonyíték?","o":["Ha olyan csoportra hivatkozik, amellyel azonosulunk","Ha minél idegenebb emberekről szól","Ha egy híresség mondja"],"a":0,"why":"Minél jobban hasonlítunk arra a csoportra, akire hivatkoznak, annál erősebb a hatás."},{"q":"Egy webshop kitalált véleményekkel mutatja népszerűnek magát. Ez mi?","o":["Ügyes marketing","Manipuláció","Kötelező jelölés"],"a":1,"why":"A kitalált vélemény vagy hamis népszerűség gyártott jel, vagyis manipuláció."}],"k_pomo":[{"q":"Mi jön négy Pomodoro-kör után?","o":["Egy hosszabb, 15–30 perces pihenő","Újabb négy kör szünet nélkül","Vége a munkanapnak"],"a":0,"why":"Négy kör után hosszabb pihenő jár, hogy kitartson a figyelem."},{"q":"Honnan kapta a nevét a Pomodoro-módszer?","o":["Egy olasz városról","A paradicsom alakú konyhai időzítőről","A feltaláló kutyájáról"],"a":1,"why":"A pomodoro olaszul paradicsomot jelent, a módszer egy ilyen alakú időzítőről kapta a nevét."}],"v_rim":[{"q":"Miért hihetőbb egy mondat, ha könnyű olvasni?","o":["Mert ismerősnek és igaznak érezzük","Mert rövidebb","Mert több benne a tény"],"a":0,"why":"Amit könnyű feldolgozni, azt ismerősebbnek és igazabbnak érezzük."},{"q":"Egy reklám rímes szlogent használ. Mit érdemes tenni?","o":["Elhinni, mert jól hangzik","Rím nélkül is végiggondolni, igaz-e","Megtanulni kívülről"],"a":1,"why":"A rím csak könnyebben feldolgozhatóvá teszi az állítást, igazabbá nem."}],"s_izzo":[{"q":"Egyedül dolgozol magasban. Mi legyen nálad?","o":["A telefonod, hogy segítséget hívhass","Egy pohár víz","Semmi, ami lehúz"],"a":0,"why":"Ha baj történik, a telefonnal tudsz segítséget hívni."},{"q":"Miből lesz a legtöbb otthoni baleset a videó szerint?","o":["Rossz szerszámból","Figyelmetlenségből, végig nem gondolásból","Balszerencséből"],"a":1,"why":"A balesetek jelentős része abból lesz, hogy nem gondoljuk végig előre a lépéseket."}],"v_laboajto":[{"q":"Valaki előbb egy apró szívességet kér, aztán egy nagyot. Mi ez a technika?","o":["Láb az ajtóban","Csalimadár","Szűkösség"],"a":0,"why":"A kis igen után nehezebb nemet mondani, mert következetesek akarunk maradni."},{"q":"Miért mondunk könnyebben igent a nagy kérésre egy kicsi után?","o":["Mert elfáradunk","Mert következetesek akarunk maradni ahhoz, akinek mutattuk magunkat","Mert a második kérés mindig jobb"],"a":1,"why":"Aki egyszer segítőkésznek mutatta magát, ehhez a képhez akar igazodni."}],"m3":[{"q":"Egy nagy kérésre nemet mondtál. Utána jön egy kisebb. Mi a valószínű?","o":["Arra is nemet mondasz","Sokkal könnyebben igent mondasz","Megsértődsz"],"a":1,"why":"A viszonzás engedményekre is működik: a kisebb kérést viszonzásként fogadjuk el."},{"q":"Mi a viszonzás elve?","o":["Ha kapunk valamit, viszonozni akarjuk","Mindig a drágábbat választjuk","Csak barátoknak segítünk"],"a":0,"why":"Aki ad nekünk valamit, annak tartozónak érezzük magunkat, ez minden társadalomban megvan."}],"v_citrom":[{"q":"Tudták a résztvevők, hogy az illat hatott rájuk?","o":["Igen, mindenki észrevette","Nem, nem voltak tudatában","Csak a fele"],"a":1,"why":"A résztvevők nem tudták, hogy az illat befolyásolta őket."},{"q":"Hogyan használhatod az előfeszítést a jó szokásokhoz?","o":["Úgy alakítod a környezeted, hogy emlékeztessen a célodra","Erősebb akarattal","Sehogy, ez csak reklámtrükk"],"a":0,"why":"A környezet tudatos alakítása jól bevált szokásstratégia."}],"k_meet":[{"q":"Több munkaóra mindig több eredményt hoz?","o":["Igen, mindig","Nem, a figyelem szünet nélkül gyorsan fogy","Csak hétvégén"],"a":1,"why":"A figyelem hullámzik, szünet nélkül hamar elfogy, ezért a több óra nem jelent több eredményt."},{"q":"Melyik módszer épít ugyanarra, mint a rövid felállós szünetek?","o":["A Pomodoro-módszer","A túlóra","A multitasking"],"a":0,"why":"A Pomodoro-módszer is rendszeres rövid szünetekre épül."}],"a_tolt":[{"q":"Hogyan gyakorolhatod a kevesebb őzést?","o":["Fél percet beszélsz felvéve, visszahallgatod, majd szünetekkel újra","Gyorsabban beszélsz","Előre kívülről megtanulod a szöveget"],"a":0,"why":"A felvétel visszahallgatása után szünetekkel újra elmondani a bevált gyakorlat."},{"q":"Mi a cél a töltelékszavakkal?","o":["Teljesen eltüntetni őket","Csökkenteni őket","Minél többet használni"],"a":1,"why":"A töltelékszavak a gondolkodás velejárói, a cél a csökkentésük, nem az eltüntetésük."}],"k_alvas":[{"q":"Miért nem lehet tartósan kihagyni az alvást?","o":["Mert alvás közben az agy fontos feldolgozó munkát végez","Mert unalmas ébren lenni","Mert az orvos megtiltja"],"a":0,"why":"Alvás közben regenerálódunk, és az agy fontos munkát végez az alvási fázisokban."},{"q":"Mi segíti a belső órát?","o":["Rendszeres lefekvési és ébredési idő","Hétvégén délig alvás","Késő esti kávé"],"a":0,"why":"A rendszeres időpontok segítik a belső órát, ami a nappali teljesítményre is hat."}],"p6":[{"q":"Hogyan változik a kronotípus az életkorral?","o":["Kamaszkorban bagolyabbak, idősen pacsirtábbak leszünk","Soha nem változik","Idősen mindenki bagoly lesz"],"a":0,"why":"Kamaszkorban a legtöbben később fekszenek, idősebb korban korábban kelnek."},{"q":"Mit mutat a kronotípus?","o":["Hogy a nap melyik részében vagy a legfrissebb","Hogy mennyit kell aludnod","Hogy milyen gyorsan alszol el"],"a":0,"why":"A kronotípus azt mutatja, mikor vagy a legjobb formában a nap folyamán."}],"m5":[{"q":"Miért nem hatnak a részletes érvek, ha a másik feszült?","o":["Mert stresszben a figyelem a veszélyre szűkül","Mert túl okos","Mert nem hallja jól"],"a":0,"why":"Stresszben a részletes érveket kevésbé dolgozzuk fel."},{"q":"Nehéz beszélgetés előtt mit rendezz először?","o":["Az érveid sorrendjét","A saját nyugalmadat","A ruhádat"],"a":1,"why":"A saját nyugalmad is jel a másiknak, ezért először azt érdemes rendezni."}],"m6":[{"q":"Egy kolléga ma szokatlanul csendes. Mit jelent ez?","o":["Biztosan haragszik rád","Változás a szokásához képest, érdemes rákérdezni","Biztosan hazudik"],"a":1,"why":"A testbeszéd jelei többértelműek: a saját alapállapotához mért változásra érdemes figyelni, és rákérdezni."},{"q":"Mire érdemes a legjobban figyelni, ha meg akarod érteni a másikat?","o":["A kézmozdulataira","A szavaira, és kérj részleteket","A ruhájára"],"a":1,"why":"A szavak a legmegbízhatóbbak: kérj részleteket, és döntést csak tényre alapozz."}],"v_sielosjegy":[{"q":"Már két éve tanulsz egy szakot, de rájöttél, hogy nem neked való. Mit érdemes kérdezni?","o":["Mennyi időt tettem már bele?","Ha most kezdeném, belevágnék?","Mit szólnak majd a többiek?"],"a":1,"why":"Az elmúlt évek nem jönnek vissza: csak az számít, mi éri meg innentől."},{"q":"Miért ülsz végig egy unalmas filmet, ha kifizetted a jegyet?","o":["Mert a kifizetett pénz miatt sajnáljuk otthagyni","Mert a végén mindig jobb lesz","Mert tilos kimenni"],"a":0,"why":"Ez az elsüllyedt költség csapdája: a pénz már elment, akár maradsz, akár nem."}],"v_csalimadar":[{"q":"Mi történt, amikor kivették a senki által nem választott ajánlatot?","o":["Többen választották a drágább csomagot","Sokkal kevesebben választották a drágább csomagot","Semmi nem változott"],"a":1,"why":"A csali nélkül a csomag aránya 84 százalékról 32 százalékra esett."},{"q":"Mikor tisztességes egy csalimadár-ajánlat?","o":["Soha","Ha a csali is megéri annak, aki azt választja","Ha senki nem veszi meg"],"a":1,"why":"A tisztességes használat szabálya: a csali is legyen jó vétel annak, aki azt választja."}],"v_penzfeldobas":[{"q":"Egy reklám azt írja: „Ezt fogod elveszíteni, ha nem lépsz!” Mire épít?","o":["A veszteségkerülésre","A viszonzásra","A tekintélyre"],"a":0,"why":"A veszteség jobban fáj, mint amennyire a nyereség örömet okoz, ezért sürgetőbbnek érezzük."},{"q":"Hogyan védekezhetsz a „ne maradj le” típusú ajánlatok ellen?","o":["Fejben átfogalmazod nyereséggé: így is megvenném?","Azonnal megveszed, mielőtt elfogy","Megkérdezed, hányan vették már meg"],"a":0,"why":"Ha nyereségként is megvennéd, rendben; ha nem, a félelem döntött volna helyetted."}],"v_daralthus":[{"q":"Az orvos azt mondja: „90 százalékos a túlélés”. Mi ugyanez másképp?","o":["10 százalékos halálozás","Teljesen biztonságos","90 százalékos halálozás"],"a":0,"why":"Ugyanaz a tény, csak más keretben; a megfordítás segít tisztán látni."},{"q":"Mi a keretezés?","o":["Ugyanaz a tény másként hat, ha más szavakkal mondják","Egy képkeret-készítési módszer","Amikor elhallgatnak egy tényt"],"a":0,"why":"Nem az igazság változik, hanem a szavak, mégis máshogy döntünk."}],"v_holdudvar":[{"q":"Állásinterjún egy nagyon csinos jelöltet okosabbnak is gondolsz. Mi ez?","o":["Holdudvarhatás","Elsüllyedt költség","Horgonyhatás"],"a":0,"why":"Egy kiemelkedő tulajdonság, például a külső, rávetül a többire is."},{"q":"Hogyan csökkentheted a holdudvarhatást, ha valakiről döntesz?","o":["Az első benyomásra hagyatkozol","Tulajdonságonként, külön-külön értékelsz","Megkérdezed, ki a legszimpatikusabb"],"a":1,"why":"Konkrét, külön-külön szempontok szerint értékelve gyengül a hatás."}],"v_hidegviz":[{"q":"Bulit szervezel. A csúcs-vég szabály szerint mire figyelj legjobban?","o":["Hogy minél hosszabb legyen","Hogy legyen egy nagyon jó pillanat, és jó legyen a vége","Hogy a kezdés tökéletes legyen"],"a":1,"why":"Egy élményből főleg a legerősebb pillanatra és a végére emlékszünk."},{"q":"Számít az élmény hossza az utólagos emlékben?","o":["Igen, ez a legfontosabb","Alig számít","Csak rövid élményeknél"],"a":1,"why":"Az utólagos értékelést főleg a csúcs és a vég határozza meg, a hossz alig számít."}]};
+Object.assign(QVAR, FUN_QVAR);
 const TOPICS = [...new Set(POSTS.map(p => p.topic))];
 
 /* ---------------- állapot és mentés ---------------- */
 const isoWeek = d => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - day); const y = new Date(Date.UTC(t.getUTCFullYear(),0,1)); return t.getUTCFullYear() + "-W" + Math.ceil(((t - y) / 864e5 + 1) / 7); };
 const dayKey = off => { const d = new Date(); d.setDate(d.getDate() + (off || 0)); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); };
 const today = () => dayKey(0);
-function fresh(){ return {v:1, total:0, week:{id:isoWeek(new Date()), pts:0}, tick:0, seen:{}, seenTick:{}, sched:{}, polls:{}, liked:{}, saved:{}, disliked:{}, days:[], answered:0, correct:0, watchSec:0, watchAwarded:0, topic:{}, seenAt:{}, qn:{}, goal:{d:"", sec:0, done:false}, interests:null, todos:{}, habits:{}, remind:"19:00", remindOn:false, at:0}; }
+function fresh(){ return {v:1, total:0, week:{id:isoWeek(new Date()), pts:0}, tick:0, seen:{}, seenTick:{}, sched:{}, polls:{}, liked:{}, saved:{}, disliked:{}, days:[], answered:0, correct:0, watchSec:0, watchAwarded:0, topic:{}, seenAt:{}, qn:{}, goal:{d:"", sec:0, done:false}, interests:null, todos:{}, habits:{}, remind:"19:00", remindOn:false, at:0, sig:{}, off:[], track:true}; }
 let S = fresh();
 const LS = "hogyankell-v1";
 function lsGet(){ try { const r = localStorage.getItem(LS); return r ? JSON.parse(r) : null; } catch(e){ return null; } }
@@ -381,10 +396,12 @@ function save(soon){
   S.at = Date.now(); lsSet();
   if (!docRef) return;
   clearTimeout(dbTimer);
-  dbTimer = setTimeout(async () => { try { await docRef.set({s: JSON.stringify(S), at: S.at}); setSync("Mentve a fiókodba"); } catch(e){ setSync("Mentés ebben a böngészőben"); } }, soon ? 600 : 8000);
+  dbTimer = setTimeout(async () => { try { await docRef.set({s: JSON.stringify(S), at: S.at}); setSync("Mentve a fiókodba"); } catch(e){ setSync("Mentés ebben a böngészőben"); } }, soon ? 600 : 30000);   // adatcsökkentés: a háttérmentés legfeljebb fél percenként
 }
 function setSync(t){ const el = $("syncState"); if (el) el.textContent = t; }
-function normalize(o){ const f = fresh(); for (const k in f) if (o[k] === undefined) o[k] = f[k]; if (o.week.id !== isoWeek(new Date())) o.week = {id:isoWeek(new Date()), pts:0}; return o; }
+function normalize(o){ const f = fresh(); for (const k in f) if (o[k] === undefined) o[k] = f[k]; if (o.week.id !== isoWeek(new Date())) o.week = {id:isoWeek(new Date()), pts:0}; pruneSig(o); return o; }
+/* Adatmegőrzés (adatvédelmi tájékoztató): a 90 napnál régebbi nézési jelek törlődnek. */
+function pruneSig(o){ const lim = Date.now() - 90 * 864e5; for (const id in (o.sig || {})) if (!o.sig[id].last || o.sig[id].last < lim) delete o.sig[id]; }
 
 /* ---------------- pontok, sorozat ---------------- */
 let toastT = null;
@@ -448,7 +465,7 @@ function spread(l){
 function pool(){
   const key = filter || "";
   if (poolCache && poolCache.key === key) return poolCache.list;
-  let l = POSTS.filter(p => (!filter || p.topic === filter) && !(S.disliked || {})[p.id]);
+  let l = POSTS.filter(p => (filter ? p.topic === filter : !isOff(p.topic)) && !(S.disliked || {})[p.id]);
   const pref = S.interests || [];
   const rank = p => (S.seen[p.id] ? 2 : 0) + (!filter && pref.length && !pref.includes(p.topic) ? 1 : 0);
   const groups = [0, 1, 2, 3].map(r => shuffle(l.filter(p => rank(p) === r)));
@@ -456,7 +473,117 @@ function pool(){
   poolCache = {key, list: l};
   return l;
 }
-const dnum = k => Math.round(Date.UTC(+k.slice(0,4), +k.slice(5,7) - 1, +k.slice(8,10)) / 864e5);
+
+/* ---------------- érdeklődési profil és For You feed (2026-11-03) ----------------
+   Egyszerű, pontozásos rangsor (nincs gépi tanulás). Témánkénti érdeklődési pont a videónkénti jelekből:
+   végignézés +2, újranézés +2, lájk +3, mentés +3, szavazás +1, átugrás −2, „Nem tetszik” −4; a pontok
+   30 nap alatt feleződnek. A választott kedvenc témák +3 induló pontot kapnak (hidegindítás).
+   Ha a néző kikapcsolja a személyre szabást (S.track === false), csak a kedvenc témái számítanak. */
+const FUN = "Tudtad?";
+const SIGW = {c:2, rw:2, like:3, save:3, poll:1, sk:-2, dis:-4};
+const isOff = t => (S.off || []).includes(t);
+const decay = at => at ? Math.pow(0.5, (Date.now() - at) / (30 * 864e5)) : 1;
+function postSignal(id){
+  const g = (S.sig || {})[id] || {}, d = decay(g.last), cap = n => Math.min(n || 0, 3);
+  let s = SIGW.c * cap(g.c) + SIGW.rw * cap(g.rw) + SIGW.sk * cap(g.sk) + Math.min(1, (g.w || 0) / 60);
+  if (S.liked[id]) s += SIGW.like;
+  if (S.saved[id]) s += SIGW.save;
+  if (S.polls[id] !== undefined) s += SIGW.poll;
+  if ((S.disliked || {})[id]) s += SIGW.dis;
+  return s * d;
+}
+function affinity(){
+  const a = {};
+  TOPICS.forEach(t => { a[t] = (S.interests || []).includes(t) ? 3 : 0; });
+  if (S.track !== false) POSTS.forEach(p => { a[p.topic] += postSignal(p.id); });
+  return a;
+}
+/* a profil 0–100-as skálán, a Profil oldalon ezt látja a néző */
+const affPct = v => Math.round(50 + 50 * Math.tanh(v / 6));
+let fy = null, affCache = null;
+/* funGap = ennyi más poszt jön két „Tudtad?” között, így az minden 4. vagy 5. helyre kerül */
+function fyReset(){ fy = {n:0, sinceFun:0, funGap:3 + (Math.random() < .5 ? 0 : 1), endShown:false, freshSeen:false}; affCache = null; }
+function fyScore(p, aff, prevTopic){
+  const seen = !!S.seen[p.id], ago = seen ? (Date.now() - (S.seenAt[p.id] || 0)) / 864e5 : 0;
+  return 0.6 * Math.tanh((aff[p.topic] || 0) / 6)
+    + (seen ? -0.6 + Math.min(0.4, ago / 30) : 0.5)
+    + (p.topic === prevTopic ? -0.4 : 0)
+    + 0.25 * Math.random();
+}
+function fyBest(list, aff, prevTopic){
+  let best = null, bs = -1e9;
+  list.forEach(p => { const s = fyScore(p, aff, prevTopic); if (s > bs) { bs = s; best = p; } });
+  return best;
+}
+/* felfedezés: a legkevésbé ismert téma (nem a két kedvencből), amit nem kapcsolt ki */
+function exploreTopic(list, aff){
+  const ts = [...new Set(list.map(p => p.topic))];
+  const top = Object.keys(aff).filter(t => ts.includes(t)).sort((a, b) => aff[b] - aff[a]).slice(0, 2);
+  const cand = ts.filter(t => !top.includes(t) && aff[t] > -6);
+  if (!cand.length) return null;
+  const known = t => POSTS.filter(p => p.topic === t && S.seen[p.id]).length;
+  const min = Math.min(...cand.map(known));
+  return shuffle(cand.filter(t => known(t) === min))[0];
+}
+function pickForYou(){
+  if (!fy) fyReset();
+  if (!affCache || fy.n % 8 === 0) affCache = affinity();
+  fy.n++;
+  const aff = affCache;
+  const posts = items.filter(i => i.kind === "post");
+  const recent = new Set(posts.slice(-12).map(i => i.id));
+  const prevTopic = posts.length ? POST[posts[posts.length - 1].id].topic : null;
+  const cand = POSTS.filter(p => !isOff(p.topic) && !(S.disliked || {})[p.id] && !recent.has(p.id));
+  if (!cand.length) return null;
+  const unseenLeft = cand.some(p => !S.seen[p.id]);
+  if (unseenLeft) fy.freshSeen = true;
+  else if (fy.freshSeen && !fy.endShown) { fy.endShown = true; return "end"; }
+  /* 1) „Tudtad?” kb. minden 4–5. helyen, ha nincs kikapcsolva */
+  const funs = cand.filter(p => p.topic === FUN), rest = cand.filter(p => p.topic !== FUN);
+  if (funs.length && (fy.sinceFun >= fy.funGap || !rest.length)) {
+    fy.sinceFun = 0; fy.funGap = 3 + (Math.random() < .5 ? 0 : 1);
+    return {p: fyBest(funs, aff, prevTopic)};
+  }
+  fy.sinceFun++;
+  const list = rest.length ? rest : funs;
+  /* 2) kb. 20% (a „Tudtad?” helyeken kívül 25%): új, kevéssé ismert téma, hogy ne zárjon buborékba */
+  if (Math.random() < 0.25) {
+    const t = exploreTopic(list, aff);
+    if (t) return {p: fyBest(list.filter(p => p.topic === t), aff, prevTopic), why: "explore"};
+  }
+  /* 3) kb. 10%: ismétlés – 3 napnál régebben látott, félbehagyott vagy rég látott videó */
+  if (Math.random() < 0.1) {
+    const old = list.filter(p => S.seen[p.id] && Date.now() - (S.seenAt[p.id] || 0) > 3 * 864e5);
+    old.sort((a, b) => (((S.sig[a.id] || {}).c || 0) - ((S.sig[b.id] || {}).c || 0)) || ((S.seenAt[a.id] || 0) - (S.seenAt[b.id] || 0)));
+    if (old.length) return {p: old[0]};
+  }
+  /* 4) rangsor az érdeklődési profil alapján */
+  return {p: fyBest(list, aff, prevTopic)};
+}
+
+/* ---------------- videónkénti mérés ---------------- */
+let view = null;
+function beginView(p){ endView(); view = {id:p.id, sec:0, frac:0, lastF:0, loops:0, t0:Date.now()}; }
+function viewProgress(f){
+  if (!view || !isFinite(f)) return;
+  if (f < view.lastF - 0.5) view.loops++;
+  view.lastF = f; if (f > view.frac) view.frac = f;
+}
+function touchSig(id){ if (S.track === false) return; const g = S.sig[id] || (S.sig[id] = {v:0, w:0, c:0, sk:0, rw:0}); g.last = Date.now(); }
+function endView(){
+  const v = view; view = null;
+  if (!v || S.track === false) return;
+  const el = (Date.now() - v.t0) / 1000;
+  if (el < 0.4) return;   // csak továbbgörgetés közben villant fel, nem nézés
+  const g = S.sig[v.id] || (S.sig[v.id] = {v:0, w:0, c:0, sk:0, rw:0});
+  const done = v.loops > 0 || v.frac >= 0.9, before = g.c || 0;
+  g.v = (g.v || 0) + 1; g.w = (g.w || 0) + v.sec; g.last = Date.now();
+  if (done) g.c = before + 1;
+  if (v.loops > 0 || (before > 0 && v.frac > 0.5)) g.rw = (g.rw || 0) + 1;
+  if (!done && (el < 3 || v.frac < 0.3) && !S.liked[v.id] && !S.saved[v.id]) g.sk = (g.sk || 0) + 1;
+  save();
+}
+const dnum =k => Math.round(Date.UTC(+k.slice(0,4), +k.slice(5,7) - 1, +k.slice(8,10)) / 864e5);
 const dkey = n => new Date(n * 864e5).toISOString().slice(0, 10);
 const nowHM = () => { const d = new Date(); return String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0"); };
 const hEnd = h => dkey(dnum(h.start) + h.days - 1);
@@ -480,14 +607,20 @@ function dueCheck(){
   const when = S.tick + Math.max(1, items.length - ai);   // a most generált elem várható megjelenése
   const now = Date.now();
   const isDue = s => s.at ? now >= s.at : s.due <= when;
-  const ids = Object.keys(S.sched).filter(id => POST[id] && (!filter || POST[id].topic === filter) && isDue(S.sched[id]));
+  const ids = Object.keys(S.sched).filter(id => POST[id] && (filter ? POST[id].topic === filter : !isOff(POST[id].topic)) && isDue(S.sched[id]));
   ids.sort((a,b) => (S.sched[a].at || 0) - (S.sched[b].at || 0) || S.sched[a].due - S.sched[b].due);
   return ids[0] || null;
 }
 function nextItem(){
   if (!filter && (items.length === 0 || sinceCheck >= 2)) { const hi = nextHabitItem(); if (hi) { sinceCheck = 0; return hi; } }
   if (sinceCheck >= 3) { const c = dueCheck(); if (c && !items.some((it, i) => i >= items.length - 4 && it.kind === "check" && it.id === c)) { sinceCheck = 0; const sc = S.sched[c]; if (sc.at) sc.at = Date.now() + 6 * 3600e3; else sc.due = S.tick + Math.max(1, items.length - (active ? Number(active.dataset.idx) : 0)) + 6; return {kind:"check", id:c}; } }
+  if (!filter) {
+    const r = pickForYou();
+    if (r === "end") return {kind:"end"};
+    if (r && r.p) { sinceCheck++; return {kind:"post", id:r.p.id, repeat: !!S.seen[r.p.id], explore: r.why === "explore"}; }
+  }
   const list = pool();
+  if (!list.length) return {kind:"end"};
   if (cursor >= list.length) { cursor = 0; cycle++; if (cycle === 1) return {kind:"end"}; }
   const p = list[cursor++]; sinceCheck++;
   return {kind:"post", id:p.id, repeat: cycle > 0 || !!S.seen[p.id]};
@@ -536,7 +669,18 @@ function unlockSound(){
   });
 }
 ["touchend", "click", "keydown"].forEach(ev => document.addEventListener(ev, unlockSound, {capture: true, passive: true}));
-/* A következő videót a szabad lejátszóba töltjük, a következő elem helyére, láthatatlanul. */
+/* Adattakarékos mód (2026-11-03): magától bekapcsol, ha a telefonon be van állítva az adatforgalom-csökkentés
+   (navigator.connection.saveData), és a Profilban kézzel is állítható. Ilyenkor nincs előtöltés. */
+const lite = () => S.lite === true || (S.lite == null && !!(navigator.connection && navigator.connection.saveData));
+function applyLite(){ players.forEach(v => { v.preload = lite() ? "metadata" : "auto"; }); }
+/* A következő videót a szabad lejátszóba töltjük, a következő elem helyére, láthatatlanul.
+   Csak akkor, ha a nézőt 3 mp után is érdekli a mostani videó: aki gyorsan lapoz, annak nem töltünk fölöslegesen. */
+let prefetchT = null;
+function schedulePrefetch(el, idx){
+  clearTimeout(prefetchT);
+  if (lite()) return;
+  prefetchT = setTimeout(() => { if (active === el) prefetchNext(idx); }, 3000);
+}
 function prefetchNext(fromIdx){
   for (let i = fromIdx + 1; i < Math.min(items.length, fromIdx + 4); i++) {
     const it = items[i]; const p = it && it.kind === "post" && POST[it.id];
@@ -563,7 +707,7 @@ function setPaused(v){
 }
 function buildFeed(){
   poolCache = null;
-  stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear();
+  stopAll(); feed.innerHTML = ""; items = []; cursor = 0; sinceCheck = 0; cycle = 0; habitShown.clear(); fyReset();
   if (observer) observer.disconnect();
   observer = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting && e.intersectionRatio >= 0.55) activate(e.target); }); }, {root: feed, threshold: [0.55]});
   appendItems(4); feed.scrollTop = 0;
@@ -575,7 +719,7 @@ function topBar(){
   let chip = document.getElementById("filterChip");
   if (filter) {
     if (!chip) { chip = document.createElement("button"); chip.id = "filterChip"; chip.className = "filter-chip"; fb.appendChild(chip); chip.onclick = () => { filter = null; topBar(); buildFeed(); }; }
-    chip.innerHTML = esc(filter) + ' <span aria-hidden="true">✕</span>'; chip.setAttribute("aria-label", "Szűrő törlése: " + filter);
+    chip.innerHTML = "Csak: " + esc(filter) + ' <span aria-hidden="true">✕</span>'; chip.setAttribute("aria-label", "Kilépés a „csak ez a téma” módból: " + filter);
   } else if (chip) chip.remove();
 }
 
@@ -596,7 +740,7 @@ function renderItem(it, idx){
     <div class="post-bg">${p.type === "video"
       ? `<img class="poster" src="${p.poster}" alt="">`
       : `<div class="tv"><div class="icon">${I[p.icon]}</div><div class="line"></div></div>`}</div>
-    <div class="chips"><span>${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : ""}</div>
+    <div class="chips"><span${p.fun ? ' class="fun"' : ""}>${p.fun ? I.bulb : ""}${esc(p.topic)}</span>${it.repeat ? '<span class="rep">Ismétlés</span>' : it.explore ? '<span class="new">Új téma neked</span>' : ""}</div>
     <div class="rail">
       
       <button data-a="like" aria-pressed="${!!S.liked[p.id]}" aria-label="Tetszik">${I.heart}<span>${S.liked[p.id] ? "Tetszik" : "Like"}</span></button>
@@ -653,7 +797,7 @@ function onPostClick(e, p, el){
     el.querySelector('[data-a="poll"]').innerHTML = toggleHTML(p, i, true);
     if (ok) rightAnswer(5); else { combo = 0; shakeWrong(el.querySelector(".poll")); markActive(); save(true); }
   } else if (a === "like" || a === "save") {
-    const m = a === "like" ? S.liked : S.saved; m[p.id] = !m[p.id];
+    const m = a === "like" ? S.liked : S.saved; m[p.id] = !m[p.id]; touchSig(p.id);
     b.setAttribute("aria-pressed", m[p.id]); b.querySelector("span").textContent = a === "like" ? (m[p.id] ? "Tetszik" : "Like") : (m[p.id] ? "Mentve" : "Mentés");
     save();
   } else if (a === "share") {
@@ -662,7 +806,7 @@ function onPostClick(e, p, el){
   } else if (a === "deeper") openDeeper(p);
   else if (a === "comment") openComments(p);
   else if (a === "dislike") {
-    S.disliked = S.disliked || {}; S.disliked[p.id] = Date.now(); delete S.liked[p.id]; save(true);
+    S.disliked = S.disliked || {}; S.disliked[p.id] = Date.now(); delete S.liked[p.id]; touchSig(p.id); save(true);
     if (poolCache) poolCache.list = poolCache.list.filter(x => x.id !== p.id);
     el.classList.add("disliked");
     toast("Rendben, ezt többet nem mutatjuk");
@@ -847,7 +991,7 @@ function openHabitSheet(p, h){
 
 /* aktiválás, lejátszás */
 let raf = null, tvState = null;
-function stopAll(){ cancelAnimationFrame(raf); raf = null; tvState = null; players.forEach(v => v.pause()); narr.pause(); }
+function stopAll(){ endView(); cancelAnimationFrame(raf); raf = null; tvState = null; players.forEach(v => v.pause()); narr.pause(); }
 function activate(el){
   if (active === el || !$("onb").hidden) return;
   stopAll(); active = el; paused = false; feed.querySelectorAll(".is-paused").forEach(x => x.classList.remove("is-paused")); setSoundButtons();
@@ -855,11 +999,12 @@ function activate(el){
   if (idx >= items.length - 2) appendItems(3);
   if (!it || it.kind !== "post") return;
   const p = POST[it.id];
-  setTimeout(() => { if (active === el) prefetchNext(idx); }, 0);
+  schedulePrefetch(el, idx);
   S.tick++;
   if (!S.seen[p.id]) { S.seen[p.id] = true; S.sched[p.id] = {n:0, due:S.tick + 5, at:Date.now() + 15 * 60e3}; }   // első rákérdezés legkorábban 15 perc múlva
   S.seenAt[p.id] = Date.now();
   S.seenTick[p.id] = S.tick; markActive(); save(); updateHeader();
+  beginView(p);
   const bar = el.querySelector(".progress i");
   if (p.type === "video") {
     const host = el.querySelector(".post-bg");
@@ -872,7 +1017,7 @@ function activate(el){
     const hint = () => { if (soundOn && !soundUnlocked && !host.querySelector(".tap-sound")) { const t = document.createElement("div"); t.className = "tap-sound"; t.innerHTML = I.soundOn + "<span>Koppints, és indul a hang</span>"; host.appendChild(t); } };
     hint();
     v.play().catch(() => { v.muted = true; soundUnlocked = false; hint(); v.play().catch(() => {}); });
-    const loop = () => { if (active !== el) return; if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + "%"; raf = requestAnimationFrame(loop); };
+    const loop = () => { if (active !== el) return; if (v.duration) { bar.style.width = (v.currentTime / v.duration * 100) + "%"; viewProgress(v.currentTime / v.duration); } raf = requestAnimationFrame(loop); };
     loop();
   } else {
     const lineEl = el.querySelector(".line");
@@ -906,7 +1051,7 @@ function activate(el){
       if (tv && p.vt) { k = 0; for (let i = 0; i < p.vt.length; i++) if (t >= p.vt[i] - 0.05) k = i; }
       else for (let i = 0; i < durs.length; i++) { if (t < acc + durs[i]) { k = i; break; } acc += durs[i]; }
       if (k !== shown) { shown = k; lineEl.classList.add("out"); setTimeout(() => { if (active !== el) return; lineEl.innerHTML = `<span>${hl(p.lines[k])}</span>`; lineEl.classList.remove("out"); }, shown === 0 && !lineEl.innerHTML ? 0 : 180); }
-      bar.style.width = (t / total * 100) + "%";
+      bar.style.width = (t / total * 100) + "%"; viewProgress(t / total);
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -917,11 +1062,12 @@ function activate(el){
 setInterval(() => {
   if (document.hidden || $("v-feed").hidden || !active || !$("onb").hidden) return;
   S.watchSec++;
+  if (view && !paused) view.sec++;
   if (!S.goal || S.goal.d !== today()) S.goal = {d: today(), sec: 0, done: false};
   S.goal.sec++;
   if (!S.goal.done && S.goal.sec >= 600) { S.goal.done = true; addPoints(10, false); toast("Napi cél kész: +10 pont"); }
   if (S.goal.sec % 60 === 0) updateHeader();
-  if (S.watchSec % 15 === 0) save();
+  if (S.watchSec % 60 === 0) save();
 }, 1000);
 document.addEventListener("visibilitychange", () => { if (document.hidden) { save(true); stopAll(); } else if (active && !$("v-feed").hidden) { const a = active; active = null; activate(a); } });
 
@@ -933,12 +1079,21 @@ function openDeeper(p){
   sh.innerHTML = `<div class="grab"></div>
     <div class="levels"><span class="on">Miért így van</span></div>
     <h2 style="font-size:22px">${esc(p.title)}</h2>
+    ${p.lesson ? `<div class="lesson"><b>A tanulság</b>${esc(p.lesson)}</div>` : ""}
     ${p.deeper.map(t => `<p>${esc(t)}</p>`).join("")}
-    <div class="src">Forrás: ${esc(p.source.label)}${p.source.url ? ` · <a href="${p.source.url}" target="_blank" rel="noopener">Teljes beszélgetés</a>` : ""}</div>
+    <div class="src">Forrás: ${esc(p.source.label)}${p.source.url ? ` · <a href="${esc(p.source.url)}" target="_blank" rel="noopener">${p.fun ? "Forrás megnyitása" : "Teljes beszélgetés"}</a>` : ""}</div>
+    <button class="btn" id="sheetSave" aria-pressed="${!!S.saved[p.id]}">${I.save}<span>${S.saved[p.id] ? "Mentve – a Profilban találod" : "Mentés későbbre"}</span></button>
     <button class="btn primary" id="sheetClose">Vissza a videóhoz</button>`;
   back.onclick = closeSheet;
   $("v-feed").append(back, sh);
   $("sheetClose").onclick = closeSheet; $("sheetClose").focus();
+  $("sheetSave").onclick = () => {
+    S.saved[p.id] = !S.saved[p.id]; if (!S.saved[p.id]) delete S.saved[p.id];
+    touchSig(p.id); save(true); affCache = null;
+    $("sheetSave").setAttribute("aria-pressed", !!S.saved[p.id]);
+    $("sheetSave").querySelector("span").textContent = S.saved[p.id] ? "Mentve – a Profilban találod" : "Mentés későbbre";
+    toast(S.saved[p.id] ? "Elmentve" : "Kivetted a mentettek közül");
+  };
 }
 /* Kommentek: mindenki látja a meghívottak közül, mindenki csak a sajátját törölheti. */
 let myName = "";
@@ -1062,7 +1217,7 @@ function questionPool(topic){
   // Egy körben egy posztból legfeljebb EGY kérdés (így ugyanaz a kérdés máshogy megfogalmazva sem jöhet kétszer),
   // és a poszt kérdései közül mindig a legritkábban feltett kerül elő.
   const qn = S.qn || (S.qn = {});
-  const ps = shuffle(POSTS.filter(p => S.seen[p.id] && (topic === "Vegyes" || p.topic === topic)));
+  const ps = shuffle(POSTS.filter(p => S.seen[p.id] && (topic === "Vegyes" ? !isOff(p.topic) : p.topic === topic)));
   return ps.slice(0, 5).map(p => {
     const keys = ["poll", "check", ...(QVAR[p.id] || []).map((_, i) => "v" + i)].filter(k => qBlock(p, k));
     if (!keys.length) return null;
@@ -1420,7 +1575,7 @@ function renderProfile(){
   $("kWeek").textContent = S.week.pts; $("kTotal").textContent = S.total; $("kStreak").textContent = streak();
   $("kAcc").textContent = S.answered ? Math.round(S.correct / S.answered * 100) + "%" : "–";
   $("kAns").textContent = S.answered; $("kWatch").textContent = Math.floor(S.watchSec / 60) + " perc";
-  renderHabits(); renderReminder(); renderProfChips();
+  renderHabits(); renderReminder(); renderProfChips(); renderTopicCtl(); renderSaved(); renderInterest(); renderData(); renderLite();
   const dl = Object.keys(S.disliked || {}).filter(id => POST[id]);
   $("dislikeCard").hidden = !dl.length;
   $("dislikeList").innerHTML = dl.map(id => `<div class="dl-row"><span>${esc(POST[id].title)}</span><button class="linkbtn" data-undis="${esc(id)}">Visszahozom</button></div>`).join("");
@@ -1442,11 +1597,12 @@ function showOnb(){
   const draw = () => {
     o.innerHTML = `<span class="eyebrow">Üdv a Hogyankellben</span>
       <h1 style="font-size:32px">Mi érdekel?</h1>
-      <p class="muted" style="margin:0">Válassz pár témát, ezekkel kezdjük a feedet. Később a Profilban bármikor átállíthatod.</p>
+      <p class="muted" style="margin:0">Válassz legalább három témát, ezekkel kezdjük a feedet. A „Tudtad?” rövid, meglepő érdekességeket hoz. Később a Profilban bármikor átállíthatod.</p>
       <div class="ichips" id="onbChips">${interestChips(sel)}</div>
       <p class="small muted" style="margin:0">A „hamarosan” témákhoz még készülnek a videók. Ha bejelölöd, abból látjuk, mire van a legnagyobb igény.</p>
+      <p class="small muted" style="margin:0">A feed a nézésed alapján igazodik hozzád (mit nézel végig, mit lapozol át). Ezt a Profilban kikapcsolhatod vagy törölheted. <a href="adatvedelem.html" target="_blank" rel="noopener">Adatvédelem</a></p>
       <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
-        <button class="btn primary" id="onbGo" ${sel.size ? "" : "disabled"}>${sel.size ? "Mehet" : "Válassz legalább egy témát"}</button>
+        <button class="btn primary" id="onbGo" ${sel.size >= 3 ? "" : "disabled"}>${sel.size >= 3 ? "Mehet" : "Válassz még " + (3 - sel.size) + " témát"}</button>
         <button class="linkbtn" id="onbAll" style="align-self:center">Mindegy, mutass mindent</button>
       </div>`;
     $("onbChips").onclick = e => { const b = e.target.closest("[data-t]"); if (!b) return; const t = b.dataset.t; if (sel.has(t)) sel.delete(t); else sel.add(t); draw(); const nb = o.querySelector(`[data-t="${CSS.escape(t)}"]`); if (nb) nb.focus(); };
@@ -1467,6 +1623,97 @@ $("profChips").addEventListener("click", e => {
   S.interests = [...sel]; save(true); renderProfChips(); buildFeed();
   const nb = $("profChips").querySelector(`[data-t="${CSS.escape(t)}"]`); if (nb) nb.focus();
 });
+
+/* Témák be/ki és „Csak ezt” mód (2026-11-03) */
+function renderTopicCtl(){
+  $("topicCtl").innerHTML = TOPICS.map(t => {
+    const on = !isOff(t);
+    return `<div class="trow${on ? "" : " off"}"><span class="tn">${I[TOPIC_ICON[t]] || ""}<span>${esc(t)}</span></span><button class="linkbtn" data-only="${esc(t)}">Csak ezt</button><button class="sw" role="switch" aria-checked="${on}" aria-label="${esc(t)} a feedben" data-sw="${esc(t)}"></button></div>`;
+  }).join("");
+}
+$("topicCtl").addEventListener("click", e => {
+  const only = e.target.closest("[data-only]");
+  if (only) { filter = only.dataset.only; topBar(); location.hash = "feed"; buildFeed(); return; }
+  const b = e.target.closest("[data-sw]"); if (!b) return;
+  const t = b.dataset.sw, off = new Set(S.off || []);
+  if (off.has(t)) off.delete(t);
+  else {
+    if (TOPICS.filter(x => !off.has(x)).length <= 1) { toast("Legalább egy téma maradjon bekapcsolva"); return; }
+    off.add(t);
+  }
+  S.off = [...off]; save(true); poolCache = null; renderTopicCtl(); buildFeed();
+  toast(off.has(t) ? t + ": kikapcsolva" : t + ": újra a feedben");
+  const nb = $("topicCtl").querySelector(`[data-sw="${CSS.escape(t)}"]`); if (nb) nb.focus();
+});
+/* Mentett videók */
+function openPost(id){
+  const p = POST[id]; if (!p) return;
+  filter = p.topic; topBar(); location.hash = "feed"; buildFeed();
+  const i = pool().indexOf(p); if (i > 0) setTimeout(() => { const el = feed.children[i]; if (el) el.scrollIntoView(); }, 60);
+}
+function renderSaved(){
+  const ids = Object.keys(S.saved || {}).filter(id => S.saved[id] && POST[id]);
+  $("savedCard").hidden = !ids.length;
+  $("savedList").innerHTML = ids.map(id => `<div class="dl-row"><span>${esc(POST[id].title)} <span class="small muted">· ${esc(POST[id].topic)}</span></span><button class="linkbtn" data-open="${esc(id)}">Megnézem</button></div>`).join("");
+}
+$("savedList").addEventListener("click", e => { const b = e.target.closest("[data-open]"); if (b) openPost(b.dataset.open); });
+/* Érdeklődési profil: témánkénti pont, átláthatóan */
+function renderInterest(){
+  const on = S.track !== false;
+  $("trackSw").setAttribute("aria-checked", on);
+  const a = affinity();
+  const ts = TOPICS.filter(t => !isOff(t)).sort((x, y) => a[y] - a[x]);
+  const n = Object.keys(S.sig || {}).length;
+  $("profNote").textContent = on
+    ? (n ? `A „Neked” feed ${n} videónál mért jelekből és a kedvenc témáidból rangsorol. Kb. minden ötödik videó új téma, hogy ne csak ugyanazt lásd.` : "Még nincs elég jel: egyelőre a kedvenc témáidból indulunk. Ahogy nézel, a feed igazodik hozzád.")
+    : "A személyre szabás ki van kapcsolva: nem rögzítünk nézési jelet, a feed csak a kedvenc témáidat veszi figyelembe.";
+  $("ibars").innerHTML = ts.map(t => { const v = affPct(a[t]); return `<div class="ibar"><span>${esc(t)}</span><span class="muted num">${v}</span><span class="t"><i style="width:${v}%"></i></span></div>`; }).join("");
+}
+$("trackSw").addEventListener("click", () => {
+  S.track = S.track === false; if (S.track === false) view = null;
+  save(true); affCache = null; renderInterest();
+  toast(S.track ? "Személyre szabás bekapcsolva" : "Személyre szabás kikapcsolva");
+});
+/* Adattakarékos mód kapcsoló */
+function renderLite(){
+  const on = lite(), auto = S.lite == null && on;
+  $("liteSw").setAttribute("aria-checked", on);
+  $("liteNote").textContent = on
+    ? "Bekapcsolva" + (auto ? " (a telefonod adatforgalom-csökkentése miatt)" : "") + ": a következő videót nem töltjük le előre, csak amikor odalapozol. Kicsit később indulhat."
+    : "Kikapcsolva: a következő videót előre letöltjük, ha a mostanit már pár másodperce nézed, így azonnal indul. Egy videó kb. 1–2 MB.";
+}
+$("liteSw").addEventListener("click", () => { S.lite = !lite(); save(true); applyLite(); renderLite(); toast(S.lite ? "Adattakarékos mód bekapcsolva" : "Adattakarékos mód kikapcsolva"); });
+
+/* Adataim: profil törlése, letöltés, minden adat törlése */
+let accountRef = null;
+function renderData(){
+  const box = $("dataBox");
+  box.innerHTML = `<button class="btn sm" id="dExport">Adataim letöltése</button><button class="linkbtn" id="dProf">Érdeklődési profil törlése</button><button class="linkbtn" id="dAll">Minden adatom törlése</button>`;
+  $("dExport").onclick = exportData;
+  $("dProf").onclick = () => {
+    box.innerHTML = `<span class="small">Törlöd a mért nézési jeleket? A lájkjaid, mentéseid és pontjaid megmaradnak.</span><button class="btn primary sm" id="dYes">Igen, törlöm</button><button class="btn sm" id="dNo">Mégse</button>`;
+    $("dNo").onclick = renderData;
+    $("dYes").onclick = () => { S.sig = {}; view = null; save(true); affCache = null; buildFeed(); renderProfile(); toast("Érdeklődési profil törölve"); };
+  };
+  $("dAll").onclick = () => {
+    if (!accountRef) { box.innerHTML = `<span class="small">Ebben a változatban írj a neumann.peter1231@gmail.com címre, és mindent törlünk. A „Haladás törlése” gomb az itt tárolt adatokat azonnal törli.</span><button class="btn sm" id="dNo">Rendben</button>`; $("dNo").onclick = renderData; return; }
+    box.innerHTML = `<span class="small">Biztosan törlöd a fiókodat és minden adatodat (pontok, liga, kommentek, beállítások)? Ez nem vonható vissza.</span><button class="btn primary sm" id="dYes">Igen, mindent törlök</button><button class="btn sm" id="dNo">Mégse</button>`;
+    $("dNo").onclick = renderData;
+    $("dYes").onclick = async () => {
+      $("dYes").disabled = true;
+      try { clearTimeout(dbTimer); docRef = null; await accountRef.deleteAll(); try { localStorage.removeItem(LS); } catch (e) {} location.href = "/"; }
+      catch (e) { toast("A törlés most nem sikerült, próbáld újra"); renderData(); }
+    };
+  };
+}
+async function exportData(){
+  const out = {app: "Hogyankell", exportedAt: new Date().toISOString(), note: "A fiókodhoz tárolt összes app-adat (haladás, beállítások, nézési jelek).", data: S};
+  const blob = new Blob([JSON.stringify(out, null, 2)], {type: "application/json"});
+  try {
+    if (dlRef) { await dlRef.save({filename: "hogyankell-adataim.json", data: blob}); toast("Letöltve"); return; }
+  } catch (e) { if (e && e.code === "declined") return; }
+  const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = "hogyankell-adataim.json"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
 
 /* Próbáld ki ma lista + napi emlékeztető */
 function renderHabits(){
@@ -1548,11 +1795,12 @@ window.addEventListener("hashchange", route);
 async function boot(){
   const local = lsGet(); if (local) S = normalize(local);
   soundOn = true;
-  updateHeader(); buildFeed(); route();
+  applyLite(); updateHeader(); buildFeed(); route();
   if (S.interests === null) showOnb();
   let db = null, user = null;
   try { [db, user, dlRef, pushRef] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("downloads"), claude.use("push")]); } catch(e){}
   try { liveRef = await claude.use("live"); } catch(e){ liveRef = null; }
+  try { accountRef = await claude.use("account"); } catch(e){ accountRef = null; }
   if (pushRef && !$("v-profil").hidden) renderReminder();
   if (!db || !user) return;
   try {
@@ -1562,7 +1810,7 @@ async function boot(){
     const snap = await docRef.get();
     if (snap.exists) {
       const d = snap.data();
-      if (d && d.s && (!local || (d.at || 0) > (local.at || 0))) { S = normalize(JSON.parse(d.s)); lsSet(); updateHeader(); if (S.interests !== null && !$("onb").hidden) { $("onb").hidden = true; buildFeed(); route(); } else if (feed.scrollTop < 10) { buildFeed(); route(); } }
+      if (d && d.s && (!local || (d.at || 0) > (local.at || 0))) { S = normalize(JSON.parse(d.s)); lsSet(); applyLite(); updateHeader(); if (S.interests !== null && !$("onb").hidden) { $("onb").hidden = true; buildFeed(); route(); } else if (feed.scrollTop < 10) { buildFeed(); route(); } }
     } else save(true);
     setSync("Mentve a fiókodba"); syncLeague();
     try { const kod = new URLSearchParams(location.search).get("kod"); if (kod && /^[A-Za-z0-9]{5}$/.test(kod)) { $("joinCode").value = kod.toUpperCase(); history.replaceState(null, "", location.pathname + "#arena"); route(); const n = $("friendNote"); n.hidden = false; n.textContent = "Kihívást kaptál! Nyomd meg az „Elfogadom” gombot."; } } catch(err) {}

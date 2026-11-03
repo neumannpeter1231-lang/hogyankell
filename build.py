@@ -4,7 +4,7 @@
 Használat:  python3 build.py
 A kimenet a site/ mappa; a Cloudflare ezt teszi ki a main ág minden frissítésekor.
 """
-import json, os, shutil, sys, time
+import hashlib, json, os, re, shutil, sys, time
 from PIL import Image, ImageDraw
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -95,6 +95,21 @@ def icons(dst):
     draw(48, 0.2).save(os.path.join(dst, "favicon-48.png"))
 
 
+def media_urls(script):
+    """Adatcsökkentés (2026-11-03): a poszter WebP-re vált, ha van, és minden médiahivatkozás a fájl
+    tartalmából számolt ?v= kódot kap. Így a média sokáig gyorsítótárazható (_headers), mégis frissül, ha újragyártjuk."""
+    def ver(rel):
+        with open(os.path.join(ROOT, rel), "rb") as fh:
+            return hashlib.md5(fh.read()).hexdigest()[:8]
+
+    def sub(m):
+        rel = m.group(0)
+        if rel.endswith(".jpg") and os.path.exists(os.path.join(ROOT, rel[:-4] + ".webp")):
+            rel = rel[:-4] + ".webp"
+        return rel + "?v=" + ver(rel) if os.path.exists(os.path.join(ROOT, rel)) else rel
+    return re.sub(r"media/[A-Za-z0-9_./-]+?\.(?:mp4|jpg|webp|mp3)(?![A-Za-z0-9?])", sub, script)
+
+
 def main():
     keys = json.load(open(os.path.join(SRC, "build-config.json")))
     url = sys.argv[1] if len(sys.argv) > 1 else keys["supabaseUrl"]
@@ -133,14 +148,16 @@ def main():
 </html>
 """
     open(os.path.join(SITE, "index.html"), "w", encoding="utf-8").write(index)
-    open(os.path.join(SITE, "app.js"), "w", encoding="utf-8").write(script.strip() + "\n")
+    open(os.path.join(SITE, "app.js"), "w", encoding="utf-8").write(media_urls(script).strip() + "\n")
     cfg = open(os.path.join(SRC, "config.template.js"), encoding="utf-8").read()
     cfg = cfg.replace("__SUPABASE_URL__", url.rstrip("/")).replace("__SUPABASE_KEY__", key) \
              .replace("__VAPID_PUBLIC__", keys["vapidPublicKey"]).replace("__VERSION__", version)
     open(os.path.join(SITE, "config.js"), "w", encoding="utf-8").write(cfg)
     for f in ["backend.js", "sw.js", "manifest.webmanifest", "_headers", "adatvedelem.html"]:
         shutil.copy(os.path.join(SRC, f), os.path.join(SITE, f))
-    shutil.copytree(MEDIA, os.path.join(SITE, "media"))
+    # a WebP-változattal bíró JPG posztert már semmi nem használja, nem kell kitenni
+    skip = lambda d, names: [n for n in names if n.endswith(".jpg") and n[:-4] + ".webp" in names]
+    shutil.copytree(MEDIA, os.path.join(SITE, "media"), ignore=skip)
     icons(os.path.join(SITE, "icons"))
     print("site/ kész, verzió:", version)
 
