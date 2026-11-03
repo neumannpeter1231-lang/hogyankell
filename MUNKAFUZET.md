@@ -25,6 +25,7 @@ A **Hogyankell** Neumann Péter TikTok-szerű tanulóappja: rövid, rajzos magya
 - `tools/funfact.py` – a „Tudtad?” posztokat írja be az appba (`anyag/funfact*.json` → a `/* FUNFACT:BEGIN */ … /* FUNFACT:END */` blokk). Ha van `media/<id>.mp4`, videós posztot ír, különben szöveges posztot; bármikor újrafuttatható.
 - `tools/teszt/foryou_teszt.py` – szabályellenőrzés (a `futtat.sh` futtatja): „Tudtad?” aránya 18–30%, kikapcsolt téma nem jön elő, „Csak ezt” mód, mentés, érdeklődési profil, mérés ki/be, profil törlése, letöltés. Hibánál kilépési kód 1.
 - `supabase/5_adataim.sql` – `delete_my_data()`: a Profil → Adataim → „Minden adatom törlése” gomb ezt hívja (fiók + minden adat törlése).
+- `tools/elocsend.py` – 0,4 mp csendet tesz a kész videók elejére (2026-11-03: görgetés után a női hangok első szótagja megakadt). Az új videók ezt már a `make_explainer.py`-ból automatikusan kapják.
 - `tools/kepek.py` – jelenetképek a Gemini API-ból (prompt + a sorozat `style` mezője) → `anyag/<id>/01.png…`; a meglévőket kihagyja.
 - `anyag/funfact1.json` – az első 6 „Tudtad?” forgatókönyve (4 jelenet, `line` = szöveges változat sora, `lesson` = tanulság).
 - `anyag/sorozat1.json`, `anyag/sorozat2.json` – a forgatókönyvek (jelenetszöveg + képleírás + kérdések + forrás).

@@ -226,7 +226,11 @@ def main():
         ass_file(sents, ass)
         os.makedirs(os.path.dirname(out), exist_ok=True)
         run(["ffmpeg", "-y", "-hide_banner", "-f", "concat", "-safe", "0", "-i", os.path.join(tmp, "list.txt"),
-             "-i", audio, "-vf", f"ass={ass}", "-map", "0:v", "-map", "1:a",
+             "-i", audio,
+             # 0,4 mp csend az elején (az első kép áll): görgetés után a telefon hangkimenete
+             # ennyi idő alatt indul el, így az első szótag nem akad meg.
+             "-vf", f"ass={ass},tpad=start_duration=0.4:start_mode=clone",
+             "-af", "adelay=400:all=1", "-map", "0:v", "-map", "1:a",
              "-c:v", "libx264", "-preset", "veryfast", "-crf", "31", "-profile:v", "main",
              "-pix_fmt", "yuv420p", "-movflags", "+faststart",
              "-c:a", "aac", "-b:a", "96k", "-shortest", out])
